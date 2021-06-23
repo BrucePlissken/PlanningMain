@@ -13,19 +13,28 @@ class Planner implements Calculate {
         
     }
     
-    public Term call(List list){
+    public Term call(List l){
 
 
-        return list.getHead();
+        return l.getHead();
     }
 
     public void start(){
         
         //System.out.print( );
-        
+        String path = "tmp/basic/basic";
+        String path2 = "tmp/basic/problem";
+        String[] stringArray = new String[1];
+        stringArray[0] = path;
+        String[] stringArrayTwo = new String[2];
+        stringArrayTwo[0] = "-ra";
+        stringArrayTwo[1] = path2;
         try {
             idomain = new InternalDomain(file, 2);
             //idomain.parser.command();
+            idomain.main(stringArray);
+            idomain.main(stringArrayTwo);
+
             
         } catch (Exception e) {
             //TODO: handle exception
