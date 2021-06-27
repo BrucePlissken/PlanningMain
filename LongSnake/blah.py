@@ -1,6 +1,7 @@
 import Character
-from Character import NPC,Place
-
+from Character import Character
+import Place
+from Place import Place
 dutchy = Place("dutchy")
 town = Place("town")
 house = Place("house")
@@ -9,7 +10,7 @@ house = Place("house")
 town.set_parent(dutchy)
 house.set_parent(town)
 
-user = NPC("Ringo", 45)
+user = Character("Ringo", 45, 0)
 user.set_location(house)
 
 user.set_rank(0)

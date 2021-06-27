@@ -1,32 +1,17 @@
 
 import uuid
+import Place
+from Place import Place
 
-class Place:
-    capacity = int
-    residents = []
-    parent = None
-    child = []
-    def __init__(self, name):
-        self.name = name
-
-    def set_parent(self, p):
-        if self.parent == None:
-            self.parent = p
-            p.set_child
-
-    def set_child(self, c):
-        self.child = c
-
-
-class NPC:
-    name = str
-    age = int
-    rank = int
+class Character:
     location = Place
+    isAlive = True
     id = uuid.uuid1
-    def __init__(self, name, age):
+
+    def __init__(self, name, age, rank):
         self.name = name
         self.age = age
+        self.rank = rank
 
     def get_plan(self):
         print(self.rank)
@@ -48,6 +33,9 @@ class NPC:
             temp = temp.parent
             result.append(temp)
         return result
+
+    def die(self):
+        isAlive = False
 
 caste = {
     0 : "serf",
