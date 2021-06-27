@@ -20,8 +20,6 @@ class Planner implements Calculate {
     }
 
     public void start(){
-        
-        //System.out.print( );
         String path = "tmp/basic/basic";
         String path2 = "tmp/basic/problem";
         String[] stringArray = new String[1];
@@ -31,7 +29,6 @@ class Planner implements Calculate {
         stringArrayTwo[1] = path2;
         try {
             idomain = new InternalDomain(file, 2);
-            //idomain.parser.command();
             idomain.main(stringArray);
             idomain.main(stringArrayTwo);
 
