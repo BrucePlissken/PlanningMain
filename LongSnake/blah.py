@@ -1,4 +1,5 @@
 import json
+import random
 import Character
 from Character import Character
 import Place
@@ -7,17 +8,27 @@ dutchy = Place("dutchy")
 town = Place("town")
 house = Place("house")
 
-
 town.set_parent(dutchy)
 house.set_parent(town)
 
+data = json.load(open('Names.json','r'))
+nameList = data['names']
 
 
-user = Character("Ringo", 45, 0)
+def create_character(name = '', age = 0, rank = 0):
+    if (name == ''):
+        number = random.randrange(0,len(nameList))
+        name = nameList[number]
+    if (age == 0):
+        age = random.randrange(14, 70)
+    return Character(name, age, rank)
+
+
+user = create_character('',0,2)
 user.set_location(house)
 
-user.set_rank(0)
-
+print(user.name)
+print(user.age)
 print(user.get_rank())
 list = user.get_location()
 
