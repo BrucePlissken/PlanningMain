@@ -3,10 +3,11 @@ import random
 import Character
 from Character import Character
 import Place
-from Place import Place
+from Place import Building, Place
+
 dutchy = Place("dutchy")
 town = Place("town")
-house = Place("house")
+house = Building(1,0)
 
 town.set_parent(dutchy)
 house.set_parent(town)
@@ -24,7 +25,7 @@ def create_character(name = '', age = 0, rank = 0):
     return Character(name, age, rank)
 
 
-user = create_character('',0,2)
+user = create_character()
 user.set_location(house)
 
 print(user.name)

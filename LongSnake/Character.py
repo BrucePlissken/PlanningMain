@@ -1,17 +1,16 @@
-
 import uuid
-import Place
-from Place import Place
 
 class Character:
-    location = Place
     isAlive = True
     id = uuid.uuid1
+    inventory = []
 
-    def __init__(self, name, age, rank):
+    def __init__(self, name, age, rank, home = None):
         self.name = name
         self.age = age
         self.rank = rank
+        self.home = home
+        self.location = home
 
     def get_plan(self):
         print(self.rank)
@@ -34,6 +33,13 @@ class Character:
             result.append(temp)
         return result
 
+    def take_item(self, item):
+        self.inventory.append(item)
+
+    def remove_item(self, item):
+        if(self.inventory.__contains__(item)):
+            return self.inventory.pop(item)
+
     def die(self):
         isAlive = False
 
@@ -42,5 +48,6 @@ caste = {
     1 : "freeman",
     2 : "cleric",
     3 : "bailiff",
-    4 : "duke"
+    4 : "duke",
+    5 : 'merchant'
 }
