@@ -3,6 +3,7 @@ import uuid
 class Place:
     parent = None
     child = []
+    neighbours = []
     id = uuid.uuid1
 
     def __init__(self, name):
@@ -14,6 +15,12 @@ class Place:
 
     def set_child(self, c):
         self.child.append(c)
+
+    def set_neighbour(self, neighbour):
+        if (self.neighbours.__contains__(neighbour) == False):
+            self.neighbours.append(neighbour)
+            neighbour.set_neighbour(self)
+
 
 class Building(Place):
 

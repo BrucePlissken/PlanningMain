@@ -16,11 +16,10 @@ def create_character(home, name = '', age = 0, rank = 0):
         age = random.randrange(14, 70)
     return Character(name, age, rank, home)
 
-town = Place("town")
-house = Building(1,0, town)
+town1 = Place("town")
+house = Building(1,0, town1)
 
-house.set_parent(town)
-
+house.set_parent(town1)
 
 char = create_character(house)
 print (char.name + ', age: ' + str(char.age) + ', rank: ' + char.get_rank() + ', lives in: ' + char.home.name)
