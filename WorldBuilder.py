@@ -31,8 +31,6 @@ def create_forrest(number):
 
 
 
-
-
 town1 = create_town(0)
 house = create_building(1,1,town1)
 town1.set_child(town1)
