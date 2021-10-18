@@ -6,6 +6,7 @@ from FDApi import*
 dom = "tmp/AdventureDom.pddl"
 prob = "tmp/AdventureProb.pddl"
 sasPlan = "..\sas_plan"
+tempPlan = "tempPlan.txt"
 
 goal1 = "(and\n        (atball ball1 roomb)\n        (atball ball2 roomb)\n        (atball ball3 roomb)\n        (atball ball4 roomb)\n        )"
 goal2 = "(and\n        (atball ball1 rooma)\n        (atball ball2 rooma)\n        (atball ball3 rooma)\n        (atball ball4 rooma)\n        )"
@@ -18,9 +19,32 @@ def applyPlan(plan, writeChange = False):
         planAction = openPlan.readline().partition("\n")[0]
         if (planAction.count(";") > 0):
             break
-        if (ap.applyAction(planAction) & writeChange):
-            ap.writeChange()
+        if (ap.applyAction(planAction)):# & writeChange):
+            
+            print("plan-step allowed")
+            break
+            #ap.writeChange()
     openPlan.close()
+
+def applyPlanAction(plan, writeChange = False):
+    openPlan = open(plan, "r")
+    planAction = openPlan.read().partition("\n")
+    openPlan.close()
+    if (planAction[0].count(";") > 0):
+        #print("reached end of plan")
+        return False
+    if (ap.applyAction(planAction[0])):
+        #print("plan-step allowed")
+
+        if(writeChange):
+            openPlan = open(plan, "w")
+            openPlan.write(planAction[2])            
+            openPlan.close()
+            #ap.writeChange()
+    else :
+        return False
+    return True
+    
 
 def printPlan(plan):
     openPlan = open(plan)
@@ -40,12 +64,18 @@ def savePlan(plan, fileName):
 output = FDApi.rumBriber(FDApi.parameters, False)#.wait()
 if (os.path.exists(sasPlan)):
     printPlan(sasPlan)
-    savePlan(sasPlan, "tempPlan")
+    savePlan(sasPlan, tempPlan)
 
 else: print ("plan failed")
+thing = True
+
+while (thing):
+    thing = applyPlanAction(tempPlan, True)
+
+
+print(ap.state)
 """
 ap.ppActions()
-applyPlan(sasPlan)
 print(output)
 print(ap.actions)
 for x in ap.actions:

@@ -1,7 +1,6 @@
 from os import error
 import IntermediateParser
-from IntermediateParser import parsePddlExpression
-from IntermediateParser import whiteSpaceMatters
+from IntermediateParser import *
 
 class ActionParser:
     def __init__(self, domain, prob):
@@ -11,7 +10,7 @@ class ActionParser:
         self.domain = df.read().lower()
         df.close()
         pf = open(prob)
-        self.state = pf.read().partition("init")[2].partition("(:goal")[0].rpartition(")")[0].lower()
+        self.state = pf.read().partition("objects")[2].partition("(:goal")[0].rpartition(")")[0].lower()
         pf.close()
         self.actions = []
         n = self.domain.count("action")
@@ -75,8 +74,20 @@ class ActionParser:
     def applyAction(self, actionString):
         name = actionString.partition("(")[2].partition(" ")[0]
         action = self.getAction(name)
-        dict = self.adjustParameters(action, actionString)
+        lookUpBook = self.adjustParameters(action, actionString)
         #check for preconds
+        
+        #print(action.precond)
+        if applyFunction(action.precond, lookUpBook,precondCheck,self.state,True,andOp):
+            #applying the allowed change to self.state
+            print("move allowed")
+            self.state = applyFunction(action.effect, lookUpBook, applyEffect, self.state, self.state, andOp)
+            return True
+        print(action.precond)
+        print("move NOT allowed")
+        return False
+
+        """
         for x in action.precond[0]:
             for y in dict:
                 x = x.replace(y, dict[y])
@@ -84,19 +95,18 @@ class ActionParser:
                 print("precondition: " + x + " -not met")
                 return False
             """    
+        """
             else:
                 print("precondition: " + x + " -met")
-            """
+        
         for x in action.precond[1]:
             for y in dict:
                 x = x.replace(y, dict[y])
             if (self.state.find(x) > 0):
                 print("neg precondition: " + x + " -not met")
                 return False
-            """
             else:
                 print("neg precondition: " + x + " -met")
-            """
 
         #if preconditions are met apply changes
 
@@ -113,6 +123,7 @@ class ActionParser:
             self.state = self.state + parenthesis
 
         return True
+            """
         
     """
     def mapParameters(self, paramargs, params):
@@ -167,6 +178,7 @@ class ActionParser:
             x += 1
         return result
     """
+    
 
     def writeChange(self):
         file = open(self.prob)

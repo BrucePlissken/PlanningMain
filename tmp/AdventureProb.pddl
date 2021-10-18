@@ -6,7 +6,7 @@
     farm town manor lair castle kingdom - location
     goblinTracks - info
     goblinhead - trophy
-    dagger - weapon
+    dagger - item
 )
 (:init
     (isSus lord)
