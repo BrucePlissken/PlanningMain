@@ -66,7 +66,11 @@ if (os.path.exists(sasPlan)):
     printPlan(sasPlan)
     savePlan(sasPlan, tempPlan)
 
-else: print ("plan failed")
+else: 
+    output = FDApi.rumBriber(FDApi.parameters, True)#.wait()
+    print ("plan failed")
+    
+    exit()
 thing = True
 
 while (thing):
@@ -74,6 +78,7 @@ while (thing):
 
 
 print(ap.state)
+os.remove(sasPlan)
 """
 ap.ppActions()
 print(output)

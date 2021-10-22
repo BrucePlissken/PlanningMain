@@ -20,16 +20,14 @@ class ActionParser:
             tempDom = tempDom.partition("action ")[2]
             self.parseAction(tempDom.partition("\n")[0])
             x += 1
+        self.pddltypes = self.mapTyps()
+        print(self.pddltypes)
 
     def parseAction(self, targetString):        
         actionString = self.domain.partition(targetString)[2].partition("(:")[0]
         if (actionString == ""):
             print("no such action")
-        """
-        params = parsePddlExpression(actionString.partition("parameters")[2].partition(":precondition")[0])
-        preco = self.splitArgs(actionString.partition("precondition")[2].partition(":effect")[0])
-        effe = self.splitArgs(actionString.partition("effect")[2])
-        """
+
         params = whiteSpaceMatters(actionString.partition("parameters")[2].partition(":precondition")[0])
         preco = parsePddlExpression(actionString.partition("precondition")[2].partition(":effect")[0])
         effe = parsePddlExpression(actionString.partition("effect")[2])
@@ -45,7 +43,6 @@ class ActionParser:
         print("error: no such action name: " + name)
 
     def adjustParameters(self, action, params):
-        #return self.mapParameters(action.parameters, string)
         paramargs = action.parameters 
         result = {}
         params = params.partition(" ")[2]
@@ -63,6 +60,22 @@ class ActionParser:
 
             params = params.partition(" ")[2]
             x += 1
+
+        return result
+        #also add the objects to the dictionary
+    def mapTyps(self):
+        typs = self.domain.partition("(:predicates")[0].partition("types")[2]
+        result = {}
+        i = typs.count("-")
+        n = 0
+        while (n < i):
+            kvpair = typs.partition("-")
+            k = "-" + kvpair[2].partition("\n")[0]
+            v = kvpair[0].split()
+            result[k] = v
+            typs = typs.partition(k)[2]
+            n +=1
+        
         return result
 
     def ppActions(self):
@@ -74,17 +87,17 @@ class ActionParser:
     def applyAction(self, actionString):
         name = actionString.partition("(")[2].partition(" ")[0]
         action = self.getAction(name)
-        lookUpBook = self.adjustParameters(action, actionString)
+        lookUpBook = {**self.adjustParameters(action, actionString), **self.pddltypes}
         #check for preconds
         
         #print(action.precond)
         if applyFunction(action.precond, lookUpBook,precondCheck,self.state,True,andOp):
             #applying the allowed change to self.state
-            print("move allowed")
+            #print("move " + action.name + " allowed")
             self.state = applyFunction(action.effect, lookUpBook, applyEffect, self.state, self.state, andOp)
             return True
         print(action.precond)
-        print("move NOT allowed")
+        print("move NOT "+ action.name + " allowed")
         return False
 
         """

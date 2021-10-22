@@ -107,7 +107,7 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
             for e in expressions["or"]:
                 #print("or")
                 #this should probably be the way it is implemented across the board
-                acc =  orOp(applyFunction(e, lookUpbook, func, pddlProblem, acc, orOp), acc)
+                acc =  orOp(applyFunction(e, lookUpbook, func, pddlProblem, acc, nonOp), acc)
         
         if "not" in expressions:
             if(isinstance(expressions, list)):
@@ -122,7 +122,7 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
         if "exists" in expressions:
             typ = expressions["exists"][0].partition(" -")
             typs = pddlProblem.partition("-" + typ[2])[0].rpartition("\n")[2].split()
-            print("exists")
+            #print("exists")
             for x in typs:
                 pamphlet = lookUpbook
                 #print(typ[0] +" "+ x)
@@ -137,19 +137,31 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
                 acc = applyFunction(temp, lookUpbook, func, pddlProblem, acc, andOp)
 
         if "forall" in expressions:
-            typ = expressions["forall"][0].partition(" -")
-            typs = pddlProblem.partition("-" + typ[2])[0].rpartition("\n")[2].split()
+            typi = expressions["forall"][0].partition(" -")
+            typ = "-" + typi[2]
+            typs = pddlProblem.partition(typ)[0].rpartition("\n")[2].split()
+            if typ in lookUpbook:
+                for x in lookUpbook[typ]:
+                    #print(x + ".")
+                    temp = pddlProblem.partition(" - " + x)[0].rpartition("\n")[2].split()
+                    #print(temp)
+                    if (temp != []):
+                        for x in temp:
+                            typs.append(x)
+            
             #print("forall")
+            #print(typ)
             #print(typs)
             for x in typs:
+                #print(x)
                 pamphlet = lookUpbook
                 #print(typ[0] +" "+ x)
-                pamphlet[typ[0]] = x 
+                pamphlet[typi[0]] = x 
                 #print("blah")
-                temp = applyFunction(expressions["forall"][1], pamphlet, stringReplacer, pddlProblem, "", andOp )
+                temp = applyFunction(expressions["forall"][1], pamphlet, stringReplacer, pddlProblem, "", andOp)
                 #print("blah2")
                 if (temp == ""):
-                    break
+                    continue
                 temp = parsePddlExpression(temp)
                 #print(temp)
                 acc = applyFunction(temp, lookUpbook, func, pddlProblem, acc, andOp)
@@ -177,8 +189,9 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
 
 def stringReplacer(expression, lookUpbook, operator, pddlProblem, acc):
     #print("stringreplacer")
-    for y in lookUpbook:
-        expression = expression.replace(y, lookUpbook[y])
+    for y in expression.split():
+        if y in lookUpbook:
+            expression = expression.replace(y, lookUpbook[y])
 #    result = expression.replace(temp[0], temp[1])
     #print("result")
     
@@ -234,18 +247,19 @@ def printExpression(expression, noot, pddlProblem, number = 0):
     if (number != 0):
         result = "increase " + result + " by " + str(number)
 
-    print(result)
+    #print(result)
 
 def precondCheck(expression, lookUpbook, operator, pddlProblem, acc):
     #if (number != 0):
     #    return True
-    #print(expression)
     #print("precond check")
-    #print(pddlProblem)
+    #print(expression)
+    #print(lookUpbook)
     #print("precond check")
     
-    for y in lookUpbook:
-        expression = expression.replace(y, lookUpbook[y])
+    for y in expression.split():
+        if y in lookUpbook:
+            expression = expression.replace(y, lookUpbook[y])
     result = (pddlProblem.count(expression) > 0)
     #print(expression)
     #print(pddlProblem)
@@ -256,9 +270,10 @@ def precondCheck(expression, lookUpbook, operator, pddlProblem, acc):
 def applyEffect(expression, lookUpbook, operator, pddlProblem, acc):
     #print("applyEffect")
     #print(expression)
-    for y in lookUpbook:
-        expression = expression.replace(y, lookUpbook[y])
-
+    #print(lookUpbook)
+    for y in expression.split():
+            if y in lookUpbook:
+                expression = expression.replace(y, lookUpbook[y])
     parenthesis = "    (" + expression + ")\n"
     if (operator == addOp):
         return acc

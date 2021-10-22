@@ -5,13 +5,16 @@
     goblin - monster
     farm town manor lair castle kingdom - location
     goblinTracks - info
+    dagger pole - weapon
+    tonic - consumable
     goblinhead - trophy
-    dagger - item
 )
 (:init
-    (isSus lord)
+    (haveItem goblin tonic)
+    (onGround pole farm)
     (atLoc lord castle)
-    (atLoc lady castle)
+    (atLoc lady lair)
+    (isSus lady)
     (atloc dudeascii town)
     (hastrack farm)
     (isavailable dudeascii)
@@ -19,8 +22,8 @@
     (atloc girl lair)
     (atloc farmer farm)
     (trackinfo goblintracks farm lair)
-    (issecret lair)
-    (issecret goblintracks)
+    (isUnknown lair)
+    (isUnknown goblintracks)
     (atloc goblin lair)
     (isbound girl)
     (isSus goblin)
@@ -34,7 +37,6 @@
  (:goal 
     (and
     (atLoc girl farm)
-    (haveItem bailiff goblinhead)
     )
 )
 (:metric minimize (total-cost))
