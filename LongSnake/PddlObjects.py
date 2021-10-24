@@ -4,6 +4,16 @@ class Location:
         self.items = []
         self.ppl = []
 
+class Area(Location):
+    def __init__(self, name):
+        super().__init__(name)
+        self.sublocations = []
+
+class Site(Location):
+    def __init__(self, name, parentLocation_name):
+        super().__init__(name)
+        self.name = parentLocation_name + name
+
 class Character:
     def __init__(self, name):
         self.name = name
@@ -11,3 +21,23 @@ class Character:
         self.status = []
         self.known = []
         self.inventory = []
+        self.trophy = []
+
+class Item:
+    def __init__(self, name):
+        self.name = name
+        self.value = 0
+        self.properties = []
+
+class Weapon(Item):
+    def __init__(self, name):
+        super().__init__(name)
+
+class Consumable(Item):
+    def __init__(self, name):
+        super().__init__(name)
+        self.effect = []
+
+class Trophy(Item):
+    def __init__(self, name):
+        super().__init__(name)

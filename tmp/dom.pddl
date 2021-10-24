@@ -1,25 +1,34 @@
-(define (domain testies)
+(define (domain ballbot)
 
-(:predicates (ROOM ?x) (BALL ?x) (GRIPPER ?x)
-                (at-robby ?x) (at-ball ?x ?y)
-                (free ?x) (carry ?x ?y))
+ (:types
+    room
+    ball
+    gripper
+ )
 
-(:action move :parameters (?x ?y)
-    :precondition (and (ROOM ?x) (ROOM ?y)
-                        (at-robby ?x))
-    :effect       (and (at-robby ?y)
-                        (not (at-robby ?x))))
+ (:predicates
+    (atrobby ?l - room)
+    (atball ?b - ball ?l - room)
+    (free ?g - gripper) 
+    (carry ?g - gripper ?b - ball)
+    )
 
-(:action pick-up :parameters (?x ?y ?z)
-    :precondition (and (BALL ?x) (ROOM ?y) (GRIPPER ?z)
-                        (at-ball ?x ?y) (at-robby ?y) (free ?z))
-    :effect       (and (carry ?z ?x)
-                        (not (at-ball ?x ?y)) (not (free ?z))))
-                        
-(:action drop :parameters (?x ?y ?z)
-    :precondition (and (BALL ?x) (ROOM ?y) (GRIPPER ?z)
-                        (carry ?z ?x) (at-robby ?y))
-    :effect       (and (at-ball ?x ?y) (free ?z)
-                        (not (carry ?z ?x))))
+ (:action move 
+    :parameters     (?from - room ?to - room)
+    :precondition   (atrobby ?from)
+    :effect         (and (atrobby ?to)
+                     (not (atrobby ?from)) ))
 
+ (:action pick 
+    :parameters (?b - ball ?l - room ?g - gripper)
+    :precondition (and (atball ?b ?l) (atrobby ?l) (free ?g))
+    :effect (and (carry ?g ?b)
+                  (not (atball ?b ?l)) (not (free ?g)) ))
+
+ (:action drop 
+    :parameters (?b - ball ?l - room ?g - gripper)
+    :precondition (and (atrobby ?l) (carry ?g ?b))
+    :effect (and (atball ?b ?l)
+                  (free ?g)
+                  (not (carry ?g ?b)) ))
 )

@@ -2,10 +2,10 @@
 (:requirements :universal-preconditions :disjunctive-preconditions :quantified-preconditions)
 (:types
     player npc - character
-    monster - npc
-    location
+    area site - location
     consumable weapon trophy - item
     info
+    goblin creep vampire - monster
 )
 
 (:predicates
@@ -23,12 +23,21 @@
     (knowInfo ?char - character ?inf - info)
     (haveBodyPart ?char - character ?bp - trophy)
     (canCut ?item - item)
+    (isMonster ?char - character ?typ - monster)
+    (inArea ?site - site ?area - area)
 )
 (:functions
     (total-cost)
 )
 (:action move
-    :parameters (?char - player ?from ?to - location)
+    :parameters (?char - player ?from - location ?to - site ?area - area)
+    :precondition (and (atLoc ?char ?from) (not (isUnknown ?to)) (isAvailable ?char) (inArea ?to ?area) (or (= ?from ?area) (inArea ?from ?area)) )
+    :effect (and (not (atLoc ?char ?from)) (atLoc ?char ?to)
+    (increase (total-cost) 2)
+    )
+)
+(:action travel
+    :parameters (?char - player ?from - location ?to - area)
     :precondition (and (atLoc ?char ?from) (not (isUnknown ?to)) (isAvailable ?char))
     :effect (and (not (atLoc ?char ?from)) (atLoc ?char ?to)
     (increase (total-cost) 2)
@@ -44,7 +53,7 @@
 (:action attack
     :parameters (?char1 - player ?char2 - character ?loc - location)
     :precondition (and (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (isSus ?char2) (isAvailable ?char1) (not (= ?char1 ?char2)))
-    :effect (and (isDead ?char2) (not (isSus ?char2))
+    :effect (and (isDead ?char2) (not (isSus ?sus))
     (forall (?i - item) (when (haveItem ?char2 ?i) (and (onGround ?i ?loc) (not (haveItem ?char2 ?i)))))
     (increase (total-cost) 2)
     )
@@ -53,7 +62,7 @@
     :parameters (?char1 - player ?char2 - character ?from ?to - location)
     :precondition (and (atLoc ?char1 ?from) (atLoc ?char2 ?from) (not (isUnknown ?to)) (isAvailable ?char2) (not (= ?char1 ?char2))
                     (or (and (not (isSus ?char2)) (not (isBound ?char2))) (and (isSus ?char2) (isBound ?char2)))
-    (exists (?sus - character) (and (not (isSus ?sus)) (or (not (atLoc ?sus ?loc)) (isDead ?char) )))
+    (forall (?sus - character) (or (or (not (atLoc ?sus ?from))  (not (isSus ?sus))) (isDead ?sus) )) 
     )
     :effect (and (not (atLoc ?char1 ?from)) (atLoc ?char1 ?to) (not (atLoc ?char2 ?from)) (atLoc ?char2 ?to)
     (increase (total-cost) 4)
@@ -69,7 +78,7 @@
 (:action untie
     :parameters (?char1 - player ?char2 - character ?loc - location)
     :precondition (and (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (isBound ?char2)  (isAvailable ?char1) 
-    (exists (?sus - character) (or (not (atLoc ?sus ?loc)) (isDead ?sus)))
+    (forall (?sus - character) (or (or (not (atLoc ?sus ?loc))  (not (isSus ?sus))) (isDead ?sus) )) 
     )
     :effect (and (not (isBound ?char2)) (isAvailable ?char2)
     (increase (total-cost) 1)

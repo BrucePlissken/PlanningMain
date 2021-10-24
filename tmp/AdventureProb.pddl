@@ -1,18 +1,24 @@
 (define (problem pff) (:domain ad)
 (:objects
     DudeAscii - player 
-    farmer girl bailiff lord lady priest cryptkeeper - npc
-    goblin - monster
-    farm town manor lair castle kingdom - location
+    farmer girl bailiff lord lady priest cryptkeeper grimmyTheGoblin - npc
+    town castle forrest - area
+    farm manor lair church keep - site
     goblinTracks - info
     dagger pole - weapon
     tonic - consumable
     goblinhead - trophy
 )
 (:init
-    (haveItem goblin tonic)
+    (inArea manor town)
+    (inArea farm town)
+    (inArea church town)
+    (inArea lair forrest)
+    (inArea keep castle)
+    (isMonster grimmyTheGoblin goblin)
+    (haveItem grimmyTheGoblin tonic)
     (onGround pole farm)
-    (atLoc lord castle)
+    (atLoc lord keep)
     (atLoc lady lair)
     (isSus lady)
     (atloc dudeascii town)
@@ -24,11 +30,11 @@
     (trackinfo goblintracks farm lair)
     (isUnknown lair)
     (isUnknown goblintracks)
-    (atloc goblin lair)
+    (atloc grimmyTheGoblin lair)
     (isbound girl)
-    (isSus goblin)
+    (isSus grimmyTheGoblin)
     (knowinfo farmer goblintracks)
-    (havebodypart goblin goblinhead)
+    (havebodypart grimmyTheGoblin goblinhead)
     (atloc bailiff manor)
     (haveItem lord dagger)
     (canCut dagger)
@@ -36,7 +42,7 @@
 
  (:goal 
     (and
-    (atLoc girl farm)
+    (haveItem bailiff goblinhead)
     )
 )
 (:metric minimize (total-cost))
