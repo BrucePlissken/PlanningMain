@@ -62,15 +62,15 @@ def savePlan(plan, fileName):
 
 #SimplePddlParser.changeGoal(prob, goal1)
 output = FDApi.rumBriber(FDApi.parameters, False)#.wait()
+
 if (os.path.exists(sasPlan)):
     printPlan(sasPlan)
     savePlan(sasPlan, tempPlan)
-
+    print("plan exists")
 else: 
     output = FDApi.rumBriber(FDApi.parameters, True)#.wait()
-    print ("plan failed")
+    print("plan failed")
     
-    exit()
 thing = True
 
 while (thing):

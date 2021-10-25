@@ -71,7 +71,7 @@ class ActionParser:
         while (n < i):
             kvpair = typs.partition("-")
             k = "-" + kvpair[2].partition("\n")[0]
-            v = kvpair[0].split()
+            v = kvpair[0].rpartition("\n")[2].split()
             result[k] = v
             typs = typs.partition(k)[2]
             n +=1
