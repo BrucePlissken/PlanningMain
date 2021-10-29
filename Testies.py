@@ -64,21 +64,25 @@ def savePlan(plan, fileName):
 output = FDApi.rumBriber(FDApi.parameters, False)#.wait()
 
 if (os.path.exists(sasPlan)):
-    printPlan(sasPlan)
     savePlan(sasPlan, tempPlan)
     print("plan exists")
+    thing = True
+    p = True
 else: 
     output = FDApi.rumBriber(FDApi.parameters, True)#.wait()
     print("plan failed")
-    
-thing = True
+    thing = False
+    p = False
 
 while (thing):
     thing = applyPlanAction(tempPlan, True)
 
 
-print(ap.state)
-os.remove(sasPlan)
+if p :
+    print()
+    printPlan(sasPlan)
+    print(ap.state.partition("init")[2])
+    os.remove(sasPlan)
 
 
 

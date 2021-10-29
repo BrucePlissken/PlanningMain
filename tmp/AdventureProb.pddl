@@ -43,7 +43,7 @@
 
  (:goal 
     (and
-    (atLoc girl farm)
+    (haveItem bailiff goblinhead)
     )
 )
 (:metric minimize (total-cost))
