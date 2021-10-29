@@ -59,26 +59,44 @@ def create_town(placeType, houses, shops, farms, inns, mainBuilding, name = ''):
     town.sublocations.reverse()
 
     return town
-    
+
+def populate(min = 1, max = 4):
+    number = random.randrange(min,max +1)
+    ppl = []
+    while (number > 0):
+        ppl.append(create_character())
+        number -=1
+    return ppl
+
 def create_village(name = '', main = -1):
     if main == -1:
         main = random.randrange(4,6)
     return create_town(0, random.randrange(3,6), random.randrange(0,3),random.randrange(3,7), random.randrange(0,2), main, name)
 
-def print_area(town):
-    print(town.name + ":")
+def print_area(town, plusppl = False):
+    print(town.name)
     for x in town.sublocations:
         print(x.name)
+        if (plusppl):
+            for y in x.ppl:
+                print(y.name)
     print()
 
+def fill_area(area):
+    for x in area.sublocations:
+        x.ppl = populate()
+
 town1 = create_village(main=5)
+fill_area(town1)
 town2 = create_village(main=4)
+fill_area(town2)
 town3 = create_village(main=5)
+fill_area(town3)
 forrest = create_area(4)
 
 print_area(town1)
 print_area(town2)
-print_area(town3)
+print_area(town3, True)
 print_area(forrest)
 
 #print (char.name + ', age: ' + str(char.age) + ', rank: ' + char.get_rank() + ', lives in: ' + char.home.name)

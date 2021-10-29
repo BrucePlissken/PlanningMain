@@ -35,7 +35,6 @@ def applyPlanAction(plan, writeChange = False):
         return False
     if (ap.applyAction(planAction[0])):
         #print("plan-step allowed")
-
         if(writeChange):
             openPlan = open(plan, "w")
             openPlan.write(planAction[2])            
