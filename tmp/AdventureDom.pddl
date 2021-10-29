@@ -1,11 +1,11 @@
 (define (domain ad)
-(:requirements :universal-preconditions :disjunctive-preconditions :quantified-preconditions)
+(:requirements :universal-preconditions :disjunctive-preconditions :quantified-preconditions :typing :equality :negative-preconditions :fluents :conditional-effects)
 (:types
     player npc - character
     area site - location
     consumable weapon trophy - item
     info
-    goblin creep vampire - monster
+    monster
 )
 
 (:predicates
@@ -23,7 +23,7 @@
     (knowInfo ?char - character ?inf - info)
     (haveBodyPart ?char - character ?bp - trophy)
     (canCut ?item - item)
-    (isMonster ?char - character ?typ - monster)
+    (isMonster ?char - character ?typ - monster ?inf - info)
     (inArea ?site - site ?area - area)
     (follows ?follower ?leader - character)
 )

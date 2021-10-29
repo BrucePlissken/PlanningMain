@@ -4,10 +4,11 @@
     farmer girl bailiff lord lady priest cryptkeeper grimmyTheGoblin - npc
     town castle forrest - area
     farm manor lair church keep - site
-    goblinTracks - info
+    goblinTracks grimmyIsAgoblin - info
     dagger pole - weapon
     tonic - consumable
     goblinhead - trophy
+    goblin creep vampire - monster
 )
 (:init
     (inArea manor town)
@@ -15,7 +16,7 @@
     (inArea church town)
     (inArea lair forrest)
     (inArea keep castle)
-    (isMonster grimmyTheGoblin goblin)
+    (isMonster grimmyTheGoblin goblin grimmyIsAgoblin)
     (haveItem grimmyTheGoblin tonic)
     (onGround pole farm)
     (atLoc lord keep)

@@ -41,3 +41,40 @@ class Consumable(Item):
 class Trophy(Item):
     def __init__(self, name):
         super().__init__(name)
+
+
+items = [
+    'stick',
+    'knife',
+    'poison',
+    'bread',
+]
+    
+sites = [
+    'house',
+    'farm',
+    'shop',
+    'inn',
+    'church',
+    'manor',
+    'keep',
+]
+
+areas = [
+    'village',
+    'town',
+    'city',
+    'castle',
+    'forrest',
+    'mountains'
+]
+
+#this needs a change, I think some sort of arbitrary integer
+caste = [
+    "serf",
+    "freeman",
+    "cleric",
+    "bailiff",
+    "duke",
+    'merchant'
+]
