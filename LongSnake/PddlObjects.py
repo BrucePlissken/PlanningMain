@@ -18,10 +18,10 @@ class Character:
     def __init__(self, name):
         self.name = name
         self.skills = []
-        self.status = []
-        self.known = []
+        self.knowledge = []
         self.inventory = []
         self.trophy = []
+        self.alive = True
 
 class Item:
     def __init__(self, name):
@@ -43,12 +43,13 @@ class Trophy(Item):
         super().__init__(name)
 
 
-items = [
-    'stick',
-    'knife',
-    'poison',
-    'bread',
-]
+items = { 
+    'stick' : 0,
+    'knife': 0,
+    'poison': 0,
+    'bread': 0,
+    'crusifix' : 0,
+}
     
 sites = [
     'house',
@@ -58,6 +59,9 @@ sites = [
     'church',
     'manor',
     'keep',
+    'lair',
+    'cellar',
+    'crypt'
 ]
 
 areas = [
