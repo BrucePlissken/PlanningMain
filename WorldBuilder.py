@@ -136,7 +136,7 @@ def dictify_area(area):
         for s in area.sublocations:
             sname = s.name
             if (s.ppl != []):
-                ppls = {"character" : []}    
+                ppls = {"npc" : []}    
                 for p in s.ppl:
                     pname = p.name
                     if (p.inventory != []):
@@ -153,7 +153,7 @@ def dictify_area(area):
                         pname = {pname : items}
                     ptemp = ppls["npc"]
                     ptemp.append(pname)
-                    ppls["character"] = ptemp
+                    ppls["npc"] = ptemp
                 sname = {sname : pname}
             stemp = sublocs["site"]
             stemp.append(sname)
