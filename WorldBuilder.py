@@ -147,8 +147,7 @@ def dictify_area(area):
                                 item = {item : i.properties}
                             itemp = items["item"]
                             itemp.append(item)
-                            items["item"] = itemp
-                            
+                            items["item"] = itemp   
                             print(items)
                         pname = {pname : items}
                     ptemp = ppls["npc"]
