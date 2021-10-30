@@ -1,5 +1,6 @@
 import json
 import random
+from random import choices
 #import LongSnake.Character
 #from LongSnake.Character import Character
 #import LongSnake.Place
@@ -77,14 +78,21 @@ def populate(min = 1, max = 4, item = False):
     while (number > 0):
         char = create_character()
         if (item) :
-            char.inventory.append(rndm_item())
+            it = rndm_item()
+            if (it != -1):
+                char.inventory.append(it)
         ppl.append(char)
         number -=1
     return ppl
 
 def rndm_item():
-    n = random.randrange(0,len(items))
-    return create_item(list(items.keys())[n])
+    numbers = [-1, 0, 1, 2, 3, 4]
+    weights = [0.5,0.3,0.2,0.01,0.2,0.2]
+
+    n = choices(numbers, weights)
+    if (n[0] == -1):
+        return -1
+    return create_item(list(items.keys())[n[0]])
 
 def populate_area(area, item = False):
     for x in area.sublocations:
@@ -105,6 +113,7 @@ def print_area(town, plusppl = False, plusinv = False):
                 if (plusinv):
                     for i in y.inventory:
                         print(i.name)
+                print()
     print()
 
 town1 = create_village(main=5)
