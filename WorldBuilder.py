@@ -129,5 +129,46 @@ print_area(town2)
 print_area(town3, True, True)
 print_area(forrest)
 
+def dictify_area(area):
+    aname = area.name
+    if(area.sublocations != []):
+        sublocs = {"site" : []}
+        for s in area.sublocations:
+            sname = s.name
+            if (s.ppl != []):
+                ppls = {"character" : []}    
+                for p in s.ppl:
+                    pname = p.name
+                    if (p.inventory != []):
+                        items = {"item" : []}
+                        for i in p.inventory:
+                            item = i.name
+                            if (i.properties != []):
+                                item = {item : i.properties}
+                            itemp = items["item"]
+                            itemp.append(item)
+                            items["item"] = itemp
+                            
+                            print(items)
+                        pname = {pname : items}
+                    ptemp = ppls["npc"]
+                    ptemp.append(pname)
+                    ppls["character"] = ptemp
+                sname = {sname : pname}
+            stemp = sublocs["site"]
+            stemp.append(sname)
+            sublocs["site"] = stemp
+        aname = {aname : sublocs}
+    print (aname)
+    return aname
+
 #print (char.name + ', age: ' + str(char.age) + ', rank: ' + char.get_rank() + ', lives in: ' + char.home.name)
 
+town1 = dictify_area(town1)
+town2 = dictify_area(town2)
+town3 = dictify_area(town3)
+
+world = [town1,town2,town3]
+
+with open('world.json', 'w') as fp:
+    json.dump(world, fp)
