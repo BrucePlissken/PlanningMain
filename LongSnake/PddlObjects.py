@@ -24,32 +24,23 @@ class Character:
         self.alive = True
 
 class Item:
-    def __init__(self, name):
+    def __init__(self, name, subtype = "item", properties = []):
         self.name = name
-        self.value = 0
-        self.properties = []
-
-class Weapon(Item):
-    def __init__(self, name):
-        super().__init__(name)
-
-class Consumable(Item):
-    def __init__(self, name):
-        super().__init__(name)
-        self.effect = []
+        self.subtype = subtype
+        self.properties = properties
 
 class Trophy(Item):
     def __init__(self, name):
         super().__init__(name)
 
 
-items = { 
-    'stick' : 0,
-    'knife': 0,
-    'poison': 0,
-    'bread': 0,
-    'crusifix' : 0,
-}
+prefabItems = [
+    ["dagger", "weapon", ["cancut"]],
+    ["stick", "weapon", []],
+    ["bread", "consumable", []],
+    ["crusifix", "item", []],
+    ["poison", "consumable", ["poisonuos"]]
+]
     
 sites = [
     'house',

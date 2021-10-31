@@ -33,18 +33,6 @@ def create_site(number, building, parent):
         return Site("_"+sites[building]+"_"+str(number), parent.name)
     return Site("_"+sites[building], parent.name)
     
-def create_item(name):
-    number = 0
-    if (items.__contains__(name)):
-        number = items[name] +1
-        items[name] = number
-    if (number != 0):
-        name = name+"_"+str(number)
-    result = Item(name)
-    if (name == 'knife'):
-        result.properties.append("canCut")
-    return result
-
 def create_forrest(number):
     return Area("forrest_" + str(number))
 
@@ -86,13 +74,14 @@ def populate(min = 1, max = 4, item = False):
     return ppl
 
 def rndm_item():
-    numbers = [-1, 0, 1, 2, 3, 4]
-    weights = [0.5,0.3,0.2,0.01,0.2,0.2]
+    numbers = [0, 1, 2, 3, 4]
+    weights = [0.2,0.2,0.2,0.2,0.01]
 
     n = choices(numbers, weights)
-    if (n[0] == -1):
-        return -1
-    return create_item(list(items.keys())[n[0]])
+
+    item = prefabItems[n[0]]
+    result = Item(item[0], item[1], item[2])
+    return result
 
 def populate_area(area, item = False):
     for x in area.sublocations:
@@ -129,6 +118,7 @@ print_area(town2)
 print_area(town3, True, True)
 print_area(forrest)
 
+"""
 def dictify_area(area):
     aname = area.name
     if(area.sublocations != []):
@@ -136,38 +126,85 @@ def dictify_area(area):
         for s in area.sublocations:
             sname = s.name
             if (s.ppl != []):
-                ppls = {"npc" : []}    
+                ppls = {"ppl" : []}    
                 for p in s.ppl:
                     pname = p.name
                     if (p.inventory != []):
-                        items = {"item" : []}
+                        items = {"inventory" : []}
                         for i in p.inventory:
                             item = i.name
                             if (i.properties != []):
                                 item = {item : i.properties}
-                            itemp = items["item"]
+                            itemp = items["inventory"]
                             itemp.append(item)
-                            items["item"] = itemp   
-                            print(items)
+                            items["inventory"] = itemp   
                         pname = {pname : items}
-                    ptemp = ppls["npc"]
+                    ptemp = ppls["ppl"]
                     ptemp.append(pname)
-                    ppls["npc"] = ptemp
-                sname = {sname : pname}
+                    ppls["ppl"] = ptemp
+                sname = {sname : ppls}
             stemp = sublocs["site"]
             stemp.append(sname)
             sublocs["site"] = stemp
         aname = {aname : sublocs}
-    print (aname)
     return aname
+"""
+
+def dictify_area(area):
+    result = area.__dict__
+
+    items = []
+    for i in area.items:
+        inventory.append(i.__dict__)
+    result["items"] = items
+
+    ppl = []
+    for p in area.ppl:
+        ppl.append(dictify_character(p))
+    result["ppl"] = ppl
+    
+    sublocations = []
+    for s in area.sublocations:
+        sublocations.append(dictify_site(s))
+    result["sublocations"] = sublocations
+
+    return result
+
+def dictify_site(site):
+    result = site.__dict__
+    
+    items = []
+    for i in site.items:
+        items.append(i.__dict__)
+    result["items"] = items
+
+    ppl = []
+    for p in site.ppl:
+        ppl.append(dictify_character(p))
+    result["ppl"] = ppl
+    
+    return result
 
 #print (char.name + ', age: ' + str(char.age) + ', rank: ' + char.get_rank() + ', lives in: ' + char.home.name)
+def dictify_character(character):
+    inventory = []
+    for i in character.inventory:
+        inventory.append(i.__dict__)
+   
+    result = character.__dict__
+    result["inventory"] = inventory
+   
+    return result
+
 
 town1 = dictify_area(town1)
 town2 = dictify_area(town2)
 town3 = dictify_area(town3)
 
-world = [town1,town2,town3]
+world = {"area" : [town1,town2,town3]}
+
+print(town1)
+
 
 with open('world.json', 'w') as fp:
     json.dump(world, fp)
