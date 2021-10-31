@@ -155,7 +155,7 @@ def dictify_area(area):
 
     items = []
     for i in area.items:
-        inventory.append(i.__dict__)
+        items.append(i.__dict__)
     result["items"] = items
 
     ppl = []
