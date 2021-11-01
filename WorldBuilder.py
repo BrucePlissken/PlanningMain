@@ -1,11 +1,7 @@
 import json
 import random
 from random import choices
-#import LongSnake.Character
-#from LongSnake.Character import Character
-#import LongSnake.Place
-#from LongSnake.Place import Place, Building
-#import LongSnake.PddlObjects
+
 from LongSnake.PddlObjects import *
 
 data = json.load(open('LongSnake/Names.json','r'))
@@ -105,51 +101,6 @@ def print_area(town, plusppl = False, plusinv = False):
                 print()
     print()
 
-town1 = create_village(main=5)
-populate_area(town1, True)
-town2 = create_village(main=4)
-populate_area(town2, True)
-town3 = create_village(main=5)
-populate_area(town3, True)
-forrest = create_area(4)
-
-print_area(town1)
-print_area(town2)
-print_area(town3, True, True)
-print_area(forrest)
-
-"""
-def dictify_area(area):
-    aname = area.name
-    if(area.sublocations != []):
-        sublocs = {"site" : []}
-        for s in area.sublocations:
-            sname = s.name
-            if (s.ppl != []):
-                ppls = {"ppl" : []}    
-                for p in s.ppl:
-                    pname = p.name
-                    if (p.inventory != []):
-                        items = {"inventory" : []}
-                        for i in p.inventory:
-                            item = i.name
-                            if (i.properties != []):
-                                item = {item : i.properties}
-                            itemp = items["inventory"]
-                            itemp.append(item)
-                            items["inventory"] = itemp   
-                        pname = {pname : items}
-                    ptemp = ppls["ppl"]
-                    ptemp.append(pname)
-                    ppls["ppl"] = ptemp
-                sname = {sname : ppls}
-            stemp = sublocs["site"]
-            stemp.append(sname)
-            sublocs["site"] = stemp
-        aname = {aname : sublocs}
-    return aname
-"""
-
 def dictify_area(area):
     result = area.__dict__
 
@@ -197,13 +148,26 @@ def dictify_character(character):
     return result
 
 
+town1 = create_village(main=5)
+populate_area(town1, True)
+town2 = create_village(main=4)
+populate_area(town2, True)
+town3 = create_village(main=5)
+populate_area(town3, True)
+forrest = create_area(4)
+"""
+print_area(town1)
+print_area(town2)
+print_area(town3, True, True)
+print_area(forrest)
+"""
 town1 = dictify_area(town1)
 town2 = dictify_area(town2)
 town3 = dictify_area(town3)
 
 world = {"area" : [town1,town2,town3]}
 
-print(town1)
+#print(town1)
 
 
 with open('world.json', 'w') as fp:
