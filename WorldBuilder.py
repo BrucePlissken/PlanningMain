@@ -8,7 +8,7 @@ data = json.load(open('LongSnake/Names.json','r'))
 nameList = data['names']
 townNameList = data['towns']
 seed1 = "treefitty"
-seed2 = "the blood in my urine tastes too much like iron"
+seed2 = "the blood in my urine tastes too much of iron"
 random.seed(seed2)
 
 def create_character(name = ''):
