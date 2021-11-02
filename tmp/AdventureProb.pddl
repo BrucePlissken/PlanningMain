@@ -41,7 +41,7 @@
     (canCut dagger)
 )
 
- (:goal 
+(:goal 
     (and
     (atLoc girl farm)
     )
