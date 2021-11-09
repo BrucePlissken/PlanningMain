@@ -44,7 +44,7 @@ class PddlProblemWriter:
 
     def relate_area(self, area):
         name = area["name"]
-        for i in area["items"]:
+        for i in area["things"]:
             pass
         for sl in area["sublocations"]:
             self.initial.append("(inArea " + sl["name"] + " "+ name+")")
@@ -67,8 +67,8 @@ class PddlProblemWriter:
             self.initial.append("(knowInfo " +name +" "+ k+ ")")
 
         for i in character["inventory"]:
-            self.initial.append("(haveItem " + name + " " + i["name"]+ ")")
-            self.relate_item(i)
+            self.initial.append("(havething " + name + " " + i["name"]+ ")")
+            self.relate_thing(i)
 
         for t in character["trophy"]:
             self.objects["trophy"].append(t["name"])
@@ -77,19 +77,21 @@ class PddlProblemWriter:
         if (character["alive"] == False):
             self.initial.append("(isDead " + name + ")")
 
-    def relate_item(self, item):
-        name = item["name"]
-        if (self.objects[item["subtype"]].count(name) < 1):
-            self.objects[item["subtype"]].append(name)
-            for p in item["properties"]:
+    def relate_thing(self, thing):
+        name = thing["name"]
+        if (self.objects[thing["subtype"]].count(name) < 1):
+            self.objects[thing["subtype"]].append(name)
+            for p in thing["properties"]:
                 self.initial.append("(" + p + " " + name + ")")
 
-    def create_problem_file(self, name):
-        file = open(name + ".pddl", "w")
+    def create_problem_file(self, name, goals = ""):
+        path = "tmp/"+name + ".pddl"
+        
+        file = open(path, "w")
         file.write(self.make_header(name))
         file.close()
 
-        file = open(name + ".pddl", "a")
+        file = open(path, "a")
         file.write("(:objects\n")
         keys = list(self.objects.keys())
         for k in keys:
@@ -102,14 +104,14 @@ class PddlProblemWriter:
         file.write(")\n(:init\n")
         for p in self.initial:
             file.write("    " +p+"\n")
-        file.write(")\n)")
-
+        file.write(")\n(:goal\n    (and\n    "+goals+"\n    )\n)\n")
+        #file.write("(:metric minimize (total-cost))\n")
+        file.write(")")
+        file.close
 
 
 ppw = PddlProblemWriter("tmp/AdventureDom.pddl")
-header = ppw.make_header("hepHey!")
 
-print(header)
 data = json.load(open('world.json','r'))
 
 k = ppw.objectify(data)

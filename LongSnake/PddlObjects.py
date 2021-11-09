@@ -1,7 +1,7 @@
 class Location:
     def __init__(self, name):
         self.name = name
-        self.items = []
+        self.things = []
         self.ppl = []
 
 class Area(Location):
@@ -34,7 +34,7 @@ class Trophy(Item):
         super().__init__(name)
 
 
-prefabItems = [
+prefabthings = [
     ["dagger", "weapon", ["cancut"]],
     ["stick", "weapon", []],
     ["bread", "consumable", []],

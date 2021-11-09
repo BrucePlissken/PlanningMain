@@ -1,10 +1,11 @@
 import SimplePddlParser
 from SimplePddlParser import *
 import FDApi
-from FDApi import*
+from FDApi import FD_Api
+import os
 
 dom = "tmp/AdventureDom.pddl"
-prob = "tmp/AdventureProb.pddl"
+prob = "tmp/experiments.pddl"#AdventureProb.pddl"
 sasPlan = "..\sas_plan"
 tempPlan = "tempPlan.txt"
 
@@ -60,7 +61,11 @@ def savePlan(plan, fileName):
 
 
 #SimplePddlParser.changeGoal(prob, goal1)
-output = FDApi.rumBriber(FDApi.parameters, False)#.wait()
+fdapi = FD_Api("AdventureDom.pddl", "experiments.pddl")
+
+output = fdapi.rumBriber(fdapi.parameters, False)#.wait()
+
+
 
 if (os.path.exists(sasPlan)):
     savePlan(sasPlan, tempPlan)
@@ -68,7 +73,7 @@ if (os.path.exists(sasPlan)):
     thing = True
     p = True
 else: 
-    output = FDApi.rumBriber(FDApi.parameters, True)#.wait()
+    output = fdapi.rumBriber(fdapi.parameters, True)#.wait()
     print("plan failed")
     thing = False
     p = False

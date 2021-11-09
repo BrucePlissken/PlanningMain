@@ -3,7 +3,7 @@
 (:types
     player npc - character
     area site - location
-    consumable weapon trophy - item
+    consumable weapon trophy item - thing
     info
     monster
 )
@@ -11,18 +11,18 @@
 (:predicates
     (hasTrack ?loc - location)
     (canTrack ?char - character)
-    (haveItem ?char - character ?i - item)
+    (havething ?char - character ?i - thing)
     (atLoc ?char - character ?loc - location)
     (trackInfo ?inf - info ?loc - location ?lair - location)
     (isSus ?char - character)
-    (onGround ?i - item ?loc - location)
+    (onGround ?i - thing ?loc - location)
     (isAvailable ?char - character)
     (isDead ?char - character)
     (isUnknown ?omni)
     (isBound ?char - character)
     (knowInfo ?char - character ?inf - info)
     (haveBodyPart ?char - character ?bp - trophy)
-    (canCut ?item - item)
+    (canCut ?thing - thing)
     (isMonster ?char - character ?typ - monster ?inf - info)
     (inArea ?site - site ?area - area)
     (follows ?follower ?leader - character)
@@ -57,7 +57,7 @@
     :parameters (?char1 - player ?char2 - character ?loc - location)
     :precondition (and (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (isSus ?char2) (isAvailable ?char1) (not (= ?char1 ?char2)))
     :effect (and (isDead ?char2) (not (isSus ?char2))
-    (forall (?i - item) (when (haveItem ?char2 ?i) (and (onGround ?i ?loc) (not (haveItem ?char2 ?i)))))
+    (forall (?i - thing) (when (havething ?char2 ?i) (and (onGround ?i ?loc) (not (havething ?char2 ?i)))))
     (increase (total-cost) 2)
     )
 )
@@ -72,9 +72,9 @@
     )
 )
 (:action pickup
-    :parameters (?char - character ?i - item ?loc - location)
+    :parameters (?char - character ?i - thing ?loc - location)
     :precondition (and (onGround ?i ?loc) (atLoc ?char ?loc) (isAvailable ?char))
-    :effect (and (haveItem ?char ?i) (not (onGround ?i ?loc))
+    :effect (and (havething ?char ?i) (not (onGround ?i ?loc))
     (increase (total-cost) 1)
     )
 )
@@ -95,15 +95,15 @@
     )
 )
 (:action give
-    :parameters (?char1 ?char2 - character ?i - item ?loc - location)
-    :precondition (and (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (haveItem ?char1 ?i) (not (isDead ?char1)) (not (isSus ?char1)) (not (= ?char1 ?char2))) 
-    :effect (and (haveItem ?char2 ?i) (not (haveItem ?char1 ?i))
+    :parameters (?char1 ?char2 - character ?i - thing ?loc - location)
+    :precondition (and (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (havething ?char1 ?i) (not (isDead ?char1)) (not (isSus ?char1)) (not (= ?char1 ?char2))) 
+    :effect (and (havething ?char2 ?i) (not (havething ?char1 ?i))
     (increase (total-cost) 2)
     )
 )
 (:action dismember
-    :parameters (?char1 ?char2 - character ?bp - trophy ?loc - location ?blad - item)
-    :precondition (and (atLoc ?char1 ?loc) (haveItem ?char1 ?blad) (canCut ?blad) (atLoc ?char2 ?loc) (isAvailable ?char1) (not (= ?char1 ?char2)) (isDead ?char2) (haveBodyPart ?char2 ?bp))
+    :parameters (?char1 ?char2 - character ?bp - trophy ?loc - location ?blad - thing)
+    :precondition (and (atLoc ?char1 ?loc) (havething ?char1 ?blad) (canCut ?blad) (atLoc ?char2 ?loc) (isAvailable ?char1) (not (= ?char1 ?char2)) (isDead ?char2) (haveBodyPart ?char2 ?bp))
     :effect (and (onGround ?bp ?loc) (not (haveBodyPart ?char2 ?bp))
     (increase (total-cost) 1)
     )

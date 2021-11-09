@@ -56,32 +56,32 @@ def create_town(placeType, houses, shops, farms, inns, mainBuilding, name = ''):
 
     return town
 
-def populate(min = 1, max = 4, item = False):
+def populate(min = 0, max = 4, thing = False):
     number = random.randrange(min,max +1)
     ppl = []
     while (number > 0):
         char = create_character()
-        if (item) :
-            it = rndm_item()
+        if (thing) :
+            it = rndm_thing()
             if (it != -1):
                 char.inventory.append(it)
         ppl.append(char)
         number -=1
     return ppl
 
-def rndm_item():
+def rndm_thing():
     numbers = [0, 1, 2, 3, 4]
-    weights = [0.2,0.2,0.2,0.2,0.01]
+    weights = [2,0.2,0.2,0.2,0.01]
 
     n = choices(numbers, weights)
 
-    item = prefabItems[n[0]]
-    result = Item(item[0], item[1], item[2])
+    thing = prefabthings[n[0]]
+    result = Item(thing[0], thing[1], thing[2])
     return result
 
-def populate_area(area, item = False):
+def populate_area(area, thing = False):
     for x in area.sublocations:
-        x.ppl = populate(item = item)
+        x.ppl = populate(thing = thing)
 
 def create_village(name = '', main = -1):
     if main == -1:
@@ -104,10 +104,10 @@ def print_area(town, plusppl = False, plusinv = False):
 def dictify_area(area):
     result = area.__dict__
 
-    items = []
-    for i in area.items:
-        items.append(i.__dict__)
-    result["items"] = items
+    things = []
+    for i in area.things:
+        things.append(i.__dict__)
+    result["things"] = things
 
     ppl = []
     for p in area.ppl:
@@ -124,10 +124,10 @@ def dictify_area(area):
 def dictify_site(site):
     result = site.__dict__
     
-    items = []
-    for i in site.items:
-        items.append(i.__dict__)
-    result["items"] = items
+    things = []
+    for i in site.things:
+        things.append(i.__dict__)
+    result["things"] = things
 
     ppl = []
     for p in site.ppl:

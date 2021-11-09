@@ -17,7 +17,7 @@
     (inArea lair forrest)
     (inArea keep castle)
     (isMonster grimmyTheGoblin goblin grimmyIsAgoblin)
-    (haveItem grimmyTheGoblin tonic)
+    (havething grimmyTheGoblin tonic)
     (onGround pole farm)
     (atLoc lord keep)
     (atLoc lady lair)
@@ -37,7 +37,7 @@
     (knowinfo farmer goblintracks)
     (havebodypart grimmyTheGoblin goblinhead)
     (atloc bailiff manor)
-    (haveItem lord dagger)
+    (havething lord dagger)
     (canCut dagger)
 )
 
