@@ -122,7 +122,7 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
         if "exists" in expressions:
             typ = expressions["exists"][0].partition(" -")
             typs = pddlProblem.partition("-" + typ[2])[0].rpartition("\n")[2].split()
-            #print("exists")
+           #print("exists")
             for x in typs:
                 pamphlet = lookUpbook
                 #print(typ[0] +" "+ x)
@@ -149,7 +149,7 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
                         for x in temp:
                             typs.append(x)
             
-            #print("forall")
+           #print("forall")
             #print(typ)
             #print(typs)
             for x in typs:
@@ -168,19 +168,21 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
                 #print(acc)
 
         if "when" in expressions:
+            
 
             condition = applyFunction(expressions["when"][0], lookUpbook, func, pddlProblem, acc, nonOp)
             #print(condition)
             condition = applyFunction(condition, lookUpbook, precondCheck, pddlProblem, True, andOp)
             #print(condition)
-            #print("when")
+           #print("when")
             #print(expressions["when"][0])
             #print(expressions["when"][1])
             #print(acc)
             if (condition):
-                    #print("just one")
+                    #cannot handle multiple statements at this point
                     acc = applyFunction(expressions["when"][1], lookUpbook, func, pddlProblem, acc, andOp)
-                    
+                   #print("just one")
+                   #print(expressions["when"][1])
                     #print(acc)
 
         return acc
@@ -253,7 +255,6 @@ def precondCheck(expression, lookUpbook, operator, pddlProblem, acc):
     #if (number != 0):
     #    return True
     #print("precond check")
-    #print(expression)
     #print(lookUpbook)
     #print("precond check")
     
@@ -264,7 +265,10 @@ def precondCheck(expression, lookUpbook, operator, pddlProblem, acc):
     #print(expression)
     #print(pddlProblem)
     result = operator(result,  acc)
-    #print(result)
+    #if (not result & acc):
+       #print(expression)
+       #print(operator)
+       #print(result)
     return result 
 
 def applyEffect(expression, lookUpbook, operator, pddlProblem, acc):
@@ -281,7 +285,7 @@ def applyEffect(expression, lookUpbook, operator, pddlProblem, acc):
         acc = acc.replace(parenthesis, "")
     elif (operator == ifOp):
         print("ifop")
-    #    print(acc)
+        #print(acc)
         
     else: 
         acc = acc + parenthesis

@@ -97,7 +97,7 @@ class ActionParser:
             self.state = applyFunction(action.effect, lookUpBook, applyEffect, self.state, self.state, andOp)
             return True
         print(action.precond)
-        print("move NOT "+ action.name + " allowed")
+        print("action "+ action.name + " NOT allowed")
         return False
 
         """
@@ -199,7 +199,7 @@ class ActionParser:
         file.close()
         tmpfirst = tmp.partition("init")[0]+"init"
         tmplast = tmp.partition("(:goal")[2]
-        result = tmpfirst + self.state + ")\n\n (:goal" + tmplast
+        result = tmpfirst + self.state.partition("init")[2] + ")\n\n(:goal" + tmplast
         file = open(self.prob, "w")
         file.write(result)
         file.close()
@@ -225,7 +225,7 @@ def changeGoal(prob, newGoal):
     tmp = file.read()
     file.close()
     tmp = tmp.partition("(:goal")
-    result = tmp[0] + tmp[1] + newGoal + "\n  )\n)"
+    result = tmp[0] + tmp[1] + "\n    " + newGoal + "\n  )\n)"
     file = open(prob, "w")
     file.write(result)
     file.close()

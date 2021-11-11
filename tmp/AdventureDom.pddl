@@ -26,6 +26,9 @@
     (isMonster ?char - character ?typ - monster ?inf - info)
     (inArea ?site - site ?area - area)
     (follows ?follower ?leader - character)
+    (isMissing ?char - character)
+    (isLair ?char - character ?loc - location)
+    (isDestination ?char - character ?loc - location)
 )
 (:functions
     (total-cost)
@@ -34,7 +37,7 @@
     :parameters (?char - player ?from - location ?to - site ?area - area)
     :precondition (and (atLoc ?char ?from) (not (isUnknown ?to)) (isAvailable ?char) (inArea ?to ?area) (or (= ?from ?area) (inArea ?from ?area)) )
     :effect (and (not (atLoc ?char ?from)) (atLoc ?char ?to)
-    (forall (?follower - character) (when (follows ?follower ?char) (and (not (atLoc ?follower ?from)) (atLoc ?follower ?to)) ))
+    (forall (?follower - character) (when (follows ?follower ?char) (and (atLoc ?follower ?to) (not (atLoc ?follower ?from))) ))
     (increase (total-cost) 2)
     )
 )
@@ -42,7 +45,7 @@
     :parameters (?char - player ?from - location ?to - area)
     :precondition (and (atLoc ?char ?from) (not (isUnknown ?to)) (isAvailable ?char))
     :effect (and (not (atLoc ?char ?from)) (atLoc ?char ?to)
-    (forall (?follower - character) (when (follows ?follower ?char) (and (not (atLoc ?follower ?from)) (atLoc ?follower ?to)) ))
+    (forall (?follower - character) (when (follows ?follower ?char) (and (atLoc ?follower ?to) (not (atLoc ?follower ?from))) ))
     (increase (total-cost) 2)
     )
 )
@@ -108,4 +111,17 @@
     (increase (total-cost) 1)
     )
 )
+(:action kidnap
+    :parameters (?mon - character ?vict - npc ?from ?to - location ?typ - monster ?inf - info)
+    :precondition (and (isMonster ?mon ?typ ?inf) (not (isMissing ?vict)) (not (isDead ?mon)) (atLoc ?vict ?from) (isLair ?mon ?to))
+    :effect (and (atLoc ?vict ?to) (isMissing ?vict) (isDestination ?vict ?from) (isBound ?vict) (not (atLoc ?vict ?from)) (knowInfo ?vict ?inf)
+    )
+)
+(:action enscort
+    :parameters (?char1 ?char2 - character ?loc - location)
+    :precondition (and (isDestination ?char2 ?loc) (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (follows ?char2 ?char1) (not (= ?char1 ?char2)))
+    :effect (and (not (isMissing ?char2)) (not (follows ?char2 ?char1)) (not (isDestination ?char2 ?loc)))
+)
+
+
 )

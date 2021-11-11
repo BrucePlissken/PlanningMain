@@ -4,16 +4,28 @@ import FDApi
 from FDApi import FD_Api
 import os
 
-dom = "tmp/AdventureDom.pddl"
-prob = "tmp/experiments.pddl"#AdventureProb.pddl"
+dom = "AdventureDom.pddl"
+#prob = "experiments.pddl"
+#prob = "AdventureProb.pddl"
+prob1 = "AdventureProbCopy.pddl"
+
+prob = "AdventureProbCopycopy.pddl"
+
 sasPlan = "..\sas_plan"
 tempPlan = "tempPlan.txt"
+tmpDir = "tmp/"
 
 goal1 = "(and\n        (atball ball1 roomb)\n        (atball ball2 roomb)\n        (atball ball3 roomb)\n        (atball ball4 roomb)\n        )"
 goal2 = "(and\n        (atball ball1 rooma)\n        (atball ball2 rooma)\n        (atball ball3 rooma)\n        (atball ball4 rooma)\n        )"
 
-ap = ActionParser(dom,prob)
 
+goal3 = "(isMissing girl)"
+goal4 = "(atLoc girl farm)"
+goal5 = "(not (isMissing girl))"
+
+ap = ActionParser(tmpDir+dom,tmpDir+prob)
+changeGoal(tmpDir+prob, goal3)
+fdapi = FD_Api(dom, prob)
 def applyPlan(plan, writeChange = False):
     openPlan = open(plan)
     while (True):
@@ -61,34 +73,45 @@ def savePlan(plan, fileName):
 
 
 #SimplePddlParser.changeGoal(prob, goal1)
-fdapi = FD_Api("AdventureDom.pddl", "experiments.pddl")
+def runPlanner():
 
-output = fdapi.rumBriber(fdapi.parameters, False)#.wait()
-
-
-
-if (os.path.exists(sasPlan)):
-    savePlan(sasPlan, tempPlan)
-    print("plan exists")
-    thing = True
-    p = True
-else: 
-    output = fdapi.rumBriber(fdapi.parameters, True)#.wait()
-    print("plan failed")
-    thing = False
-    p = False
-
-while (thing):
-    thing = applyPlanAction(tempPlan, True)
+    output = fdapi.rumBriber(fdapi.parameters, False)#.wait()
 
 
-if p :
-    print()
-    printPlan(sasPlan)
-    print(ap.state.partition("init")[2])
-    os.remove(sasPlan)
+
+    if (os.path.exists(sasPlan)):
+        savePlan(sasPlan, tempPlan)
+        print("plan exists")
+        thing = True
+        p = True
+    else: 
+        output = fdapi.rumBriber(fdapi.parameters, True)#.wait()
+        print("plan failed")
+        thing = False
+        p = False
+
+    while (thing):
+        thing = applyPlanAction(tempPlan, True)
 
 
+    if p:
+        print()
+        printPlan(sasPlan)
+        print(ap.state.partition("init")[2])
+        os.remove(sasPlan)
+        return True
+
+    return False
+
+
+if (runPlanner()):
+    ap.writeChange()
+    changeGoal(tmpDir+prob, goal5)
+    if (runPlanner()):
+        ap.writeChange()    
+
+
+savePlan(tmpDir+prob1, tmpDir+prob)
 
 """
 ap.ppActions()
