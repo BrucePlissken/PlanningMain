@@ -9,26 +9,25 @@
 )
 
 (:predicates
-    (hasTrack ?loc - location)
+    (atLoc ?char - character ?loc - location)
+    (onGround ?i - thing ?loc - location)
     (canTrack ?char - character)
     (havething ?char - character ?i - thing)
-    (atLoc ?char - character ?loc - location)
+    (inArea ?site - site ?area - area)
     (trackInfo ?inf - info ?loc - location ?lair - location)
     (isSus ?char - character)
-    (onGround ?i - thing ?loc - location)
     (isAvailable ?char - character)
     (isDead ?char - character)
-    (isUnknown ?omni)
     (isBound ?char - character)
     (knowInfo ?char - character ?inf - info)
     (haveBodyPart ?char - character ?bp - trophy)
-    (canCut ?thing - thing)
-    (isMonster ?char - character ?typ - monster ?inf - info)
-    (inArea ?site - site ?area - area)
     (follows ?follower ?leader - character)
+    (isMonster ?char - character ?typ - monster ?inf - info)
     (isMissing ?char - character)
     (isLair ?char - character ?loc - location)
     (isDestination ?char - character ?loc - location)
+    (canCut ?thing - thing)
+    (isUnknown ?omni)
 )
 (:functions
     (total-cost)
@@ -49,9 +48,9 @@
     (increase (total-cost) 2)
     )
 )
-(:action investigate
+(:action investigatetrack
     :parameters (?char - character ?inf - info ?loc ?lair - location)
-    :precondition (and (atLoc ?char ?loc) (canTrack ?char) (hasTrack ?loc) (trackInfo ?inf ?loc ?lair) (isAvailable ?char) (not (isUnknown ?inf)))
+    :precondition (and (atLoc ?char ?loc) (canTrack ?char) (trackInfo ?inf ?loc ?lair) (isAvailable ?char) (not (isUnknown ?inf)))
     :effect (and (not (isUnknown ?lair))
     (increase (total-cost) 2)
     )
@@ -111,16 +110,17 @@
     (increase (total-cost) 1)
     )
 )
+(:action endscort
+    :parameters (?char1 ?char2 - character ?loc - location)
+    :precondition (and (isDestination ?char2 ?loc) (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (follows ?char2 ?char1) (not (= ?char1 ?char2)))
+    :effect (and (not (isMissing ?char2)) (not (follows ?char2 ?char1)) (not (isDestination ?char2 ?loc))
+    )
+)
 (:action kidnap
     :parameters (?mon - character ?vict - npc ?from ?to - location ?typ - monster ?inf - info)
     :precondition (and (isMonster ?mon ?typ ?inf) (not (isMissing ?vict)) (not (isDead ?mon)) (atLoc ?vict ?from) (isLair ?mon ?to))
     :effect (and (atLoc ?vict ?to) (isMissing ?vict) (isDestination ?vict ?from) (isBound ?vict) (not (atLoc ?vict ?from)) (knowInfo ?vict ?inf)
     )
-)
-(:action enscort
-    :parameters (?char1 ?char2 - character ?loc - location)
-    :precondition (and (isDestination ?char2 ?loc) (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (follows ?char2 ?char1) (not (= ?char1 ?char2)))
-    :effect (and (not (isMissing ?char2)) (not (follows ?char2 ?char1)) (not (isDestination ?char2 ?loc)))
 )
 
 
