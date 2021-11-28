@@ -1,11 +1,10 @@
-(define (domain ad)
-(:requirements :universal-preconditions :disjunctive-preconditions :quantified-preconditions :typing :equality :negative-preconditions  )
+(define (domain adc)
+(:requirements :universal-preconditions :disjunctive-preconditions :quantified-preconditions :typing :equality :negative-preconditions)
 (:types
+    concept monster location character - info
     player npc - character
     area site - location
     consumable weapon trophy item - thing
-    info
-    monster
 )
 
 (:predicates
@@ -26,11 +25,12 @@
     (isLair ?char - character ?loc - location)
     (isDestination ?char - character ?loc - location)
     (canCut ?thing - thing)
-    (knowInfo ?char - character ?omni)
-    (isUnknown ?omni)
+    (knowInfo ?char - character ?omni - info)
+    (isUnknown ?omni - info)
 )
 (:functions
-    (total-cost)
+    (total-cost) - number
+    (entropy) - number
 )
 (:action move
     :parameters (?char - player ?from - location ?to - site ?area - area)
@@ -45,7 +45,7 @@
     :precondition (and (atLoc ?char ?from) (not (isUnknown ?to)) (isAvailable ?char))
     :effect (and (not (atLoc ?char ?from)) (atLoc ?char ?to)
     (forall (?follower - character) (when (follows ?follower ?char) (and (atLoc ?follower ?to) (not (atLoc ?follower ?from))) ))
-    (increase (total-cost) 2)
+    (increase (total-cost) 6)
     )
 )
 (:action investigatetrack
@@ -55,10 +55,10 @@
     (increase (total-cost) 2)
     )
 )
-(:action attack
+(:action slay
     :parameters (?char1 - player ?char2 - character ?loc - location)
     :precondition (and (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (or (isSus ?char2) (and (isMonster ?char2 ?typ ?inf) (not (isUnknown ?inf)))) (isAvailable ?char1) (not (= ?char1 ?char2)))
-    :effect (and (isDead ?char2) (not (isSus ?char2))
+    :effect (and (isDead ?char2)
     (forall (?i - thing) (when (havething ?char2 ?i) (and (onGround ?i ?loc) (not (havething ?char2 ?i)))))
     (increase (total-cost) 2)
     )
@@ -96,12 +96,13 @@
     (increase (total-cost) 1)
     )
 )
-(:action askloc
-    :parameters (?char1 - player ?char2 - character ?loc - location ?inf - location)
-    :precondition (and (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (knowInfo ?char2 ?inf) (not (= ?char1 ?char2)) (not (isDead ?char1)) (not (isDead ?char2)))
-    :effect (and (not (isUnknown ?inf))
+(:action accuse
+    :parameters (?char1 - player ?char2 - npc ?loc - location ?inf - info ?typ - monster)
+    :precondition (and (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (isMonster ?char2 ?typ ?inf) (not (isUnknown ?inf)) )
+    :effect (and (isSus ?char2)
     )
 )
+
 (:action give
     :parameters (?char1 ?char2 - character ?i - thing ?loc - location)
     :precondition (and (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (havething ?char1 ?i) (not (isDead ?char1)) (not (isSus ?char1)) (not (= ?char1 ?char2))) 
@@ -110,8 +111,8 @@
     )
 )
 (:action dismember
-    :parameters (?char1 ?char2 - character ?bp - trophy ?loc - location ?blad - thing)
-    :precondition (and (atLoc ?char1 ?loc) (havething ?char1 ?blad) (canCut ?blad) (atLoc ?char2 ?loc) (isAvailable ?char1) (not (= ?char1 ?char2)) (isDead ?char2) (haveBodyPart ?char2 ?bp))
+    :parameters (?char1 - player ?char2 - npc ?bp - trophy ?loc - location ?blad - thing)
+    :precondition (and (atLoc ?char1 ?loc) (havething ?char1 ?blad) (canCut ?blad) (atLoc ?char2 ?loc) (isAvailable ?char1) (isDead ?char2) (haveBodyPart ?char2 ?bp))
     :effect (and (onGround ?bp ?loc) (not (haveBodyPart ?char2 ?bp))
     (increase (total-cost) 1)
     )
@@ -119,12 +120,13 @@
 (:action endscort
     :parameters (?char1 ?char2 - character ?loc - location)
     :precondition (and (isDestination ?char2 ?loc) (atLoc ?char1 ?loc) (atLoc ?char2 ?loc) (follows ?char2 ?char1) (not (= ?char1 ?char2)))
-    :effect (and (not (isMissing ?char2)) (not (follows ?char2 ?char1)) (not (isDestination ?char2 ?loc))
+    :effect (and (not (isMissing ?char2)) (not (follows ?char2 ?char1)) (not (isDestination ?char2 ?loc)) (not (isAvailable ?char2))
+    (increase (total-cost) 4)
     )
 )
 (:action kidnap
     :parameters (?mon - character ?vict - npc ?from ?to - location ?typ - monster ?inf - info)
-    :precondition (and (isMonster ?mon ?typ ?inf) (not (isMissing ?vict)) (not (isDead ?mon)) (atLoc ?vict ?from) (isLair ?mon ?to))
+    :precondition (and (isMonster ?mon ?typ ?inf) (not (isMissing ?vict)) (not (isDead ?mon)) (atLoc ?vict ?from) (isLair ?mon ?to) (not (= ?mon ?vict)))
     :effect (and (atLoc ?vict ?to) (isMissing ?vict) (isDestination ?vict ?from) (isBound ?vict) (not (atLoc ?vict ?from)) (knowInfo ?vict ?inf)
     (increase (total-cost) 15)
     )

@@ -4,7 +4,7 @@ import FDApi
 from FDApi import FD_Api
 import os
 
-dom = "AdventureDom.pddl"
+dom = "AdventureDomCopy.pddl"
 #prob = "experiments.pddl"
 #prob = "AdventureProb.pddl"
 prob1 = "AdventureProbCopy.pddl"
@@ -19,12 +19,14 @@ goal1 = "(and\n        (atball ball1 roomb)\n        (atball ball2 roomb)\n     
 goal2 = "(and\n        (atball ball1 rooma)\n        (atball ball2 rooma)\n        (atball ball3 rooma)\n        (atball ball4 rooma)\n        )"
 
 
-goal3 = "(isMissing girl)"
-goal4 = "(atLoc girl farm)"
-goal5 = "(not (isMissing girl))"
-
+goal3 = "(and (ismissing girl) (atloc girl lair))"
+goal4 = "(atLoc girl farm) ) (:metric minimize (total-cost)"
+goal5 = "(and (havething bailiff goblinhead) )) (:metric minimize (total-cost)"
+goal6 = "(and (havething bailiff goblinhead) (not (isMissing girl)) )) (:metric minimize (total-cost)"
+goal7 = "(and (havething bailiff vampireheart) (forall (?cha - npc) (not (ismissing ?cha)) ) )) (:metric minimize (total-cost)"
+goal8 = "(and (havething bailiff vampireheart) )) \n(:metric minimize (total-cost)"
 ap = ActionParser(tmpDir+dom,tmpDir+prob)
-changeGoal(tmpDir+prob, goal3)
+changeGoal(tmpDir+prob, goal5)
 fdapi = FD_Api(dom, prob)
 def applyPlan(plan, writeChange = False):
     openPlan = open(plan)
@@ -106,9 +108,9 @@ def runPlanner():
 
 if (runPlanner()):
     ap.writeChange()
-    changeGoal(tmpDir+prob, goal5)
-    if (runPlanner()):
-        ap.writeChange()    
+   # changeGoal(tmpDir+prob, goal5)
+    #if (runPlanner()):
+     #   ap.writeChange()    
 
 
 savePlan(tmpDir+prob1, tmpDir+prob)

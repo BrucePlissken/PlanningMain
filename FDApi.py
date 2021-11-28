@@ -34,15 +34,14 @@ class FD_Api:
             "--search",
             #"lazy_greedy([hff, hcea], preferred=[hff, hcea])"
             
-            "astar(lmcount(lm_rhw()))"
+            #"astar(lmcount(lm_rhw()))"
             #"astar(cegar())",
             #"--sas-file"
             #"astar(blind())"
 
             #"eager(epsilon_greedy(cegar()), verbosity=silent)"
 
-            # casual graph virker ikke so far fordi det er en heuristik og ikke en søge algoritme duh
-            # "cg(max_cache_size=1000000, transform=no_transform(), cache_estimates=true)"
+            "astar(cg(max_cache_size=1000000, transform=no_transform(), cache_estimates=true))"
             
             #"merge_and_shrink(transform=no_transform(), cache_estimates=true, merge_strategy, shrink_strategy, label_reduction=<none>, prune_unreachable_states=true, prune_irrelevant_states=true, max_states=-1, max_states_before_merge=-1, threshold_before_merge=-1, verbosity=normal, main_loop_max_time=infinity)"
 
