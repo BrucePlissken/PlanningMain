@@ -23,8 +23,8 @@ class ActionParser:
         self.pddltypes = self.mapTyps()
         print(self.pddltypes)
 
-    def parseAction(self, targetString):        
-        actionString = self.domain.partition(targetString)[2].partition("(:")[0]
+    def parseAction(self, name):        
+        actionString = self.domain.partition(name)[2].partition("(:")[0]
         if (actionString == ""):
             print("no such action")
 
@@ -33,7 +33,7 @@ class ActionParser:
         effe = parsePddlExpression(actionString.partition("effect")[2])
 
 
-        action = Claction(targetString, params, preco,effe)
+        action = Claction(name, params, preco,effe)
         self.actions.append(action)
 
     def getAction(self, name):
@@ -63,6 +63,7 @@ class ActionParser:
 
         return result
         #also add the objects to the dictionary
+
     def mapTyps(self):
         typs = self.domain.partition("(:predicates")[0].partition("types")[2]
         result = {}
@@ -88,13 +89,13 @@ class ActionParser:
         name = actionString.partition("(")[2].partition(" ")[0]
         action = self.getAction(name)
         lookUpBook = {**self.adjustParameters(action, actionString), **self.pddltypes}
-        #check for preconds
         
         #print(action.precond)
+        #check for preconds
         if applyFunction(action.precond, lookUpBook,precondCheck,self.state,True,andOp):
             #applying the allowed change to self.state
-            #print("move " + action.name + " allowed")
             self.state = applyFunction(action.effect, lookUpBook, applyEffect, self.state, self.state, andOp)
+            #print("move " + action.name + " allowed")
             return True
         print(action.precond)
         print("action "+ action.name + " NOT allowed")
@@ -239,7 +240,7 @@ def addObject(prob, obj, typ = None):
         result = tmp[0] + tmp[1] + " " + obj + "        \n" + tmp[2]
     else:
         tmp = tmp.partition("- " + typ)
-    #bug can occur if type is none excistent
+    #bug can occur if type is nonexcistent
         if (tmp[2] == ""):
             return error
         result = tmp[0] + obj + " " + tmp[1] + tmp[2]

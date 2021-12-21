@@ -1,3 +1,4 @@
+from PDDLController import PDDLController
 import SimplePddlParser
 from SimplePddlParser import *
 import FDApi
@@ -25,7 +26,7 @@ goal5 = "(and (havething bailiff goblinhead) )) (:metric minimize (total-cost)"
 goal6 = "(and (havething bailiff goblinhead) (not (isMissing girl)) )) (:metric minimize (total-cost)"
 goal7 = "(and (havething bailiff vampireheart) (forall (?cha - npc) (not (ismissing ?cha)) ) )) (:metric minimize (total-cost)"
 goal8 = "(and (havething bailiff vampireheart) )) \n(:metric minimize (total-cost)"
-ap = ActionParser(tmpDir+dom,tmpDir+prob)
+ap = PDDLController(tmpDir+dom,tmpDir+prob)#ActionParser(tmpDir+dom,tmpDir+prob)
 changeGoal(tmpDir+prob, goal5)
 fdapi = FD_Api(dom, prob)
 def applyPlan(plan, writeChange = False):

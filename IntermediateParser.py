@@ -64,6 +64,7 @@ def andOrLoop(expstr):
         expr = nextExpr(expr[2])
 
     return result
+    
 #strips outer parenthensis and returns the next expression in line
 def nextExpr(exprString):
     i = 1
@@ -174,15 +175,15 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
             #print(condition)
             condition = applyFunction(condition, lookUpbook, precondCheck, pddlProblem, True, andOp)
             #print(condition)
-           #print("when")
+            #print("when")
             #print(expressions["when"][0])
             #print(expressions["when"][1])
             #print(acc)
             if (condition):
                     #cannot handle multiple statements at this point
                     acc = applyFunction(expressions["when"][1], lookUpbook, func, pddlProblem, acc, andOp)
-                   #print("just one")
-                   #print(expressions["when"][1])
+                    #print("just one")
+                    #print(expressions["when"][1])
                     #print(acc)
 
         return acc
@@ -225,6 +226,7 @@ def andOp(it, em):
         return "(and (" + it + ") " + em +")"
 
 def notOp(it, em):
+    #print("not")
     if type(it) is bool:
         return (not it) & em
     elif type(it) is str:
@@ -262,7 +264,7 @@ def precondCheck(expression, lookUpbook, operator, pddlProblem, acc):
         if y in lookUpbook:
             expression = expression.replace(y, lookUpbook[y])
     result = (pddlProblem.count(expression) > 0)
-    #print(expression)
+    #print("pC expression: " + expression)
     #print(pddlProblem)
     result = operator(result,  acc)
     #if (not result & acc):
