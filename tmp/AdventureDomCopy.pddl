@@ -30,7 +30,6 @@
 )
 (:functions
     (total-cost) - number
-    (entropy) - number
 )
 (:action move
     :parameters (?char - player ?from - location ?to - site ?area - area)

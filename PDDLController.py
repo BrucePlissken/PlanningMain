@@ -1,3 +1,8 @@
+"""
+Class for holding and applying pddl stuff
+auth: Jakob Ehlers
+"""
+
 import PDDLAccessor
 import IntermediateParser
 from IntermediateParser import *
@@ -10,6 +15,7 @@ class PDDLController:
         self.problem = PDDLAccessor.fileAsString(prob).lower()
         self.state = PDDLAccessor.getSection("init", self.problem)
         
+        #loop for creating the list of dicts of actions
         self.actions = []
         n = self.domain.count("action")
         tempDom = self.domain
@@ -21,12 +27,23 @@ class PDDLController:
 
         self.pddltypes = self.mapTyps()
 
+        #loop for creating the list of domain predicates
+        pred = PDDLAccessor.getSection("predicates", self.domain)
+        predicates = pred.split('\n')
+        self.predicates = []
+        for x in predicates:
+            temp = x.strip()
+            if (len(temp) > 1):
+                self.predicates.append(temp)
+        
+    #itterates the list of actions and returns an action with a matching name
     def getAction(self, name):
         for x in self.actions:
             if (x.get("name") == name):
                 return x
         print("error: no such action name: " + name)
-
+    
+    #returns a dict with concrete parameters for replacing the variables
     def adjustParameters(self, action, params):
         paramargs = action.get("parameters") 
         result = {}
@@ -62,10 +79,12 @@ class PDDLController:
             i -=1
         
         return result
+
     #applies an action from an action string expression eg. (actionName arg1 arg2) with the variables filled out
     def applyAction(self, actionString):
         name = actionString.partition("(")[2].partition(" ")[0]
         action = self.getAction(name)
+        #adds a dict with substitutions for the action parameters to the excisting dict of pddl types
         lookUpBook = {**self.adjustParameters(action, actionString), **self.pddltypes}
         
         #check for precondition satisfaction
@@ -86,3 +105,13 @@ class PDDLController:
         file = open(self.problemFile, "w")
         file.write(result)
         file.close()
+
+    #next order of business: make this hold a list of the domain predicates, and a dict of all the objects
+"""
+#testing stuff beyond this point
+
+domainF = "tmp/AdventureDomCopy.pddl"
+problemF = "tmp/AdventureProbCopycopy.pddl"
+
+PDDLController(domainF, problemF)
+"""

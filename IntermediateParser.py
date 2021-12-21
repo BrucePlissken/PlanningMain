@@ -1,3 +1,8 @@
+"""
+Methods for parsing, and applying functions on pddl expressions
+Auth: Jakob Ehlers
+"""
+
 import re
 
 def prsExp(expstr):
@@ -64,7 +69,7 @@ def andOrLoop(expstr):
         expr = nextExpr(expr[2])
 
     return result
-    
+
 #strips outer parenthensis and returns the next expression in line
 def nextExpr(exprString):
     i = 1
@@ -190,6 +195,10 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
         
     return func(expressions, lookUpbook, operator, pddlProblem, acc)
 
+"""
+Below follows funtions for stuffing in the applyFunction method
+"""
+
 def stringReplacer(expression, lookUpbook, operator, pddlProblem, acc):
     #print("stringreplacer")
     for y in expression.split():
@@ -217,7 +226,6 @@ def nonOp(it, em):
         return it & em
     elif type(it) is str:
         return "(" + it + ")"
-
 
 def andOp(it, em):
     if type(it) is bool:
@@ -294,7 +302,6 @@ def applyEffect(expression, lookUpbook, operator, pddlProblem, acc):
     #print("applyEffect2")
     #print(acc)
     return acc
-
 
 
 

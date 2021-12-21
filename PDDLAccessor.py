@@ -1,3 +1,8 @@
+"""
+methods for accessing the pddl files
+auth: Jakob Ehlers
+"""
+
 import IntermediateParser
 
 #returns a file as string opening and closing    
