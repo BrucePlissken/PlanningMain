@@ -14,6 +14,10 @@ class PDDLController:
         self.domain = PDDLAccessor.fileAsString(domain).lower()
         self.problem = PDDLAccessor.fileAsString(prob).lower()
         self.state = PDDLAccessor.getSection("init", self.problem)
+
+        #set up dicts for domain types and problem objects
+        self.pddltypes = self.mapTyps("types", self.domain)
+        self.probjects = self.mapTyps("objects", self.problem)
         
         #loop for creating the list of dicts of actions
         self.actions = []
@@ -25,7 +29,6 @@ class PDDLController:
             self.actions.append(action)
             n -= 1
 
-        self.pddltypes = self.mapTyps()
 
         #loop for creating the list of domain predicates
         pred = PDDLAccessor.getSection("predicates", self.domain)
@@ -35,6 +38,7 @@ class PDDLController:
             temp = x.strip()
             if (len(temp) > 1):
                 self.predicates.append(temp)
+
         
     #itterates the list of actions and returns an action with a matching name
     def getAction(self, name):
@@ -66,8 +70,8 @@ class PDDLController:
         return result
 
     #returns a dict of the different types in the domain
-    def mapTyps(self):
-        typs = PDDLAccessor.getSection("types", self.domain)
+    def mapTyps(self, section, target):
+        typs = PDDLAccessor.getSection(section, target)
         result = {}
         i = typs.count("-")
         while (i > 0):
@@ -106,12 +110,21 @@ class PDDLController:
         file.write(result)
         file.close()
 
-    #next order of business: make this hold a list of the domain predicates, and a dict of all the objects
+    #change the goal of the problem
+    
 """
 #testing stuff beyond this point
 
+import pprint
 domainF = "tmp/AdventureDomCopy.pddl"
 problemF = "tmp/AdventureProbCopycopy.pddl"
 
-PDDLController(domainF, problemF)
+pc = PDDLController(domainF, problemF)
+
+print("\npredicates:")
+pprint.pprint(pc.predicates)
+print("\ntypes:")
+pprint.pprint(pc.pddltypes)
+print("\nobjects:")
+pprint.pprint(pc.probjects, sort_dicts= False)
 """

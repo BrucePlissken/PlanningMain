@@ -1,6 +1,6 @@
 """
-methods for accessing the pddl files
-auth: Jakob Ehlers
+Methods for accessing the pddl files
+Auth: Jakob Ehlers
 """
 
 import IntermediateParser

@@ -1,7 +1,7 @@
 (define (problem pff) (:domain adc)
 (:objects
     goblinTracks grimmyIsAgoblin ladyIsVamp lordIsCreep - concept
-    DudeAscii - player 
+    DudeAscii - player
     farmer girl bailiff lord lady priest cryptkeeper grimmyTheGoblin - npc
     town castle forrest - area
     farm manor lair church keep crypt cellar - site
@@ -53,6 +53,6 @@
 )
 (:goal
     (isMissing girl)
-  )
+)
 (:metric minimize (total-cost))
 )
