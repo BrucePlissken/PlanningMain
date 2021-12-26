@@ -5,6 +5,7 @@ Auth: Jakob Ehlers
 import PDDLController
 import IntermediateParser
 from IntermediateParser import *
+import random
 
 class GiantTortoise:
     def __init__(self, domainF, problemF):
@@ -12,12 +13,16 @@ class GiantTortoise:
         self.goalPredicates = self.getGoalPredicates()
         self.thesaurus = {**self.expandDict(self.pc.pddltypes, self.pc.probjects, "- "), **self.pc.probjects}
 
-        n = 3
-        m = 8
+        self.genome = [len(self.goalPredicates)] + self.mapGenome(self.thesaurus)
+        #random.seed("the blood in my urine tastes too much like iron")
+        
+        #making a random gene from the genome for goalpredicates
+        gene = []
+        for x in self.genome:
+            n = random.randrange(0, x)
+            gene.append(n)
+        print(self.makeGene(gene, self.goalPredicates))
 
-        temp = self.substituteVar(self.goalPredicates[n],m)
-
-        print(temp)
 
     #creates a list of achievable goal-state expressions from action effects and domain predicates
     def getGoalPredicates(self):
@@ -27,6 +32,8 @@ class GiantTortoise:
             for effect in action["effect"]["and"]:
                 ton = False
                 if (type(effect) is dict):
+                    #let's try skipping the "nots" and instead add them later on, by checking against the current state
+                    continue
                     if (list(effect.keys()).__contains__("not")):
                         ton = True
                         effect = effect["not"]
@@ -50,32 +57,60 @@ class GiantTortoise:
             temp = []
             for k in super_dict[x]:
                 key = prefix + k
+                if (list(super_dict.keys()).__contains__(key)):
+                    for p in super_dict[key]:
+                        pey = prefix + p
+                        if(list(sub_dict.keys()).__contains__(pey)):
+                            temp = temp + sub_dict[pey]        
                 if(list(sub_dict.keys()).__contains__(key)):
                     temp = temp + sub_dict[key]
             result[x] = temp
 
         return result
 
-    def makeGene(self):
+    #returns a gene from an int[] by popping the first int and picking the complying expression from the pool, and using the rest of the list as choices for substitution
+    def makeGene(self, dna, pool):
+        cellShell = dna.pop(0)
 
-        pass
+        cellShell = pool[cellShell -1]
+        result = self.substituteVar(cellShell, dna)
+        #to "not" or not to "not"
+        if (self.pc.state.count(result) > 0):
+            result = "(not " + result + ")"
+        return result
 
-    def substituteVar(self, predicate, no, variable = ""):
-        if (variable == ""):
-            temp = predicate.partition("?")
-            preTemp = temp[0]
+    #takes in an expression and, if no variable is given the first, ?smth variable that gets substituted with a fitting string from the thesaurus
+    #maybe this should be made more general and put in the parser
+    def substituteVar(self, predicate, dna):
+        result = predicate
+        while (result.count("?") > 0):    
+            temp = result.partition("?")
             variable = "?" + temp[2].partition(" ")[0]
             signifier = temp[2].partition("- ")[2].partition(")")[0]
-        if(signifier.count(" ") > 0):
-            signifier = signifier.partition(" ")[0]
-        signifier = "- " + signifier
-        value = self.thesaurus[signifier][no]
 
-        result = predicate.replace(variable,value)
+            if(signifier.count(" ") > 0):
+                signifier = signifier.partition(" ")[0]
+            signifier = "- " + signifier
+            p = 0
+            for x in self.thesaurus:
+                if (x == signifier):
+                    no = dna[p] -1
+                p += 1
+            value = self.thesaurus[signifier][no]
 
-        if (result.partition(signifier)[0].count("?") < 1):
-            signifier = " " + signifier
-            result = result.replace(signifier, "")
+            result = result.replace(variable,value)
+
+            if (result.partition(signifier)[0].count("?") < 1):
+                signifier = " " + signifier
+                result = result.replace(signifier, "")
+        return result
+
+    #returns a list of ints from the length of the lists of parameter possibilities of the expression
+    def mapGenome(self, source):
+        result = []
+        for x in source:
+            temp = len(source[x])
+            result.append(temp)
         
         return result
 
@@ -87,6 +122,9 @@ import pprint
 
 pd = "tmp/AdventureDomCopy.pddl"
 pp = "tmp/AdventureProbCopycopy.pddl"
+
+pd1 = "tmp/lrrhDom.pddl"
+pp1 = "tmp/lrrhProb.pddl"
 
 dna = GiantTortoise(pd,pp)
 
