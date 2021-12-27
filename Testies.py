@@ -12,9 +12,14 @@ prob1 = "AdventureProbCopy.pddl"
 
 prob = "AdventureProbCopycopy.pddl"
 
+dom = "RedRidingHoodDom.pddl"
+prob = "RedRidingHoodProb.pddl"
+
 sasPlan = "..\sas_plan"
 tempPlan = "tempPlan.txt"
 tmpDir = "tmp/"
+
+goal = "(isswallowed grandma bigbadwolf)"
 
 goal1 = "(and\n        (atball ball1 roomb)\n        (atball ball2 roomb)\n        (atball ball3 roomb)\n        (atball ball4 roomb)\n        )"
 goal2 = "(and\n        (atball ball1 rooma)\n        (atball ball2 rooma)\n        (atball ball3 rooma)\n        (atball ball4 rooma)\n        )"
@@ -27,7 +32,7 @@ goal6 = "(and (havething bailiff goblinhead) (not (isMissing girl)) )) (:metric 
 goal7 = "(and (havething bailiff vampireheart) (forall (?cha - npc) (not (ismissing ?cha)) ) )) (:metric minimize (total-cost)"
 goal8 = "(and (havething bailiff vampireheart) )) \n(:metric minimize (total-cost)"
 ap = PDDLController(tmpDir+dom,tmpDir+prob)#ActionParser(tmpDir+dom,tmpDir+prob)
-changeGoal(tmpDir+prob, goal5)
+changeGoal(tmpDir+prob, goal)
 fdapi = FD_Api(dom, prob)
 def applyPlan(plan, writeChange = False):
     openPlan = open(plan)
@@ -107,14 +112,15 @@ def runPlanner():
     return False
 
 
-if (runPlanner()):
-    ap.writeChange()
+runPlanner()
+#if (runPlanner()):
+    #ap.writeChange()
    # changeGoal(tmpDir+prob, goal5)
     #if (runPlanner()):
      #   ap.writeChange()    
 
 
-savePlan(tmpDir+prob1, tmpDir+prob)
+#savePlan(tmpDir+prob1, tmpDir+prob)
 
 """
 ap.ppActions()

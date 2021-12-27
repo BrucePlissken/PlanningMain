@@ -28,7 +28,7 @@ def getSection(name, target, n = 1):
 
 #returns a dict modelled on "PDDL (:action..."
 def parseAction(name, domain):
-    actionString = getSection(name, domain)
+    actionString = getSection("action " + name, domain)
     if (actionString == ""):
         print("no such action")
 
