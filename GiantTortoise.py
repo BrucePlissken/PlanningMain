@@ -14,14 +14,18 @@ class GiantTortoise:
         self.thesaurus = {**self.expandDict(self.pc.pddltypes, self.pc.probjects, "- "), **self.pc.probjects}
 
         self.genome = [len(self.goalPredicates)] + self.mapGenome(self.thesaurus)
-        #random.seed("the blood in my urine tastes too much like iron")
+        random.seed("the blood in my urine tastes too much like iron")
         
         #making a random gene from the genome for goalpredicates
-        gene = []
-        for x in self.genome:
-            n = random.randrange(0, x)
-            gene.append(n)
-        print(self.makeGene(gene, self.goalPredicates))
+        for p in range(1000):
+            gene = []
+            for x in self.genome:
+                temp = range(0,x)
+                temp = list(temp)
+                random.shuffle(temp)
+                gene.append(temp)
+
+            print(self.makeGene(gene, self.goalPredicates))
 
 
     #creates a list of achievable goal-state expressions from action effects and domain predicates
@@ -33,6 +37,7 @@ class GiantTortoise:
                 ton = False
                 if (type(effect) is dict):
                     #let's try skipping the "nots" and instead add them later on, by checking against the current state
+                    #this introduces another issue however, where a not clause can cause an unachievable goal. Seems the safer route is to check for both
                     continue
                     if (list(effect.keys()).__contains__("not")):
                         ton = True
@@ -70,9 +75,9 @@ class GiantTortoise:
 
     #returns a gene from an int[] by popping the first int and picking the complying expression from the pool, and using the rest of the list as choices for substitution
     def makeGene(self, dna, pool):
-        cellShell = dna.pop(0)
+        cellShell = dna[0][0]
 
-        cellShell = pool[cellShell -1]
+        cellShell = pool[cellShell]
         result = self.substituteVar(cellShell, dna)
         #to "not" or not to "not"
         if (self.pc.state.count(result) > 0):
@@ -81,8 +86,9 @@ class GiantTortoise:
 
     #takes in an expression and, if no variable is given the first, ?smth variable that gets substituted with a fitting string from the thesaurus
     #maybe this should be made more general and put in the parser
-    def substituteVar(self, predicate, dna):
+    def substituteVar(self, predicate, rootdna):
         result = predicate
+        dna = rootdna
         while (result.count("?") > 0):    
             temp = result.partition("?")
             variable = "?" + temp[2].partition(" ")[0]
@@ -91,10 +97,10 @@ class GiantTortoise:
             if(signifier.count(" ") > 0):
                 signifier = signifier.partition(" ")[0]
             signifier = "- " + signifier
-            p = 0
+            p = 1
             for x in self.thesaurus:
                 if (x == signifier):
-                    no = dna[p] -1
+                    no = dna[p].pop(0)
                 p += 1
             value = self.thesaurus[signifier][no]
 
@@ -114,6 +120,15 @@ class GiantTortoise:
         
         return result
 
+
+def savePlan(plan, fileName):
+    openPlan = open(plan)
+    planString = openPlan.read()
+    openPlan.close()
+    openPlan = open(fileName, "w")
+    openPlan.write(planString)
+    openPlan.close()
+
 """
 testing stuff
 """        
@@ -123,18 +138,20 @@ import pprint
 pd = "tmp/AdventureDomCopy.pddl"
 pp = "tmp/AdventureProbCopycopy.pddl"
 
-pd1 = "tmp/lrrhDom.pddl"
-pp1 = "tmp/lrrhProb.pddl"
+pd1 = "tmp/RedRidingHoodDom.pddl"
+pp1 = "tmp/RedRidingHoodProb.pddl"
 
-dna = GiantTortoise(pd,pp)
+dna = GiantTortoise(pd1,pp1)
 
 """
-pprint.pprint(dna.thesaurus)
+pprint.pprint(dna.thesaurus, sort_dicts=False)
 
 
 for x in dna.goalPredicates:
     print(x)
 
+
+print(dna.genome)
 print()
 pprint.pprint(dna.pc.probjects)
 print()

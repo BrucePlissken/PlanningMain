@@ -13,7 +13,7 @@ class PDDLController:
         self.problemFile = prob
         self.domain = PDDLAccessor.fileAsString(domain).lower()
         self.problem = PDDLAccessor.fileAsString(prob).lower()
-        self.state = PDDLAccessor.getSection("init", self.problem)
+        self.state = self.reset_state()
 
         #set up dicts for domain types and problem objects
         self.pddltypes = self.mapTyps("types", self.domain)
@@ -46,7 +46,11 @@ class PDDLController:
             if (x.get("name") == name):
                 return x
         print("error: no such action name: " + name)
-    
+
+    #returns a state e.g. the init section of a problem
+    def reset_state(self):
+        return PDDLAccessor.getSection("init", self.problem)
+
     #returns a dict with concrete parameters for replacing the variables
     def adjustParameters(self, action, params):
         paramargs = action.get("parameters") 
@@ -99,6 +103,21 @@ class PDDLController:
         #on failure:
         print("action "+ actionString + " NOT allowed")
         return False
+
+    #a flexible version of applyAction, that applies an action to a given state
+    def apply_action_to_state(self, actionString, state):
+        name = actionString.partition("(")[2].partition(" ")[0]
+        action = self.getAction(name)
+        #adds a dict with substitutions for the action parameters to the excisting dict of pddl types
+        lookUpBook = {**self.adjustParameters(action, actionString), **self.pddltypes}
+        
+        #check for precondition satisfaction
+        if (applyFunction(action.get("precondition"), lookUpBook, precondCheck, state,True,andOp)):
+            #applying the allowed change to self.state
+            state = applyFunction(action.get("effect"), lookUpBook, applyEffect, state, state, andOp)
+            return state
+        #on failure:
+        return "action "+ actionString + " NOT allowed" 
 
     #applies the current state (:init...) to the pddl problem file
     def writeChange(self):
