@@ -6,27 +6,57 @@ import PDDLController
 import IntermediateParser
 from IntermediateParser import *
 import random
+import copy
 
 class GiantTortoise:
-    def __init__(self, domainF, problemF):
+    def __init__(self, domainF, problemF, seed = "the blood in my urine tastes too much like iron"):
         self.pc = PDDLController.PDDLController(domainF, problemF)
-        self.goalPredicates = self.getGoalPredicates()
+        #self.goalPredicates = self.getGoalPredicates()
+        pist = []
+        for action in self.pc.actions:
+            pist = pist + applyFunction(action["effect"],self.pc.pddltypes, listyfy, "",pist,andOp)
+        result = []
+        for effect in pist:
+            if (effect.split()[0] == "(not"):
+                k = 1
+            else: k = 0
+            for pred in self.pc.predicates:
+                if (pred.count(effect.split()[k]) > 0):
+                    if (k == 1):
+                        temp = "(not " + pred + ")"
+                        break
+                    else:
+                        temp = pred
+                        break
+            if (result.__contains__(temp) == False):
+                result.append(temp)        
+        self.goalPredicates = result
+
+
+
         self.thesaurus = {**self.expandDict(self.pc.pddltypes, self.pc.probjects, "- "), **self.pc.probjects}
 
         self.genome = [len(self.goalPredicates)] + self.mapGenome(self.thesaurus)
-        random.seed("the blood in my urine tastes too much like iron")
+        if (seed != ""):
+            random.seed(seed)
         
         #making a random gene from the genome for goalpredicates
+        """
         for p in range(1000):
-            gene = []
-            for x in self.genome:
-                temp = range(0,x)
-                temp = list(temp)
-                random.shuffle(temp)
-                gene.append(temp)
+            dna = self.mk_random_dna()
+        """
+#            print(self.makeGene(dna, self.goalPredicates))
 
-            print(self.makeGene(gene, self.goalPredicates))
 
+    #returns a list of lists of ints with the numbers shuffeled
+    def mk_random_dna(self):
+        gene = []
+        for x in self.genome:
+            temp = range(0,x)
+            temp = list(temp)
+            random.shuffle(temp)
+            gene.append(temp)
+        return gene
 
     #creates a list of achievable goal-state expressions from action effects and domain predicates
     def getGoalPredicates(self):
@@ -38,10 +68,16 @@ class GiantTortoise:
                 if (type(effect) is dict):
                     #let's try skipping the "nots" and instead add them later on, by checking against the current state
                     #this introduces another issue however, where a not clause can cause an unachievable goal. Seems the safer route is to check for both
-                    continue
+                    #or let's ignore not alltogether
+                    #todo include foralls and when
+                    #continue
                     if (list(effect.keys()).__contains__("not")):
                         ton = True
                         effect = effect["not"]
+                    elif (list(effect.keys()).__contains__("forall")):
+                        effect = effect["forall"][1]
+                        print(effect)
+                        
                     else: continue
                 for pred in self.pc.predicates:
                     if (pred.count(effect.split()[0]) > 0):
@@ -73,6 +109,9 @@ class GiantTortoise:
 
         return result
 
+    def makeGoalGene(self, dna):
+        return self.makeGene(dna, self.goalPredicates)
+
     #returns a gene from an int[] by popping the first int and picking the complying expression from the pool, and using the rest of the list as choices for substitution
     def makeGene(self, dna, pool):
         cellShell = dna[0][0]
@@ -80,15 +119,18 @@ class GiantTortoise:
         cellShell = pool[cellShell]
         result = self.substituteVar(cellShell, dna)
         #to "not" or not to "not"
+        """
         if (self.pc.state.count(result) > 0):
             result = "(not " + result + ")"
+        print(result)
+        """
         return result
 
     #takes in an expression and, if no variable is given the first, ?smth variable that gets substituted with a fitting string from the thesaurus
     #maybe this should be made more general and put in the parser
     def substituteVar(self, predicate, rootdna):
         result = predicate
-        dna = rootdna
+        dna = copy.deepcopy(rootdna)
         while (result.count("?") > 0):    
             temp = result.partition("?")
             variable = "?" + temp[2].partition(" ")[0]
@@ -121,29 +163,24 @@ class GiantTortoise:
         return result
 
 
-def savePlan(plan, fileName):
-    openPlan = open(plan)
-    planString = openPlan.read()
-    openPlan.close()
-    openPlan = open(fileName, "w")
-    openPlan.write(planString)
-    openPlan.close()
-
 """
 testing stuff
 """        
+"""
 import pprint
 
 
 pd = "tmp/AdventureDomCopy.pddl"
 pp = "tmp/AdventureProbCopycopy.pddl"
 
-pd1 = "tmp/RedRidingHoodDom.pddl"
-pp1 = "tmp/RedRidingHoodProb.pddl"
+pd1 = "RedRidingHoodDom.pddl"
+pp1 = "RedRidingHoodProb.pddl"
 
-dna = GiantTortoise(pd1,pp1)
+pp2 = "RedHoodProbTwo.pddl"
 
-"""
+tmp = "tmp/"
+dna = GiantTortoise(tmp+pd1,tmp+pp1)
+
 pprint.pprint(dna.thesaurus, sort_dicts=False)
 
 

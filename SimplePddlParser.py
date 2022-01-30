@@ -221,13 +221,15 @@ class Claction:
         print("effects: ")        
         print(self.effect)
         
-def changeGoal(prob, newGoal):
+def changeGoal(prob, newGoal, newFile = ""):
+    if (newFile == ""):
+        newFile = prob
     file = open(prob)
     tmp = file.read()
     file.close()
     tmp = tmp.partition("(:goal")
     result = tmp[0] + tmp[1] + "\n    " + newGoal + "\n  )\n)"
-    file = open(prob, "w")
+    file = open(newFile, "w")
     file.write(result)
     file.close()
 

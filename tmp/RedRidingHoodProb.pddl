@@ -12,6 +12,7 @@
     (isConnected woods grandmasHouse)
     (haveAxe lumberJack)
     (canEat bigBadWolf)
+    (cantMove grandma)
     (knowInfo littleRedRidingHood home)
     (knowInfo littleRedRidingHood woods)
     (knowInfo littleRedRidingHood grandmasHouse)

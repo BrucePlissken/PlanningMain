@@ -2,7 +2,7 @@
 Methods for parsing, and applying functions on pddl expressions
 Auth: Jakob Ehlers
 """
-
+import copy
 import re
 
 def prsExp(expstr):
@@ -107,7 +107,6 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
             for e in expressions["and"][::-1]:
                 #print("and...")
                 acc = applyFunction(e, lookUpbook, func, pddlProblem, acc, andOp)
-                #print(acc)
         
         if "or" in expressions:
             for e in expressions["or"]:
@@ -146,6 +145,7 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
             typi = expressions["forall"][0].partition(" -")
             typ = "-" + typi[2]
             typs = pddlProblem.partition(typ)[0].rpartition("\n")[2].split()
+            """
             if typ in lookUpbook:
                 for x in lookUpbook[typ]:
                     #print(x + ".")
@@ -154,10 +154,19 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
                     if (temp != []):
                         for x in temp:
                             typs.append(x)
+            """
             
-           #print("forall")
-            #print(typ)
+
+            #print("forall")
+            #print(lookUpbook)
             #print(typs)
+            #print(typ)
+            if (type(acc) is list):
+                #this is some aweful hard-coding it will need a bit of thinking
+                    #print(acc)
+                #print(expressions["forall"][1]["when"][1])
+                acc = applyFunction(expressions["forall"][1]["when"][1], lookUpbook, func, pddlProblem, acc, andOp)
+            else: typs = lookUpbook[typ]
             for x in typs:
                 #print(x)
                 pamphlet = lookUpbook
@@ -232,6 +241,8 @@ def andOp(it, em):
         return it & em
     elif type(it) is str:
         return "(and (" + it + ") " + em +")"
+    elif type(it) is list:
+        it.append(em)
 
 def notOp(it, em):
     #print("not")
@@ -249,6 +260,15 @@ def orOp(it, em):
 def addOp(it,em):
     if type(it) is bool:
         return it
+
+def listyfy(expression, lookUpbook, operator, pddlProblem, acc):
+    if (operator == andOp or operator == ifOp or operator == orOp):
+        operator = nonOp
+    result = operator(expression, "").strip()
+    acc.append(result)
+    return copy.deepcopy(acc)
+
+
 
 
 def printExpression(expression, noot, pddlProblem, number = 0):

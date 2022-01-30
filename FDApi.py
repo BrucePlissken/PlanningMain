@@ -11,8 +11,11 @@ BUILDS_DIR = os.path.join(REPO_ROOT_DIR, "builds")
 #planner = plan_manager.PlanManager('plannies')
 class FD_Api:
     def __init__(self, dom, prob):
+        self.dom = dom        
+        self.prob = prob
+        self.updateParams()
         
-
+    def updateParams(self):
         self.parameters = [
             #"downward\\misc\\tests\\benchmarks\\gripper\\domain.pddl",
             #"downward\\misc\\tests\\benchmarks\\gripper\\prob01.pddl",
@@ -24,8 +27,8 @@ class FD_Api:
             #"hcea=cea()", 
             #"--debug",
             
-            "PlanningMain\\tmp\\" +dom,
-            "PlanningMain\\tmp\\" +prob,
+            "PlanningMain\\tmp\\" +self.dom,
+            "PlanningMain\\tmp\\" +self.prob,
 
             "--search-options",
 

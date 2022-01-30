@@ -53,6 +53,6 @@
 )
 (:goal
     (isMissing girl)
-  )
+)
 (:metric minimize (total-cost))
 )

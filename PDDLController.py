@@ -49,7 +49,7 @@ class PDDLController:
 
     #returns a state e.g. the init section of a problem
     def reset_state(self):
-        return PDDLAccessor.getSection("init", self.problem)
+        return "    " + PDDLAccessor.getSection("init", self.problem).rpartition(")")[0]
 
     #returns a dict with concrete parameters for replacing the variables
     def adjustParameters(self, action, params):
@@ -89,11 +89,11 @@ class PDDLController:
         return result
 
     #applies an action from an action string expression eg. (actionName arg1 arg2) with the variables filled out
-    def applyAction(self, actionString):
+    def applyAction(self, actionString, thesaurus):
         name = actionString.partition("(")[2].partition(" ")[0]
         action = self.getAction(name)
         #adds a dict with substitutions for the action parameters to the excisting dict of pddl types
-        lookUpBook = {**self.adjustParameters(action, actionString), **self.pddltypes}
+        lookUpBook = {**self.adjustParameters(action, actionString), **thesaurus}#self.pddltypes}
         
         #check for precondition satisfaction
         if (applyFunction(action.get("precondition"), lookUpBook, precondCheck, self.state,True,andOp)):
@@ -105,26 +105,27 @@ class PDDLController:
         return False
 
     #a flexible version of applyAction, that applies an action to a given state
-    def apply_action_to_state(self, actionString, state):
+    def apply_action_to_state(self, actionString, state, thesaurus):
         name = actionString.partition("(")[2].partition(" ")[0]
         action = self.getAction(name)
         #adds a dict with substitutions for the action parameters to the excisting dict of pddl types
-        lookUpBook = {**self.adjustParameters(action, actionString), **self.pddltypes}
-        
+        lookUpBook = {**self.adjustParameters(action, actionString), **thesaurus}
+        #print(lookUpBook)
         #check for precondition satisfaction
         if (applyFunction(action.get("precondition"), lookUpBook, precondCheck, state,True,andOp)):
-            #applying the allowed change to self.state
+            #applying the allowed change to state
             state = applyFunction(action.get("effect"), lookUpBook, applyEffect, state, state, andOp)
             return state
         #on failure:
-        return "action "+ actionString + " NOT allowed" 
+        print("action "+ actionString + " NOT allowed" )
+        return ""
 
     #applies the current state (:init...) to the pddl problem file
     def writeChange(self):
         tmp = self.problem
         tmpfirst = tmp.partition("init")[0]+"init"
         tmplast = tmp.partition("(:goal")[2]
-        result = tmpfirst + self.state.partition("init")[2] + ")\n\n(:goal" + tmplast
+        result = tmpfirst + "\n" + self.state + ")\n(:goal" + tmplast
         file = open(self.problemFile, "w")
         file.write(result)
         file.close()

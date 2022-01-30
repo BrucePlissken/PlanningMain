@@ -12,8 +12,8 @@ prob1 = "AdventureProbCopy.pddl"
 
 prob = "AdventureProbCopycopy.pddl"
 
-dom = "RedRidingHoodDom.pddl"
-prob = "RedRidingHoodProb.pddl"
+#dom = "RedRidingHoodDom.pddl"
+#prob = "RedRidingHoodProb.pddl"
 
 sasPlan = "..\sas_plan"
 tempPlan = "tempPlan.txt"
@@ -26,14 +26,15 @@ goal2 = "(and\n        (atball ball1 rooma)\n        (atball ball2 rooma)\n     
 
 
 goal3 = "(and (ismissing girl) (atloc girl lair))"
-goal4 = "(atLoc girl farm) ) (:metric minimize (total-cost)"
+goal4 = "(not (atLoc girl farm)) ) (:metric minimize (total-cost)"
 goal5 = "(and (havething bailiff goblinhead) )) (:metric minimize (total-cost)"
-goal6 = "(and (havething bailiff goblinhead) (not (isMissing girl)) )) (:metric minimize (total-cost)"
+goal6 = "(and (not (isMissing girl)) )) (:metric minimize (total-cost)"
 goal7 = "(and (havething bailiff vampireheart) (forall (?cha - npc) (not (ismissing ?cha)) ) )) (:metric minimize (total-cost)"
 goal8 = "(and (havething bailiff vampireheart) )) \n(:metric minimize (total-cost)"
 ap = PDDLController(tmpDir+dom,tmpDir+prob)#ActionParser(tmpDir+dom,tmpDir+prob)
-changeGoal(tmpDir+prob, goal)
+changeGoal(tmpDir+prob, goal4)
 fdapi = FD_Api(dom, prob)
+
 def applyPlan(plan, writeChange = False):
     openPlan = open(plan)
     while (True):
@@ -52,10 +53,12 @@ def applyPlanAction(plan, writeChange = False):
     planAction = openPlan.read().partition("\n")
     openPlan.close()
     if (planAction[0].count(";") > 0):
-        #print("reached end of plan")
+        print("reached end of plan")
+        #printPlan(tmpDir+prob)
         return False
     if (ap.applyAction(planAction[0])):
-        #print("plan-step allowed")
+        print("plan-step allowed")
+        #print(ap.state)
         if(writeChange):
             openPlan = open(plan, "w")
             openPlan.write(planAction[2])            
@@ -113,14 +116,18 @@ def runPlanner():
 
 
 runPlanner()
-#if (runPlanner()):
-    #ap.writeChange()
-   # changeGoal(tmpDir+prob, goal5)
-    #if (runPlanner()):
-     #   ap.writeChange()    
+if (runPlanner()):
+    ap.writeChange()
+    printPlan(tmpDir+prob)
+
+    changeGoal(tmpDir+prob, goal6)
+    if (runPlanner()):
+        ap.writeChange()    
+        printPlan(tmpDir+prob)
 
 
-#savePlan(tmpDir+prob1, tmpDir+prob)
+
+savePlan(tmpDir+prob1, tmpDir+prob)
 
 """
 ap.ppActions()
