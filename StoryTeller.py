@@ -1,3 +1,5 @@
+import copy
+import json
 import FDApi
 from FDApi import FD_Api
 import os
@@ -6,7 +8,7 @@ import GiantTortoise
 from GiantTortoise import GiantTortoise
 import time
 import random
-import threading
+import Critic
 
 class StoryTeller:
     def __init__(self, domainF, problemF, lex, seed):
@@ -22,7 +24,7 @@ class StoryTeller:
     #uhm, problem is a bit of a mess here, it should be like new broblem name or something instead,
     # n describes a number for making multiples, this probably shouldn't recide in this part of the code
     #all these checks should be done in a higher up method that activates these methods..
-    def one_act(self, gene, state, problem = "", n = 0):
+    def one_act(self, gene, state, n = 0, problem = ""):
         act = ""
         if (problem == ""):
             problem = self.problemF.partition(".")
@@ -33,14 +35,9 @@ class StoryTeller:
         if (state != ""):
             changeState("tmp/" + problem, state)
 
-
-
         goalGene = ""
-        if type(gene) is tuple:
-            print("error: ")
-            print(gene)
-            for g in gene:
-                goalGene = goalGene + " " + self.genePool.makeGoalGene(g)
+        if type(gene) is str:
+            goalGene = gene
         else:
             goalGene = self.genePool.makeGoalGene(gene)
         
@@ -64,6 +61,8 @@ class StoryTeller:
                     changeState("tmp/" + problem, state)
             if (act[0][0] == ";"):
                 act = ""
+
+        os.remove("tmp/" + problem)
         return (act, state, gene)
     
     #input ints for amount of stories and acts of the stories
@@ -126,15 +125,15 @@ class StoryTeller:
             return acc
 
     #returns a story, from a list of genes
-    def write_story(self, genes, state = "", acc = []):
+    def write_story(self, genes, state = "", acc = [], n = 0):
         if (genes == []):
             return acc
         if (state == ""):
             state = self.startState
         gene = genes.pop(0)
-        act = self.one_act(gene, state)
+        act = self.one_act(gene, state, n = n)
         acc.append(act)
-        self.write_story(genes, act[1], acc)
+        self.write_story(genes, act[1], acc, n)
 
     def asses_story_by_states(self, story, startState = "", ideal = [0,1,2,-2], other = [1,1,-1]):
         xy = []
@@ -172,15 +171,6 @@ class StoryTeller:
         
         return result
 
-    def asses_act_from_plan(self, plan, lex):
-        result = []
-        for action in plan:
-            n = 0
-            for key in lex:
-                action.count(key) * lex[key]
-            result.append(n)
-        return result
-
     def asses_act_from_state(self, story, aim = 0):
         lex = self.lex
         result = 0
@@ -188,12 +178,45 @@ class StoryTeller:
         if (story[0] == ""):
             return 4
 #        print(story[0])
-        for key in lex:
-            result += state.count(key) * lex[key]
+        for key in lex['state']:
+            result += state.count(key) * lex['state'][key]
  #       print(aim)
   #      print(result)
         result = abs(aim - result)
    #     print (result)
+        return result
+
+    def story_to_plan_curve(self,story):
+        temp = []
+        for act in story:
+            temp.append(self.plan_to_curve(act[0]))
+        result = self.curve_merger(temp)
+        return result
+
+    def plan_to_curve(self, plan):
+        x = [0]
+        y = [0]
+        for action in plan:
+            a = action.split()[0]
+            if (a in self.lex['plan']):
+                x.append(x[len(x) -1] + self.lex['plan'][a][0])
+                y.append(y[len(y)-1] + self.lex['plan'][a][1])
+        result = (x,y)
+        #print(result)
+        return result
+
+    def curve_merger(self, curves):
+        x = [0]
+        y = [0]
+        for curve in curves:
+            curve[1].pop(0)
+            curve[0].pop(0)
+            for t in curve[0]:
+                x.append(x[len(x) -1] + t)
+            for v in curve[1]:
+                y.append(y[len(y) -1] + v)
+                
+        result = (x,y)
         return result
 
 def copyFile(source, newFile):
@@ -240,6 +263,7 @@ def getPlan(plan):
     openPlan.close()
     return result
 
+
 pd = "tmp/AdventureDomCopy.pddl"
 pp = "tmp/AdventureProbCopycopy.pddl"
 
@@ -248,166 +272,244 @@ pd1 = "RedRidingHoodDom.pddl"
 
 pp2 = "RedHoodProbTwo.pddl"
 
-t1 = time.time()
-
-lex = {
-        "isswallowed" : 1,
-        "issaved" : -1,
-        "(swallow" : 1,
-        "(slay" : -1
-        }
-
-st = StoryTeller(pd1, pp2, lex, "")
-"""
-import numpy
-import matplotlib.pyplot as plt
-import scipy.optimize
-
-plah = numpy.poly([0.0, 0.6, 0.8, 0.9, 1.0])
-print(plah)
-curb = numpy.polyfit([0.0,0.33,0.66,1.0], [0,0.5,1,0], 3)
-print(curb)
-plah = numpy.diff(plah)
-print(plah)
-plt.figure(num=0,dpi=120)
-N = 50
-xlist = numpy.linspace(0,1,N)
-ylist = numpy.polyval(plah,xlist)
-
-plt.plot(xlist,ylist)
-
-def normalize_curve(curve):
-    maxy = max(curve)
-    maxx = len(curve) -1
-    print(maxx)
-    x = []
-    y = []
-    n = 0
-    for point in curve:
-        y.append(point/maxy)
-        x.append(n/maxx)
-        n+=1
-    return x,y
-
-curvay = normalize_curve([0,1,2,2,2,3,3,4,1,6,0])
-print(curvay)
-
-
-curvsy = numpy.polyfit(curvay[0],curvay[1], 5)
-#curv = scipy.optimize.curve_fit(f, curvay[0], curvay[1], (0,0,0,0,0), sigma=sigma)
-#curv = scipy.optimize.curve_fit(f, curvay[0], curvay[1], (0,0,0,0,0))
-ylist1 = numpy.polyval(curvsy,xlist)
-#plt.plot(xlist,f(xlist,*curv))
-plt.plot(xlist,ylist1)
-
-"""
-acts = 3
-
-storybook = st.story_book(10, acts)
+lex = json.load(open("tmp/RedRidingLex.json"))
 
 desiredCurve = [1,2,-2]
 
-for gen in range(100):
-    print(gen)
+st = StoryTeller(pd1, pp2, lex, "")
 
-    storybook.sort(key = st.asses_story_by_states)
+def contains_duplicate_dna(story, dnaList):
+    for i in dnaList:
+        if(st.genePool.dna_is_same(i[2],story[2])):
+            return True
+    return False
 
-    genes = []
-    for n in range(acts):
-        arrangedActs = []
+
+def other_gene_story(noS, generations = 100):
+    fnoS = int(noS/4)
+    temp = st.story_book(int(fnoS))
+    storybook = []
+    #blackList = []
+    for s in temp:
+        storybook.append(s[0])
+
+    
+    #print(storybook)
+    for gen in range(generations):
+        print(gen)
+        #print(len(storybook))
+        arrangedStories = []
         for s in storybook:
-            arrangedActs.append(s[n])
+            if not contains_duplicate_dna(s,arrangedStories):
+                arrangedStories.append(s)
+            """
+            addit = True
+            for a in arrangedStories:
+                if (st.genePool.dna_is_same(a[2],s[0][2])):
+                    addit = False
+            if addit:
+                arrangedStories.append(s[0])
+            """
 
-        def dickhole(story):
-            return st.asses_act_from_state(story, desiredCurve[n])
+        def critic_holder(story):
+            plancurve = st.plan_to_curve(story[0])
+            if (plancurve == ([0], [0])):
+                return 2
+            result = Critic.curve_comparer(plancurve,([0,1,2,3,4,5,6],[0,1,2,2.5,3,1.5,0]))
+            
+            result = result/(len(plancurve[0]) * 2)
+            #print(plancurve)
+            #print(result)
+            return result
 
-        arrangedActs.sort(key = dickhole)
-        topActs = arrangedActs[:20]
-        genes.append(topActs)
-    topGrade = st.asses_story_by_states(storybook[0])
-    print("---- Story Time ! ----")
+        arrangedStories.sort(key = critic_holder)
+        for sto in range(len(arrangedStories)):
+            if (sto > len(arrangedStories) - 1):
+                #print ("kaplah!")
+                #print(len(arrangedStories))
+                break
+            topgrade = critic_holder(arrangedStories[sto])
+            if (topgrade == 2):
+                arrangedStories.pop(sto)
+                continue
+            #print("---- Story Time ! ----")
+            
+            #print(st.plan_to_curve(arrangedStories[sto][0]))
+            #print(topgrade)
+            #print(st.genePool.makeGoalGene(arrangedStories[sto][2]))
+            #print(arrangedStories[sto][0])
+            #print()
+                
+            if(topgrade < 0.007):
+                #print("---- Story Time ! ----")
+                #print(arrangedStories[0][0])
+                return arrangedStories[:noS]    
+
+        genes = copy.deepcopy(arrangedStories[:fnoS])
+        nextGen = []
+        #this needs to be made dynamic
+        for tr in range(noS *4):
+            #print(tr)
+            g = random.choice(genes)
+            #n = random.randint(0,99)
+            #if n < 10:
+            g = st.genePool.mutate_dna(g[2], genes)
+            addit = True
+            #print(g)
+            for p in nextGen:
+                if (st.genePool.dna_is_same(p[2], g)):
+                    #print("naddit")
+                    addit = False
+                    break
+            if addit:
+                #print("addit")
+                g = st.one_act(g, st.startState)
+                #print("")
+                #print(g)
+                if (not g[0] == ''):
+                    nextGen.append(g)
+
+        storybook = arrangedStories[:fnoS] + nextGen
+        #print(storybook)
+    return arrangedStories
+
+def first_gene_story(acts, noS, maxGen = 1000):
+    fnoS = int(noS/4)
+    storybook = st.story_book(fnoS, acts)
+
+    for gen in range(maxGen):
+        print(gen)
+
+        genes = []
+        for n in range(acts):
+            arrangedActs = []
+            for s in storybook:
+                addit = True
+                for a in arrangedActs:
+                    #pa = st.genePool.makeGoalGene(a[2])
+                    #ap = st.genePool.makeGoalGene(s[n][2])
+                    if (st.genePool.dna_is_same(a[2],s[n][2])):
+                        addit = False
+                #if s[n] not in arrangedActs:
+                if addit:
+                    arrangedActs.append(s[n])
+
+            def dickhole(story):
+                return st.asses_act_from_state(story, desiredCurve[n])
+
+            arrangedActs.sort(key = dickhole)
+            topActs = arrangedActs[:noS]
+            genes.append(topActs)
+
+        stary = [genes[0][0]]
+        newGene = []
+        newGene.append(genes[1][0][2])
+        newGene.append(genes[2][0][2])
+        st.write_story(newGene, genes[0][0][1], stary)
+        storybook.append(stary)
+
+        storybook.sort(key = st.asses_story_by_states)
+
+        topGrade = st.asses_story_by_states(storybook[0])
+        grades = []
+        for s in storybook:
+            grades.append(st.asses_story_by_states(s))
+
+        print(grades)
+        print("")
+        print("curve grade:")
+        plancurve = st.story_to_plan_curve(storybook[0])
+        if(max(plancurve[0]) > 0 and max(plancurve[1]) > 0):
+            print(plancurve)
+            curveGrade = Critic.curve_comparer(plancurve,([0,1,2,3],[0,1,2,0]))
+        else:
+            curveGrade = "empty plan curve"
+        print(curveGrade)
+        print("")
+            
+        #print(topGrade)
+        if(topGrade == 0):
+            print("---- Story Time ! ----")
+            print(storybook[0][0][0])
+            print(storybook[0][1][0])
+            print(storybook[0][2][0])
+            break
+
+        #print(genes)
+
+        nextGen = []
+        #this needs to be made dynamic
+        for tr in range(30):
+            
+            g0 = random.choice(genes[0])
+            n = random.randint(0,99)
+            if n < 10:
+                st.genePool.mutate_dna(g0[2], genes, 0)
+                g0 = st.one_act(g0[2], st.startState)
+                #print(g0)
+            
+            n = random.randint(0,99)
+            g1 = random.choice(genes[1])[2]
+            if n < 10:
+                st.genePool.mutate_dna(g1, genes, 1)
+
+            n = random.randint(0,99)        
+            g2 = random.choice(genes[2])[2]
+            if n < 10:
+                st.genePool.mutate_dna(g2, genes, 2)
+
+            newGene = [g1,g2]
+            stary = []
+            stary.append(g0)
+            st.write_story(newGene, g0[1], stary, tr)
+            nextGen.append(stary)
+            #t1 = threading.Thread(st.write_story(newGene, g0[1], stary, tr))
+            #t1.start()
+
+        """
+        for _ in range(10):
+            g0 = random.choice(genes)
+            g1 = random.choice(genes)
+            g2 = random.choice(genes)
+
+            newGene = [g0[0],g1[1],g2[2]]
+            stary = []
+            st.write_story(newGene, st.startState, stary)
+            nextGen.append(stary)
+        """    
+        
+        storybook = nextGen + st.story_book(fnoS, acts) + storybook[:fnoS]
+
+    """
+    storybook.sort(key = st.asses_story_by_states)
+    print(st.asses_story_by_states(storybook[0]))
     print(storybook[0][0][0])
     print(storybook[0][1][0])
     print(storybook[0][2][0])
-    print(topGrade)
-    if(topGrade == 0):
-        break
-    """
-    for g in genes[0]:
-        print(g)
-
-
-    print(st.asses_story_by_states(storybook[0]))
-
-
-
-    fart = []
-    for s in storybook:
-        fart.append(st.asses_story_by_states(s))
-    
-    print(fart)
-
-    bestStories = storybook[:10]
-    genes = []
-    for s in bestStories:
-        gene = []
-        for g in s:
-            gene.append(g[2])
-        genes.append(gene)
     """
 
-    #print(genes)
+t1 = time.time()
+funk = []
+for k in range(10):
+    funk.append(other_gene_story(20)[0])
+    t2 = time.time()
+    print(t2 - t1)
+    print(k)
 
-    nextGen = []
+for f in funk:
+    print(f[0])
+    print()
 
-    for tr in range(100):
-        n = random.randint(0,99)
-        if n < 15:
-            g0 = st.genePool.mk_random_dna()
-        else:
-            g0 = random.choice(genes[0])[2]
-        if 14 < n < 30:
-            g1 = st.genePool.mk_random_dna()
-        else:
-            g1 = random.choice(genes[1])[2]
-        if 29 < n < 45:
-            g2 = st.genePool.mk_random_dna()
-        else:
-            g2 = random.choice(genes[2])[2]
-
-        newGene = [g0,g1,g2]
-    #    print(newGene)
-        stary = []
-
-        st.write_story(newGene, st.startState, stary)
-        nextGen.append(stary)
-
-    """
-    
-    for _ in range(10):
-        g0 = random.choice(genes)
-        g1 = random.choice(genes)
-        g2 = random.choice(genes)
-
-        newGene = [g0[0],g1[1],g2[2]]
-        stary = []
-        st.write_story(newGene, st.startState, stary)
-        nextGen.append(stary)
-    """    
-    
-    storybook = nextGen
-
-
-storybook.sort(key = st.asses_story_by_states)
-print(st.asses_story_by_states(storybook[0]))
-print(storybook[0][0][0])
-print(storybook[0][1][0])
-print(storybook[0][2][0])
-
-
-
+t2 = time.time()
+print(t2 - t1)
+print(k)
 
 """
+for s in storybook[:10]:
+    for a in s:
+        print(a[0])
+    print("")
+
 fart = []
 for s in storybook:
     fart.append(st.asses_story_by_states(s, startVal))
@@ -417,10 +519,6 @@ print(fart)
 """
 
 
-
-t2 = time.time()
-
-print(t2 - t1)
 
 
 

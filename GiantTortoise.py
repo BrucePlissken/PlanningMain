@@ -56,7 +56,92 @@ class GiantTortoise:
             temp = list(temp)
             random.shuffle(temp)
             gene.append(temp)
-        return gene
+        return [gene]
+
+    #takes two dna strands, and replaces a random gene from the first with the coresponing gene of the seccond
+    def mix_dna(self, dna1, dna2):
+        roll = random.randint(0, len(dna1) -1)
+        roll2 = random.randint(0, len(dna1[roll]) -1)
+        roll3 = random.randint(0, len(dna2) -1)
+        result = copy.deepcopy(dna1)
+        result[roll][roll2] = copy.copy(dna2[roll3][roll2])
+        return result
+
+    def join_dna(self, dna1, genes):
+        if (len(dna1) > 2):
+            #print("strand full")
+            return self.mutate_dna(dna1, genes)
+        k = random.randint(0, len(genes) -1)
+        dna2 = genes[k][2]
+        roll = random.randint(0, len(dna2) -1)
+        
+        if (not self.dna_in_dnas(dna1,[dna2[roll]])):
+            result = copy.deepcopy(dna1)
+            result.append(copy.deepcopy(dna2[roll]))
+            return result
+        return self.join_dna(dna1,genes)
+
+    def split_dna(self, dna):
+        result = copy.deepcopy(dna)
+        if (len(dna) > 2):
+            roll0 = random.randint(0, len(result) -1)
+            result.pop(roll0) 
+        roll = random.randint(0, len(result) -1)
+        temp = self.mutate_dna_randomly([result[roll]])
+        if (self.dna_in_dnas(temp, result)):
+            return self.split_dna(result)
+        else:
+            result = result + temp
+            return result
+    #takes a dna strand and shuffles a random gene
+    def mutate_dna_randomly(self, dna):
+        roll = random.randint(0,len(dna)-1)
+        roll2 = random.randint(0,len(dna[roll])-1)
+        temp = copy.deepcopy(dna)
+        random.shuffle(temp[roll][roll2])
+        return temp
+
+    #offline till further notice
+    """
+    #takes a dna strand and shuffles a random gene
+    def mutate_dna_semi_randomly(self, dna, skipGenes = 0):
+        roll = random.randint(skipGenes,len(dna)-1)
+        random.shuffle(dna[roll])
+    """
+
+    #randomizing between a couple of different ways to mutate a dna strand
+    def mutate_dna(self, dna, genes, i = 22000):
+        n = random.randint(0,99)
+        if (n < 15 and len(dna) > 1):
+            #print("remove")
+            roll = random.randint(0, len(dna) -1)
+            result = copy.deepcopy(dna)
+            result.pop(roll)
+            #print(result)
+            return result
+        
+        elif (n < 30):
+            #print("mutate")
+
+            return self.mutate_dna_randomly(dna)
+        elif (n < 50):
+            #print("mix")
+
+            k = i
+            while (k == i):
+                k = random.randint(0, len(genes) -1)
+            return self.mix_dna(dna,genes[k][2])
+        elif (n < 80):
+            #print("new")
+            return self.mk_random_dna()
+        elif (n < 90):
+            #print("split")
+
+            return self.split_dna(dna)
+        else:
+            #print("join")
+
+            return self.join_dna(dna,genes)
 
     #creates a list of achievable goal-state expressions from action effects and domain predicates
     def getGoalPredicates(self):
@@ -108,10 +193,43 @@ class GiantTortoise:
             result[x] = temp
 
         return result
-
+    
+    #takes a dna strand and makes it into a goal-gene
     def makeGoalGene(self, dna):
-        return self.makeGene(dna, self.goalPredicates)
+        gg = ""
+        for g in dna:
+            gg += self.makeGene(g, self.goalPredicates) + "\n"
+        return gg
 
+    def dna_is_same(self, dna1, dna2):
+        count = len(dna2)
+        for genes in dna1:
+            for genes2 in dna2:
+                if (self.gene_is_same(genes,genes2)):
+                    count -= 1
+                    break
+        #print("count:")
+        #print(count)
+        #print("")
+        if (count < 1):
+            return True
+        else:
+            return False
+
+    def dna_in_dnas(self, dna, dnas):
+        for g1 in dna:
+            for g2 in dnas:
+                if (self.gene_is_same(g1,g2)):
+                    return True
+        return False
+
+    def gene_is_same(self, dna1, dna2):
+        gg1 = self.makeGoalGene([dna1])
+        gg2 = self.makeGoalGene([dna2])
+        if (gg1 == gg2):
+            return True
+        else: 
+            return False
     #returns a gene from an int[] by popping the first int and picking the complying expression from the pool, and using the rest of the list as choices for substitution
     def makeGene(self, dna, pool):
         cellShell = dna[0][0]
