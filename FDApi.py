@@ -13,6 +13,7 @@ class FD_Api:
     def __init__(self, dom, prob):
         self.dom = dom        
         self.prob = prob
+        self.sasPlan = "..\sas_plan"
         self.updateParams()
         
     def updateParams(self):
@@ -53,10 +54,14 @@ class FD_Api:
 
     #run driver
     def rumBriber(self, par, show = True):
+        if (os.path.exists(self.sasPlan)):
+            os.remove(self.sasPlan)
         cmd = [sys.executable, "downward/fast-downward.py"] + par
         result = subprocess.run(cmd, cwd=REPO_ROOT_DIR, capture_output = not show)
         
-        return result
+        if (os.path.exists(self.sasPlan)):
+            return self.sasPlan
+        return ""
 
 #rumBriber(parameters)
 

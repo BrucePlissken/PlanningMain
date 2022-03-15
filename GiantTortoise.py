@@ -67,8 +67,8 @@ class GiantTortoise:
         result[roll][roll2] = copy.copy(dna2[roll3][roll2])
         return result
 
-    def join_dna(self, dna1, genes):
-        if (len(dna1) > 2):
+    def join_dna(self, dna1, genes, n = 0):
+        if (len(dna1) > 2 or n > 5):
             #print("strand full")
             return self.mutate_dna(dna1, genes)
         k = random.randint(0, len(genes) -1)
@@ -79,9 +79,10 @@ class GiantTortoise:
             result = copy.deepcopy(dna1)
             result.append(copy.deepcopy(dna2[roll]))
             return result
-        return self.join_dna(dna1,genes)
+        n += 1
+        return self.join_dna(dna1,genes, n)
 
-    def split_dna(self, dna):
+    def dna_mitosis(self, dna):
         result = copy.deepcopy(dna)
         if (len(dna) > 2):
             roll0 = random.randint(0, len(result) -1)
@@ -89,7 +90,7 @@ class GiantTortoise:
         roll = random.randint(0, len(result) -1)
         temp = self.mutate_dna_randomly([result[roll]])
         if (self.dna_in_dnas(temp, result)):
-            return self.split_dna(result)
+            return self.dna_mitosis(result)
         else:
             result = result + temp
             return result
@@ -137,10 +138,9 @@ class GiantTortoise:
         elif (n < 90):
             #print("split")
 
-            return self.split_dna(dna)
+            return self.dna_mitosis(dna)
         else:
             #print("join")
-
             return self.join_dna(dna,genes)
 
     #creates a list of achievable goal-state expressions from action effects and domain predicates
@@ -247,6 +247,7 @@ class GiantTortoise:
     #takes in an expression and, if no variable is given the first, ?smth variable that gets substituted with a fitting string from the thesaurus
     #maybe this should be made more general and put in the parser
     def substituteVar(self, predicate, rootdna):
+
         result = predicate
         dna = copy.deepcopy(rootdna)
         while (result.count("?") > 0):    

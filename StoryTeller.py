@@ -45,13 +45,14 @@ class StoryTeller:
 
         self.fdapi.prob = problem
         self.fdapi.updateParams()
-        if (os.path.exists(self.sasPlan)):
-            os.remove(self.sasPlan)
+
+        #if (os.path.exists(self.sasPlan)):
+        #    os.remove(self.sasPlan)
         
         output = self.fdapi.rumBriber(self.fdapi.parameters, False)
         
-        if (os.path.exists(self.sasPlan)):
-            act = getPlan(self.sasPlan)
+        if (output != ""):
+            act = getPlan(output)
             act = act.splitlines()
             for x in act:
                 if (x[0] == ";"):
@@ -264,15 +265,18 @@ def getPlan(plan):
     return result
 
 
-pd = "tmp/AdventureDomCopy.pddl"
-pp = "tmp/AdventureProbCopycopy.pddl"
+pd = "AdventureDomCopy.pddl"
+pp = "AdventureProbCopycopy.pddl"
 
 pd1 = "RedRidingHoodDom.pddl"
 #pp1 = "RedRidingHoodProb.pddl"
 
 pp2 = "RedHoodProbTwo.pddl"
 
-lex = json.load(open("tmp/RedRidingLex.json"))
+l2 = "tmp/Adventurelex.json"
+l1 = "tmp/RedRidingLex.json"
+
+lex = json.load(open(l1))
 
 desiredCurve = [1,2,-2]
 
@@ -284,6 +288,28 @@ def contains_duplicate_dna(story, dnaList):
             return True
     return False
 
+def split_story_dna_full(stories):
+    dnaNo = len(stories) -1
+    result = []
+    for strandNo in range(dnaNo):
+        if (len(stories[strandNo][2]) > 1):
+            temp = copy.deepcopy(stories[strandNo][2])
+            for g in temp:
+                story = st.one_act([g], st.startState)
+                result.append(story)
+    return result
+
+#no reason to write out the story when the dna is the active part
+def split_story_dna(stories):
+    dnaNo = len(stories) -1
+    result = []
+    for strandNo in range(dnaNo):
+        if (len(stories[strandNo][2]) > 1):
+            temp = copy.deepcopy(stories[strandNo][2])
+            for g in temp:
+                story = ([""],"",[g])
+                result.append(story)
+    return result 
 
 def other_gene_story(noS, generations = 100):
     fnoS = int(noS/4)
@@ -297,7 +323,7 @@ def other_gene_story(noS, generations = 100):
     #print(storybook)
     for gen in range(generations):
         print(gen)
-        #print(len(storybook))
+    #    print(len(storybook))
         arrangedStories = []
         for s in storybook:
             if not contains_duplicate_dna(s,arrangedStories):
@@ -317,7 +343,9 @@ def other_gene_story(noS, generations = 100):
                 return 2
             result = Critic.curve_comparer(plancurve,([0,1,2,3,4,5,6],[0,1,2,2.5,3,1.5,0]))
             
-            result = result/(len(plancurve[0]) * 2)
+            divi = (len(plancurve[0]))
+            #print(divi)
+            result = result/divi
             #print(plancurve)
             #print(result)
             return result
@@ -332,23 +360,26 @@ def other_gene_story(noS, generations = 100):
             if (topgrade == 2):
                 arrangedStories.pop(sto)
                 continue
-            #print("---- Story Time ! ----")
-            
-            #print(st.plan_to_curve(arrangedStories[sto][0]))
-            #print(topgrade)
-            #print(st.genePool.makeGoalGene(arrangedStories[sto][2]))
-            #print(arrangedStories[sto][0])
-            #print()
+            """
+            print("---- Story Time ! ----")
+            print(st.plan_to_curve(arrangedStories[sto][0]))
+            print(topgrade)
+            print(st.genePool.makeGoalGene(arrangedStories[sto][2]))
+            print(arrangedStories[sto][0])
+            print()
+            """
                 
-            if(topgrade < 0.007):
+            if(topgrade < 0.02):
                 #print("---- Story Time ! ----")
                 #print(arrangedStories[0][0])
                 return arrangedStories[:noS]    
 
         genes = copy.deepcopy(arrangedStories[:fnoS])
+        genes = genes + split_story_dna(arrangedStories[:fnoS])
         nextGen = []
         #this needs to be made dynamic
-        for tr in range(noS *4):
+        #while (len(nextGen) < noS -1):
+        for tr in range(int(noS)):
             #print(tr)
             g = random.choice(genes)
             #n = random.randint(0,99)
@@ -369,8 +400,10 @@ def other_gene_story(noS, generations = 100):
                 if (not g[0] == ''):
                     nextGen.append(g)
 
+
         storybook = arrangedStories[:fnoS] + nextGen
         #print(storybook)
+
     return arrangedStories
 
 def first_gene_story(acts, noS, maxGen = 1000):
@@ -490,14 +523,19 @@ def first_gene_story(acts, noS, maxGen = 1000):
 
 t1 = time.time()
 funk = []
-for k in range(10):
-    funk.append(other_gene_story(20)[0])
+for k in range(100):
+    temp = other_gene_story(20)
+    funk.append(temp)
     t2 = time.time()
     print(t2 - t1)
     print(k)
 
 for f in funk:
-    print(f[0])
+    print(f[0][0])
+    
+    #for s in f:
+    #    print(len(s[2]))
+
     print()
 
 t2 = time.time()
