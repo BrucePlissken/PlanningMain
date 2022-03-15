@@ -21,7 +21,7 @@ class StoryTeller:
         self.problemF = problemF
         self.lex = lex
 
-    #uhm, problem is a bit of a mess here, it should be like new broblem name or something instead,
+    #uhm, "problem" is a bit of a mess here, it should be like new broblem name or something instead,
     # n describes a number for making multiples, this probably shouldn't recide in this part of the code
     #all these checks should be done in a higher up method that activates these methods..
     def one_act(self, gene, state, n = 0, problem = ""):
@@ -52,8 +52,7 @@ class StoryTeller:
         output = self.fdapi.rumBriber(self.fdapi.parameters, False)
         
         if (output != ""):
-            act = getPlan(output)
-            act = act.splitlines()
+            act = output.splitlines()
             for x in act:
                 if (x[0] == ";"):
                     break
@@ -257,13 +256,6 @@ def printPlan(plan):
     openPlan = open(plan)
     print(openPlan.read())
     openPlan.close()
-
-def getPlan(plan):
-    openPlan = open(plan)
-    result = openPlan.read()
-    openPlan.close()
-    return result
-
 
 pd = "AdventureDomCopy.pddl"
 pp = "AdventureProbCopycopy.pddl"
@@ -523,7 +515,7 @@ def first_gene_story(acts, noS, maxGen = 1000):
 
 t1 = time.time()
 funk = []
-for k in range(100):
+for k in range(3):
     temp = other_gene_story(20)
     funk.append(temp)
     t2 = time.time()

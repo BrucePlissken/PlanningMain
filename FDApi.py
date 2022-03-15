@@ -60,8 +60,16 @@ class FD_Api:
         result = subprocess.run(cmd, cwd=REPO_ROOT_DIR, capture_output = not show)
         
         if (os.path.exists(self.sasPlan)):
-            return self.sasPlan
+            return getPlan(self.sasPlan)
         return ""
+
+
+def getPlan(plan):
+    openPlan = open(plan)
+    result = openPlan.read()
+    openPlan.close()
+    return result
+
 
 #rumBriber(parameters)
 
