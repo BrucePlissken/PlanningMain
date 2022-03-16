@@ -1,7 +1,19 @@
 import os
 import subprocess
 import sys
+import requests
 sys.path.append('../')
+
+class Plan_Api:
+    def __init__(self, dom, prob):
+        self.dom = dom        
+        self.prob = prob
+
+    def updateParams(self):
+        pass
+
+    def get_plan(self):
+        pass
 
 #magic from fast-downward
 DRIVER_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -9,10 +21,9 @@ REPO_ROOT_DIR = os.path.dirname(DRIVER_DIR)
 BUILDS_DIR = os.path.join(REPO_ROOT_DIR, "builds")
 
 #planner = plan_manager.PlanManager('plannies')
-class FD_Api:
+class FD_Api(Plan_Api):
     def __init__(self, dom, prob):
-        self.dom = dom        
-        self.prob = prob
+        super().__init__(dom, prob)
         self.sasPlan = "..\sas_plan"
         self.updateParams()
         
@@ -53,21 +64,48 @@ class FD_Api:
             ]
 
     #run driver
-    def rumBriber(self, par, show = True):
+    def get_plan(self, show = True):
         if (os.path.exists(self.sasPlan)):
             os.remove(self.sasPlan)
-        cmd = [sys.executable, "downward/fast-downward.py"] + par
+        cmd = [sys.executable, "downward/fast-downward.py"] + self.parameters
         result = subprocess.run(cmd, cwd=REPO_ROOT_DIR, capture_output = not show)
         
         if (os.path.exists(self.sasPlan)):
-            return getPlan(self.sasPlan)
+            return read_file(self.sasPlan)
         return ""
 
+class Cloud_Planner_Api(Plan_Api):
+    def __init__(self, dom, prob):
+        super().__init__(dom, prob)
+        self.tmpPath = "tmp/"
+        self.updateParams()
 
-def getPlan(plan):
-    openPlan = open(plan)
-    result = openPlan.read()
-    openPlan.close()
+    def updateParams(self):
+        self.parameters = {
+            'domain': read_file(self.tmpPath + self.dom),
+            'problem': read_file(self.tmpPath + self.prob)}
+
+    def get_plan(self, show = True):
+        resp = requests.post('http://dry-tundra-82186.herokuapp.com/solve',
+                     verify=False, json=self.parameters).json()
+        #with open("planFileNameHolder", 'w') as f:
+        #    f.write('\n'.join([act['name'] for act in resp['result']['plan']]))
+        if (resp['status'] == 'error'):
+            #print()
+            #print(resp)
+            #print()
+            plan = ''
+        else:
+            plan = ('\n'.join([act['name'] for act in resp['result']['plan']]))
+        
+        #print(plan)
+        
+        return plan
+
+def read_file(fileName):
+    openedFile = open(fileName)
+    result = openedFile.read()
+    openedFile.close()
     return result
 
 

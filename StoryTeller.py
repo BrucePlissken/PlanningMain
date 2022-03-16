@@ -1,7 +1,7 @@
 import copy
 import json
-import FDApi
-from FDApi import FD_Api
+import PlanApi
+from PlanApi import Plan_Api
 import os
 import pprint
 import GiantTortoise
@@ -11,17 +11,17 @@ import random
 import Critic
 
 class StoryTeller:
-    def __init__(self, domainF, problemF, lex, seed):
+    def __init__(self, domainF, problemF, lex, seed, api):
         tmp = "tmp/"
         self.genePool = GiantTortoise(tmp+domainF, tmp+problemF, seed)
         self.pddlController = self.genePool.pc
         self.startState = self.genePool.pc.state
         self.sasPlan = "..\sas_plan"
-        self.fdapi = FD_Api(domainF, problemF)
+        self.planApi = api(domainF, problemF)
         self.problemF = problemF
         self.lex = lex
 
-    #uhm, "problem" is a bit of a mess here, it should be like new broblem name or something instead,
+    #uhm, "problem" is a bit of a mess, as a keyword here, it should be like new problem name or something instead,
     # n describes a number for making multiples, this probably shouldn't recide in this part of the code
     #all these checks should be done in a higher up method that activates these methods..
     def one_act(self, gene, state, n = 0, problem = ""):
@@ -43,13 +43,13 @@ class StoryTeller:
         
         changeGoal("tmp/"+problem, goalGene)
 
-        self.fdapi.prob = problem
-        self.fdapi.updateParams()
+        self.planApi.prob = problem
+        self.planApi.updateParams()
 
         #if (os.path.exists(self.sasPlan)):
         #    os.remove(self.sasPlan)
         
-        output = self.fdapi.rumBriber(self.fdapi.parameters, False)
+        output = self.planApi.get_plan(show = False)
         
         if (output != ""):
             act = output.splitlines()
@@ -272,7 +272,7 @@ lex = json.load(open(l1))
 
 desiredCurve = [1,2,-2]
 
-st = StoryTeller(pd1, pp2, lex, "")
+st = StoryTeller(pd1, pp2, lex, "", api = PlanApi.Cloud_Planner_Api)
 
 def contains_duplicate_dna(story, dnaList):
     for i in dnaList:
