@@ -11,8 +11,8 @@ class PDDLController:
     def __init__(self, domain, prob):
         self.domainFile = domain
         self.problemFile = prob
-        self.domain = PDDLAccessor.fileAsString(domain).lower()
-        self.problem = PDDLAccessor.fileAsString(prob).lower()
+        self.domain = PDDLAccessor.fileAsString(domain)
+        self.problem = PDDLAccessor.fileAsString(prob)
         self.state = self.reset_state()
 
         #set up dicts for domain types and problem objects

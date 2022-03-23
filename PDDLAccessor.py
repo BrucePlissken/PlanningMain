@@ -8,7 +8,7 @@ import IntermediateParser
 #returns a file as string opening and closing    
 def fileAsString(fileName):
     temp = open(fileName)
-    result = temp.read()
+    result = temp.read().lower()
     temp.close()
     return result
 

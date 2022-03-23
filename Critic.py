@@ -1,6 +1,3 @@
-from unicodedata import decimal
-
-
 def line(p1, p2, x):
     m = (p2[1] - p1[1]) / (p2[0] - p1[0])
     y = m* (p2[0] - x) - p2[1]
