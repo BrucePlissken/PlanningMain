@@ -9,7 +9,7 @@ import random
 import copy
 
 class GiantTortoise:
-    def __init__(self, domainF, problemF, seed = "the blood in my urine tastes too much like iron"):
+    def __init__(self, domainF, problemF, seed = "the blood in my urine tastes too much of iron"):
         self.pc = PDDLController.PDDLController(domainF, problemF)
         #self.goalPredicates = self.getGoalPredicates()
         pist = []
