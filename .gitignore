@@ -1,4 +1,5 @@
 /JSHOP2
 *.class
 /__pychache__
+/LongSnake/__pychache__
 /trashcan
