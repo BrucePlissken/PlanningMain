@@ -1,5 +1,7 @@
 """
 Let's try to make a genetic algorithm
+The Giant Tortoise lost the genetic lottory by being so tasty that bringing one to london to be officially given a name proved quite challenging for pekish sailors.
+it works by using a pddlController to identify, seperate and categorize different atributes as "genes" and "dna", it also contains methods for shaking them up
 Auth: Jakob Ehlers
 """
 import PDDLController
