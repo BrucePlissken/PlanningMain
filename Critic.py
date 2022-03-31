@@ -1,8 +1,16 @@
+"""
+the Critic
+the Critic compares how close two curves are at eachother.
+the use of this is to take a desired tension curve, and compare it to the tension curve of a dynamically generated story/plan
+"""
+
+#linear algebra
 def line(p1, p2, x):
     m = (p2[1] - p1[1]) / (p2[0] - p1[0])
     y = m* (p2[0] - x) - p2[1]
     return - y
 
+#takes a set of points and linearly fills in points, between the points.
 def curve_chopper(curve, N = 50):
     xline = []
     yline = []
@@ -29,6 +37,7 @@ def curve_chopper(curve, N = 50):
 
     return (xline,yline)
 
+#takes a list of points and changes it size to be between 0-1
 def normalize_curve(ycurve, xcurve = []):
     maxy = max(ycurve)
 
@@ -54,9 +63,11 @@ def normalize_curve(ycurve, xcurve = []):
         n+=1
     return x,y
 
+#uses previous functions to standerdize a list of points, by setting values to be between 0-1 and setting the no. of points to N
 def standardize_curve(xcurve, ycurve, N = 50):
     return curve_chopper((normalize_curve(ycurve, xcurve)), N)
 
+#compares two lists of points aka. tension curves, by standardizing them, and then seing how they compare. Lower is more alike
 def curve_comparer(curve1, curve2, N = 50):
     sc1 = standardize_curve(curve1[0],curve1[1], N)
     sc2 = standardize_curve(curve2[0],curve2[1], N)

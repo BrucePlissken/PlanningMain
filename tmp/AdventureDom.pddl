@@ -1,5 +1,5 @@
 (define (domain ad)
-(:requirements :universal-preconditions :disjunctive-preconditions :quantified-preconditions :typing :equality :negative-preconditions  )
+(:requirements :universal-preconditions :disjunctive-preconditions :quantified-preconditions :typing :equality :negative-preconditions   :fluents :conditional-effects)
 (:types
     player npc - character
     area site - location

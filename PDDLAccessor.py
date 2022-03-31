@@ -6,7 +6,7 @@ Auth: Jakob Ehlers
 import IntermediateParser
 
 #returns a file as string opening and closing    
-def fileAsString(fileName):
+def fileToString(fileName):
     temp = open(fileName)
     result = temp.read().lower()
     temp.close()

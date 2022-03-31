@@ -11,8 +11,8 @@ class PDDLController:
     def __init__(self, domain, prob):
         self.domainFile = domain
         self.problemFile = prob
-        self.domain = PDDLAccessor.fileAsString(domain)
-        self.problem = PDDLAccessor.fileAsString(prob)
+        self.domain = PDDLAccessor.fileToString(domain)
+        self.problem = PDDLAccessor.fileToString(prob)
         self.state = self.reset_state()
 
         #set up dicts for domain types and problem objects
@@ -28,8 +28,6 @@ class PDDLController:
             action = PDDLAccessor.parseAction(tempDom.partition("\n")[0], self.domain)
             self.actions.append(action)
             n -= 1
-
-
         #loop for creating the list of domain predicates
         pred = PDDLAccessor.getSection("predicates", self.domain)
         predicates = pred.split('\n')
@@ -39,7 +37,6 @@ class PDDLController:
             if (len(temp) > 1):
                 self.predicates.append(temp)
 
-        
     #itterates the list of actions and returns an action with a matching name
     def getAction(self, name):
         for x in self.actions:
