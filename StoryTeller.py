@@ -3,7 +3,7 @@ import GiantTortoise
 from GiantTortoise import GiantTortoise
 
 class StoryTeller:
-    def __init__(self, domainF, problemF, lex, seed, api):
+    def __init__(self, domainF, problemF, seed, api):
         tmp = "tmp/"
         self.genePool = GiantTortoise(tmp+domainF, tmp+problemF, seed)
         self.pddlController = self.genePool.pc
@@ -11,7 +11,6 @@ class StoryTeller:
         self.sasPlan = "..\sas_plan"
         self.planApi = api(domainF, problemF)
         self.problemF = problemF
-        self.lex = lex
 
     #uhm, "problem" is a bit of a mess, as a keyword here, it should be like new problem name or something instead,
     # n describes a number for making multiples, this probably shouldn't recide in this part of the code
@@ -38,9 +37,6 @@ class StoryTeller:
         self.planApi.prob = problem
         self.planApi.updateParams()
 
-        #if (os.path.exists(self.sasPlan)):
-        #    os.remove(self.sasPlan)
-        
         output = self.planApi.get_plan(show = False)
         
         if (output != ""):
@@ -127,90 +123,6 @@ class StoryTeller:
         acc.append(act)
         self.write_story(genes, act[1], acc, n)
 
-    def asses_story_by_states(self, story, startState = "", ideal = [0,1,2,-2], other = [1,1,-1]):
-        xy = []
-        #xz = []
-        result = 0.0
-        if (startState == ""):
-            startState = self.startState
-            startVal = self.asses_act_from_state(["",startState], ideal[0])
-
-        x = 0
-        xy.append(startVal)
-        state = startState
-        for act in story:
-            if (state == act[1]):
-                result += 1.0
-            if (act[0] == ""):
-                result += 1
-            state = act[1]
-            #z = sum(self.asses_act_from_plan(act[0], self.lex))
-            result += self.asses_act_from_state(act, ideal[x+1])# - startVal
-            #xy.append(y)
-            #xz.append(z)
-            x += 1
-
-        """
-        x = 0
-        for z in xz:
-            print(z)
-            if (other[x] == z):
-                print("z")
-                print(z)
-                result = result / (x+2)
-            x += 1
-        """
-        
-        return result
-
-    def asses_act_from_state(self, story, aim = 0):
-        lex = self.lex
-        result = 0
-        state = story[1]
-        if (story[0] == ""):
-            return 4
-#        print(story[0])
-        for key in lex['state']:
-            result += state.count(key) * lex['state'][key]
- #       print(aim)
-  #      print(result)
-        result = abs(aim - result)
-   #     print (result)
-        return result
-
-    def story_to_plan_curve(self,story):
-        temp = []
-        for act in story:
-            temp.append(self.plan_to_curve(act[0]))
-        result = self.curve_merger(temp)
-        return result
-
-    def plan_to_curve(self, plan):
-        x = [0]
-        y = [0]
-        for action in plan:
-            a = action.split()[0]
-            if (a in self.lex['plan']):
-                x.append(x[len(x) -1] + self.lex['plan'][a][0])
-                y.append(y[len(y)-1] + self.lex['plan'][a][1])
-        result = (x,y)
-        #print(result)
-        return result
-
-    def curve_merger(self, curves):
-        x = [0]
-        y = [0]
-        for curve in curves:
-            curve[1].pop(0)
-            curve[0].pop(0)
-            for t in curve[0]:
-                x.append(x[len(x) -1] + t)
-            for v in curve[1]:
-                y.append(y[len(y) -1] + v)
-                
-        result = (x,y)
-        return result
-
 def copyFile(source, newFile):
     openFile = open(source)
     fileContent = openFile.read()
@@ -248,177 +160,3 @@ def printPlan(plan):
     openPlan = open(plan)
     print(openPlan.read())
     openPlan.close()
-
-"""
-for s in storybook[:10]:
-    for a in s:
-        print(a[0])
-    print("")
-
-fart = []
-for s in storybook:
-    fart.append(st.asses_story_by_states(s, startVal))
-
-print(fart)
-
-"""
-
-
-
-
-
-
-"""
-for s in storybook:
-    for c in s:
-        print(c[0])
-"""
-
-
-
-"""
-tempo = []
-for s in storybook[0]:
-    tempo.append(s[2])
-fart = []
-st.write_story(tempo, "", fart)
-
-for farts in fart:
-    print(farts[0])
-
-
-
-bigBook = []
-n = 2
-#bigBook.append(storybook)
-for s in storybook:
-    temp = []
-    temp.append(s)
-    st.add_chapter(s,n, temp)
-    #story = []
-    #print(s[0])
-    #nextChapter = st.story_book(n,s[1])
-    #story.append(s)
-
-    #hump = []
-    #for p in nextChapter:
-    #    lastChapter = st.story_book(n,p[1])
-    #    stairy = BranchingBook(p, lastChapter)
-    #    stairy.children = lastChapter
-    #    hump.append(stairy)
-
-    #temp = BranchingBook(s)
-    #print(temp)
-    #print(temp.get_stories())
-    #temp.children = hump
-
-#    print(hump[0].get_stories())
-    #print(s[0])
-    #print(nextChapter[0][0])
-    #spleen = st.genePool.makeGoalGene(s[2])
-    #print(spleen)
-#    print(temp)
-#    print("fart")
-    bigBook.append(temp)
-
-#print (bigBook)
-
-for b in bigBook:
-#    print(b)
-    #print(b.get_stories())
-    print("---- Story Time ! ----")
-    for s in b:
-        print(s[0])
-       # pass
-"""
-
-"""
-storybook = st.multiple_act(3)
-
-
-print(storybook)
-
-for s in storybook:
-    print(s[0])
-
-storybook = []
-
-rejects = []
-n= 0
-while (len(storybook) < 10 and n < 100):
-    story = storyStart
-    while (story[0] == ""):
-        writeStory = True
-        gene1 = st.genePool.mk_random_dna()
-        for gene in rejects:
-            k = 1
-            for pos in range(0, len(gene)):
-                if (list(gene1[pos]) == list(gene)[pos]):
-                    k += 1
-                    if (k == len(gene)):
-                        #print("duplicate ")
-                        writeStory = False
-                    
-        #gene2 = st.genePool.mk_random_dna()
-        #gene3 = st.genePool.mk_random_dna()
-        if writeStory:
-            story = st.one_act(gene1, st.startState)
-            if (story[0] == ""):
-                rejects.append(gene1)
-        #print(gene1)
-        #story = st.multiple_act([gene1,gene2,gene3])
-    newStory = True
-    for s in storybook:
-        if (list(s[0]) == list(story[0])):
-            newStory = False
-            rejects.append(story[2])
-    if newStory:
-        storybook.append(story)
-        print(n)
-    n += 1
-"""
-
-
-#pprint.pprint(storybook)
-"""
-gene1 = [[3, 4, 1, 7, 0, 5, 2, 6], [1, 2, 0], [0, 3, 1, 2], [0, 1, 2]]
-gene2 = [[3, 4, 1, 7, 0, 5, 2, 6], [1, 2, 0], [1, 0, 3, 2], [0, 1, 2]]
-gene3 = [[1, 3, 2, 5, 4, 0], [0, 1, 2], [0, 1, 3, 2], [2, 1, 0]]
-big bad wolf at grannies house [[1, 0, 6, 7, 5, 2, 4, 3], [2, 0, 1], [2, 1, 0, 3], [2, 0, 1]]
-"""
-
-#geneus = [[7, 0, 1, 5, 2, 4, 3, 6], [0, 2, 1], [1, 2, 3, 0], [1, 2, 0]]
-#geneus = [[1, 0, 1, 5, 2, 4, 3, 6], [0, 2, 1], [0, 2, 3, 0], [2, 2, 0]]
-#geneus = [[3, 0, 2, 6, 7, 4, 5, 1], [1, 0, 2], [0, 2, 1, 3], [1, 2, 0]]
-
-#print(st.genePool.makeGoalGene(geneus))
-#story = st.one_act((gene1,gene2), st.startState)
-
-#print(st.genePool.makeGoalGene(gene2))
-#print(st.genePool.makeGoalGene(gene3))
-#print(gene1)
-#print(story[0])
-
-"""
-tmp = "tmp/"
-dna = GiantTortoise(tmp+pd1,tmp+pp1)
-n = 0
-p=0
-fdapi = FD_Api(pd1, pp2)
-
-while (n < 100):
-    gene = dna.makeGene(dna.mk_random_dna(), dna.goalPredicates)
-
-    changeGoal(tmp+pp1, gene, tmp+pp2)
-
-    output = fdapi.rumBriber(fdapi.parameters, False)#.wait()
-
-    sasPlan = "..\sas_plan"
-    if (os.path.exists(sasPlan)):
-        printPlan(sasPlan)
-        print(gene)
-        p += 1
-        print(p)
-    n +=1
-
-"""

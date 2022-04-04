@@ -4,14 +4,136 @@ import Critic
 import copy
 import json
 import PlanApi
-from PlanApi import Plan_Api
 import StoryTeller
+
+class DPG():
+    def __init__(self, planDomain, planProblem, lexicon, seed = "", api = PlanApi.Cloud_Planner_Api, tensionCurve = ([0,1,2,3,4,5,6],[0,1,2,2.5,3,1.5,0])):
+        self.storyTeller = StoryTeller.StoryTeller(planDomain, planProblem, seed, api)
+        self.tensionCurve = tensionCurve
+        self.lex = lexicon
+
+    def gene_story(self, noS, maxGenerations = 100, acceptanceCriteria = 0.02):
+        fnoS = int(noS/4)
+        temp = self.storyTeller.story_book(int(fnoS))
+        storybook = []
+        for s in temp:
+            storybook.append(s[0])
+        
+        for gen in range(maxGenerations):
+            print(gen)
+            arrangedStories = []
+            #I don't think this check is nescesary since it is also done when adding new genes
+            for s in storybook:
+                if not self.contains_duplicate_dna(s,arrangedStories):
+                    arrangedStories.append(s)
+            """
+            arrangedStories = storybook
+            """
+
+            arrangedStories.sort(key = self.critic_holder)
+            for sto in range(len(arrangedStories)):
+                if (sto > len(arrangedStories) - 1):
+                    break
+                grade = self.critic_holder(arrangedStories[sto])
+                #if the grade of the story is sufficiently bad, reject it..
+                if (grade >= 2):
+                    arrangedStories.pop(sto)
+                    continue
+
+                #if a story is good enough end the gene-run early default is 0.02    
+                if(grade < acceptanceCriteria):
+                    return arrangedStories[:noS]
+
+            genes = copy.deepcopy(arrangedStories[:fnoS])
+            genes = genes + self.split_story_dna(arrangedStories[:fnoS])
+            nextGen = arrangedStories[:fnoS]
+
+            for tr in range(int(noS)):
+                g = random.choice(genes)
+                g = self.storyTeller.genePool.mutate_dna(g[2], genes)
+                addit = True
+
+                for p in nextGen:
+                    if (self.storyTeller.genePool.dna_is_same(p[2], g)):
+                        addit = False
+                        break
+
+                if addit:
+                    g = self.storyTeller.one_act(g, self.storyTeller.startState)
+                    if (not g[0] == ''):
+                        nextGen.append(g)
+
+            storybook = nextGen
+
+        return arrangedStories
+
+    def critic_holder(self, story):
+        plancurve = self.plan_to_curve(story[0])
+        if (plancurve == ([0], [0])):
+            return 2
+        result = Critic.curve_comparer(plancurve,self.tensionCurve)
+        
+        divi = (len(plancurve[0]))
+        result = result/divi
+        return result
+
+    def contains_duplicate_dna(self, story, dnaList):
+        for i in dnaList:
+            if(self.storyTeller.genePool.dna_is_same(i[2],story[2])):
+                return True
+        return False
+
+    def split_story_dna_full(self, stories):
+        dnaNo = len(stories) -1
+        result = []
+        for strandNo in range(dnaNo):
+            if (len(stories[strandNo][2]) > 1):
+                temp = copy.deepcopy(stories[strandNo][2])
+                for g in temp:
+                    story = self.storyTeller.one_act([g], self.storyTeller.startState)
+                    result.append(story)
+        return result
+
+    #no reason to write out the story when the dna is the active part
+    def split_story_dna(self, stories):
+        dnaNo = len(stories) -1
+        result = []
+        for strandNo in range(dnaNo):
+            if (len(stories[strandNo][2]) > 1):
+                temp = copy.deepcopy(stories[strandNo][2])
+                for g in temp:
+                    story = ([""],"",[g])
+                    result.append(story)
+        return result
+        
+    def story_to_plan_curve(self,story):
+        temp = []
+        for act in story:
+            temp.append(self.plan_to_curve(act[0]))
+        result = self.curve_merger(temp)
+        return result
+
+    def plan_to_curve(self, plan):
+        x = [0]
+        y = [0]
+        for action in plan:
+            a = action.split()[0]
+            if (a in self.lex['plan']):
+                x.append(x[len(x) -1] + self.lex['plan'][a][0])
+                y.append(y[len(y)-1] + self.lex['plan'][a][1])
+        result = (x,y)
+        #print(result)
+        return result
+
+"""
+test stuff
+
+"""
 
 pd = "AdventureDomCopy.pddl"
 pp = "AdventureProbCopycopy.pddl"
 
 pd1 = "RedRidingHoodDom.pddl"
-#pp1 = "RedRidingHoodProb.pddl"
 
 pp2 = "RedHoodProbTwo.pddl"
 
@@ -20,133 +142,41 @@ l1 = "tmp/RedRidingLex.json"
 
 lex = json.load(open(l1))
 
-desiredCurve = [1,2,-2]
+t1 = time.time()
 
-st = StoryTeller.StoryTeller(pd1, pp2, lex, "", api = PlanApi.Cloud_Planner_Api)
+thing = DPG(pd1, pp2, lex, "hoppitty")
 
-def contains_duplicate_dna(story, dnaList):
-    for i in dnaList:
-        if(st.genePool.dna_is_same(i[2],story[2])):
-            return True
-    return False
+funk = []
+for k in range(3):
+    temp = thing.gene_story(20, acceptanceCriteria= 0.02)
+    funk.append(temp)
+    t2 = time.time()
+    print(t2 - t1)
+    print(k)
 
-def split_story_dna_full(stories):
-    dnaNo = len(stories) -1
-    result = []
-    for strandNo in range(dnaNo):
-        if (len(stories[strandNo][2]) > 1):
-            temp = copy.deepcopy(stories[strandNo][2])
-            for g in temp:
-                story = st.one_act([g], st.startState)
-                result.append(story)
-    return result
+for f in funk:
+    print(f[0][0])
+    print()
+    print(f[1][0])
+    print()
 
-#no reason to write out the story when the dna is the active part
-def split_story_dna(stories):
-    dnaNo = len(stories) -1
-    result = []
-    for strandNo in range(dnaNo):
-        if (len(stories[strandNo][2]) > 1):
-            temp = copy.deepcopy(stories[strandNo][2])
-            for g in temp:
-                story = ([""],"",[g])
-                result.append(story)
-    return result 
+    #for s in f:
+    #    print(len(s[2]))
 
-def other_gene_story(noS, generations = 100):
-    fnoS = int(noS/4)
-    temp = st.story_book(int(fnoS))
-    storybook = []
-    #blackList = []
-    for s in temp:
-        storybook.append(s[0])
+    print()
 
-    
-    #print(storybook)
-    for gen in range(generations):
-        print(gen)
-    #    print(len(storybook))
-        arrangedStories = []
-        for s in storybook:
-            if not contains_duplicate_dna(s,arrangedStories):
-                arrangedStories.append(s)
-            """
-            addit = True
-            for a in arrangedStories:
-                if (st.genePool.dna_is_same(a[2],s[0][2])):
-                    addit = False
-            if addit:
-                arrangedStories.append(s[0])
-            """
+t2 = time.time()
+print(t2 - t1)
+print(k)
 
-        def critic_holder(story):
-            plancurve = st.plan_to_curve(story[0])
-            if (plancurve == ([0], [0])):
-                return 2
-            result = Critic.curve_comparer(plancurve,([0,1,2,3,4,5,6],[0,1,2,2.5,3,1.5,0]))
-            
-            divi = (len(plancurve[0]))
-            #print(divi)
-            result = result/divi
-            #print(plancurve)
-            #print(result)
-            return result
-
-        arrangedStories.sort(key = critic_holder)
-        for sto in range(len(arrangedStories)):
-            if (sto > len(arrangedStories) - 1):
-                #print ("kaplah!")
-                #print(len(arrangedStories))
-                break
-            topgrade = critic_holder(arrangedStories[sto])
-            if (topgrade == 2):
-                arrangedStories.pop(sto)
-                continue
-            """
-            print("---- Story Time ! ----")
-            print(st.plan_to_curve(arrangedStories[sto][0]))
-            print(topgrade)
-            print(st.genePool.makeGoalGene(arrangedStories[sto][2]))
-            print(arrangedStories[sto][0])
-            print()
-            """
-                
-            if(topgrade < 0.02):
-                #print("---- Story Time ! ----")
-                #print(arrangedStories[0][0])
-                return arrangedStories[:noS]    
-
-        genes = copy.deepcopy(arrangedStories[:fnoS])
-        genes = genes + split_story_dna(arrangedStories[:fnoS])
-        nextGen = []
-        #this needs to be made dynamic
-        #while (len(nextGen) < noS -1):
-        for tr in range(int(noS)):
-            #print(tr)
-            g = random.choice(genes)
-            #n = random.randint(0,99)
-            #if n < 10:
-            g = st.genePool.mutate_dna(g[2], genes)
-            addit = True
-            #print(g)
-            for p in nextGen:
-                if (st.genePool.dna_is_same(p[2], g)):
-                    #print("naddit")
-                    addit = False
-                    break
-            if addit:
-                #print("addit")
-                g = st.one_act(g, st.startState)
-                #print("")
-                #print(g)
-                if (not g[0] == ''):
-                    nextGen.append(g)
+"""
+gotta rewamp stuff beyond this point
+"""
 
 
-        storybook = arrangedStories[:fnoS] + nextGen
-        #print(storybook)
+"""
 
-    return arrangedStories
+
 
 def first_gene_story(acts, noS, maxGen = 1000):
     fnoS = int(noS/4)
@@ -241,45 +271,88 @@ def first_gene_story(acts, noS, maxGen = 1000):
             #t1 = threading.Thread(st.write_story(newGene, g0[1], stary, tr))
             #t1.start()
 
-        """
-        for _ in range(10):
-            g0 = random.choice(genes)
-            g1 = random.choice(genes)
-            g2 = random.choice(genes)
-
-            newGene = [g0[0],g1[1],g2[2]]
-            stary = []
-            st.write_story(newGene, st.startState, stary)
-            nextGen.append(stary)
-        """    
+#        for _ in range(10):
+#            g0 = random.choice(genes)
+#            g1 = random.choice(genes)
+#            g2 = random.choice(genes)
+#
+#            newGene = [g0[0],g1[1],g2[2]]
+#            stary = []
+#           st.write_story(newGene, st.startState, stary)
+#            nextGen.append(stary)
         
         storybook = nextGen + st.story_book(fnoS, acts) + storybook[:fnoS]
 
-    """
-    storybook.sort(key = st.asses_story_by_states)
-    print(st.asses_story_by_states(storybook[0]))
-    print(storybook[0][0][0])
-    print(storybook[0][1][0])
-    print(storybook[0][2][0])
-    """
+    #storybook.sort(key = st.asses_story_by_states)
+    #print(st.asses_story_by_states(storybook[0]))
+    #print(storybook[0][0][0])
+    #print(storybook[0][1][0])
+    #print(storybook[0][2][0])
+"""
 
-t1 = time.time()
-funk = []
-for k in range(3):
-    temp = other_gene_story(20)
-    funk.append(temp)
-    t2 = time.time()
-    print(t2 - t1)
-    print(k)
 
-for f in funk:
-    print(f[0][0])
-    
-    #for s in f:
-    #    print(len(s[2]))
+"""
+    def asses_story_by_states(self, story, startState = "", ideal = [0,1,2,-2], other = [1,1,-1]):
+        xy = []
+        #xz = []
+        result = 0.0
+        if (startState == ""):
+            startState = self.startState
+            startVal = self.asses_act_from_state(["",startState], ideal[0])
 
-    print()
+        x = 0
+        xy.append(startVal)
+        state = startState
+        for act in story:
+            if (state == act[1]):
+                result += 1.0
+            if (act[0] == ""):
+                result += 1
+            state = act[1]
+            #z = sum(self.asses_act_from_plan(act[0], self.lex))
+            result += self.asses_act_from_state(act, ideal[x+1])# - startVal
+            #xy.append(y)
+            #xz.append(z)
+            x += 1
 
-t2 = time.time()
-print(t2 - t1)
-print(k)
+#        x = 0
+#        for z in xz:
+#            print(z)
+#            if (other[x] == z):
+#                print("z")
+#                print(z)
+#                result = result / (x+2)
+#            x += 1
+        
+        return result
+
+    def asses_act_from_state(self, story, aim = 0):
+        lex = self.lex
+        result = 0
+        state = story[1]
+        if (story[0] == ""):
+            return 4
+#        print(story[0])
+        for key in lex['state']:
+            result += state.count(key) * lex['state'][key]
+ #       print(aim)
+  #      print(result)
+        result = abs(aim - result)
+   #     print (result)
+        return result
+
+    def curve_merger(self, curves):
+        x = [0]
+        y = [0]
+        for curve in curves:
+            curve[1].pop(0)
+            curve[0].pop(0)
+            for t in curve[0]:
+                x.append(x[len(x) -1] + t)
+            for v in curve[1]:
+                y.append(y[len(y) -1] + v)
+                
+        result = (x,y)
+        return result
+
+"""

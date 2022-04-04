@@ -2,11 +2,11 @@
 Class for holding and applying pddl stuff
 auth: Jakob Ehlers
 """
-
 import PDDLAccessor
 import IntermediateParser
 from IntermediateParser import *
 
+#this should be split into a domain holder and a problem controller
 class PDDLController:
     def __init__(self, domain, prob):
         self.domainFile = domain

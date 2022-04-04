@@ -11,7 +11,7 @@ import random
 import copy
 
 class GiantTortoise:
-    def __init__(self, domainF, problemF, seed = "the blood in my urine tastes too much of iron"):
+    def __init__(self, domainF, problemF, seed):
         self.pc = PDDLController.PDDLController(domainF, problemF)
         #self.goalPredicates = self.getGoalPredicates()
         pist = []
@@ -31,24 +31,13 @@ class GiantTortoise:
                         temp = pred
                         break
             if (result.__contains__(temp) == False):
-                result.append(temp)        
+                result.append(temp)
         self.goalPredicates = result
-
-
-
         self.thesaurus = {**self.expandDict(self.pc.pddltypes, self.pc.probjects, "- "), **self.pc.probjects}
 
         self.genome = [len(self.goalPredicates)] + self.mapGenome(self.thesaurus)
         if (seed != ""):
             random.seed(seed)
-        
-        #making a random gene from the genome for goalpredicates
-        """
-        for p in range(1000):
-            dna = self.mk_random_dna()
-        """
-#            print(self.makeGene(dna, self.goalPredicates))
-
 
     #returns a list of lists of ints with the numbers shuffeled
     def mk_random_dna(self):
@@ -96,6 +85,7 @@ class GiantTortoise:
         else:
             result = result + temp
             return result
+
     #takes a dna strand and shuffles a random gene
     def mutate_dna_randomly(self, dna):
         roll = random.randint(0,len(dna)-1)
@@ -116,11 +106,9 @@ class GiantTortoise:
     def mutate_dna(self, dna, genes, i = 22000):
         n = random.randint(0,99)
         if (n < 15 and len(dna) > 1):
-            #print("remove")
             roll = random.randint(0, len(dna) -1)
             result = copy.deepcopy(dna)
             result.pop(roll)
-            #print(result)
             return result
         
         elif (n < 30):
@@ -164,7 +152,6 @@ class GiantTortoise:
                     elif (list(effect.keys()).__contains__("forall")):
                         effect = effect["forall"][1]
                         print(effect)
-                        
                     else: continue
                 for pred in self.pc.predicates:
                     if (pred.count(effect.split()[0]) > 0):
@@ -210,9 +197,6 @@ class GiantTortoise:
                 if (self.gene_is_same(genes,genes2)):
                     count -= 1
                     break
-        #print("count:")
-        #print(count)
-        #print("")
         if (count < 1):
             return True
         else:
@@ -232,18 +216,12 @@ class GiantTortoise:
             return True
         else: 
             return False
+
     #returns a gene from an int[] by popping the first int and picking the complying expression from the pool, and using the rest of the list as choices for substitution
     def makeGene(self, dna, pool):
         cellShell = dna[0][0]
-
         cellShell = pool[cellShell]
         result = self.substituteVar(cellShell, dna)
-        #to "not" or not to "not"
-        """
-        if (self.pc.state.count(result) > 0):
-            result = "(not " + result + ")"
-        print(result)
-        """
         return result
 
     #takes in an expression and, if no variable is given the first, ?smth variable that gets substituted with a fitting string from the thesaurus
