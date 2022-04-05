@@ -1,3 +1,4 @@
+from pprint import pprint
 import time
 import random
 import Critic
@@ -50,11 +51,11 @@ class DPG():
 
             for tr in range(int(noS)):
                 g = random.choice(genes)
-                g = self.storyTeller.genePool.mutate_dna(g[2], genes)
+                g = self.storyTeller.giantTortoise.mutate_dna(g[2], genes)
                 addit = True
 
                 for p in nextGen:
-                    if (self.storyTeller.genePool.dna_is_same(p[2], g)):
+                    if (self.storyTeller.giantTortoise.dna_is_same(p[2], g)):
                         addit = False
                         break
 
@@ -79,7 +80,7 @@ class DPG():
 
     def contains_duplicate_dna(self, story, dnaList):
         for i in dnaList:
-            if(self.storyTeller.genePool.dna_is_same(i[2],story[2])):
+            if(self.storyTeller.giantTortoise.dna_is_same(i[2],story[2])):
                 return True
         return False
 
@@ -146,7 +147,12 @@ t1 = time.time()
 
 thing = DPG(pd1, pp2, lex, "hoppitty")
 
+#pprint(thing.storyTeller.giantTortoise.thesaurus)
+
 funk = []
+
+
+
 for k in range(3):
     temp = thing.gene_story(20, acceptanceCriteria= 0.02)
     funk.append(temp)
@@ -173,11 +179,7 @@ print(k)
 gotta rewamp stuff beyond this point
 """
 
-
 """
-
-
-
 def first_gene_story(acts, noS, maxGen = 1000):
     fnoS = int(noS/4)
     storybook = st.story_book(fnoS, acts)

@@ -1,13 +1,13 @@
 class Location:
     def __init__(self, name):
         self.name = name
-        self.things = []
-        self.ppl = []
+        self.onground = []
+        self.atloc = []
 
 class Area(Location):
     def __init__(self, name):
         super().__init__(name)
-        self.sublocations = []
+        self.inarea = []
 
 class Site(Location):
     def __init__(self, name, parentLocation_name):
@@ -17,10 +17,10 @@ class Site(Location):
 class Character:
     def __init__(self, name):
         self.name = name
-        self.skills = []
-        self.knowledge = []
-        self.inventory = []
-        self.trophy = []
+        self.can = []
+        self.knows = []
+        self.havething = []
+        self.havebodypart = []
         self.alive = True
 
 class Item:

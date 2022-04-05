@@ -1,13 +1,15 @@
 import os
+import PDDLAccessor
 import GiantTortoise
 from GiantTortoise import GiantTortoise
 
 class StoryTeller:
     def __init__(self, domainF, problemF, seed, api):
         tmp = "tmp/"
-        self.genePool = GiantTortoise(tmp+domainF, tmp+problemF, seed)
-        self.pddlController = self.genePool.pc
-        self.startState = self.genePool.pc.state
+        problemS = PDDLAccessor.fileToString(tmp + problemF)
+        self.giantTortoise = GiantTortoise(tmp+domainF, problemS, seed)
+        self.pddlController = self.giantTortoise.pc
+        self.startState = self.get_state(problemS)
         self.sasPlan = "..\sas_plan"
         self.planApi = api(domainF, problemF)
         self.problemF = problemF
@@ -30,7 +32,7 @@ class StoryTeller:
         if type(gene) is str:
             goalGene = gene
         else:
-            goalGene = self.genePool.makeGoalGene(gene)
+            goalGene = self.giantTortoise.makeGoalGene(gene)
         
         changeGoal("tmp/"+problem, goalGene)
 
@@ -39,12 +41,13 @@ class StoryTeller:
 
         output = self.planApi.get_plan(show = False)
         
+        #in current configuration this isn't nescesarry, it is useful for making multiple acts/bigger stories, but maybe that should be handled somewhere else in a different maner
         if (output != ""):
             act = output.splitlines()
             for x in act:
                 if (x[0] == ";"):
                     break
-                state = self.pddlController.apply_action_to_state(x, state, self.genePool.thesaurus)
+                state = self.pddlController.apply_action_to_state(x, state, self.giantTortoise.thesaurus)
                 if (state != ""):
                     changeState("tmp/" + problem, state)
             if (act[0][0] == ";"):
@@ -68,7 +71,7 @@ class StoryTeller:
             story = storyStart
             while (story[0] == ""):
                 writeStory = True
-                gene1 = self.genePool.mk_random_dna()
+                gene1 = self.giantTortoise.mk_random_dna()
                 for gene in rejects:
                     k = 1
                     for pos in range(0, len(gene)):
@@ -105,7 +108,7 @@ class StoryTeller:
             #this is a version of an "empty" act
             act = [""]
             while(act[0] == ""):
-                gene1 = self.genePool.mk_random_dna()
+                gene1 = self.giantTortoise.mk_random_dna()
                 act = self.one_act(gene1, story[1])
             acc.append(act)
             self.add_chapter(act, n, acc)
@@ -122,6 +125,11 @@ class StoryTeller:
         act = self.one_act(gene, state, n = n)
         acc.append(act)
         self.write_story(genes, act[1], acc, n)
+
+        #returns a state e.g. the init section of a problem
+    def get_state(self, problemString):
+        return "    " + PDDLAccessor.getSection("init", problemString).rpartition(")")[0]
+    
 
 def copyFile(source, newFile):
     openFile = open(source)

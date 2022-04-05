@@ -5,14 +5,15 @@ it works by using a pddlController to identify, seperate and categorize differen
 Auth: Jakob Ehlers
 """
 import PDDLController
+import PDDLAccessor
 import IntermediateParser
 from IntermediateParser import *
 import random
 import copy
 
 class GiantTortoise:
-    def __init__(self, domainF, problemF, seed):
-        self.pc = PDDLController.PDDLController(domainF, problemF)
+    def __init__(self, domainF, problemS, seed):
+        self.pc = PDDLController.PDDLController(domainF)#, problemS)
         #self.goalPredicates = self.getGoalPredicates()
         pist = []
         for action in self.pc.actions:
@@ -33,7 +34,8 @@ class GiantTortoise:
             if (result.__contains__(temp) == False):
                 result.append(temp)
         self.goalPredicates = result
-        self.thesaurus = {**self.expandDict(self.pc.pddltypes, self.pc.probjects, "- "), **self.pc.probjects}
+        probjects = self.pc.mapTyps("objects", problemS)
+        self.thesaurus = {**expandDict(self.pc.pddltypes, probjects, "- "), **probjects}
 
         self.genome = [len(self.goalPredicates)] + self.mapGenome(self.thesaurus)
         if (seed != ""):
@@ -165,24 +167,7 @@ class GiantTortoise:
                     result.append(temp)
         return result
 
-    #expand definitions so upper categories include sub's content
-    def expandDict(self, super_dict, sub_dict, prefix = ""):
-        result = {}
-        for x in super_dict:
-            temp = []
-            for k in super_dict[x]:
-                key = prefix + k
-                if (list(super_dict.keys()).__contains__(key)):
-                    for p in super_dict[key]:
-                        pey = prefix + p
-                        if(list(sub_dict.keys()).__contains__(pey)):
-                            temp = temp + sub_dict[pey]        
-                if(list(sub_dict.keys()).__contains__(key)):
-                    temp = temp + sub_dict[key]
-            result[x] = temp
 
-        return result
-    
     #takes a dna strand and makes it into a goal-gene
     def makeGoalGene(self, dna):
         gg = ""
@@ -261,6 +246,23 @@ class GiantTortoise:
         
         return result
 
+#expand definitions so upper categories include sub's content
+def expandDict(super_dict, sub_dict, prefix = ""):
+    result = {}
+    for x in super_dict:
+        temp = []
+        for k in super_dict[x]:
+            key = prefix + k
+            if (list(super_dict.keys()).__contains__(key)):
+                for p in super_dict[key]:
+                    pey = prefix + p
+                    if(list(sub_dict.keys()).__contains__(pey)):
+                        temp = temp + sub_dict[pey]        
+            if(list(sub_dict.keys()).__contains__(key)):
+                temp = temp + sub_dict[key]
+        result[x] = temp
+
+    return result
 
 """
 testing stuff

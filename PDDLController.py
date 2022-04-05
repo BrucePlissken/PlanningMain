@@ -1,23 +1,24 @@
 """
-Class for holding and applying pddl stuff
+Class for holding domain info and applying it to pddl problems stuff
 auth: Jakob Ehlers
 """
 import PDDLAccessor
 import IntermediateParser
 from IntermediateParser import *
 
-#this should be split into a domain holder and a problem controller
+#I decoupled the problem from this part of the code, if there is residue it is merely superstition on the coders part... this should be split into a domain holder and a problem controller
 class PDDLController:
-    def __init__(self, domain, prob):
+    def __init__(self, domain):#, prob):
         self.domainFile = domain
-        self.problemFile = prob
+        #self.problemFile = prob
         self.domain = PDDLAccessor.fileToString(domain)
-        self.problem = PDDLAccessor.fileToString(prob)
-        self.state = self.reset_state()
+        #self.problem = PDDLAccessor.fileToString(prob)
+        #
+        #self.state = self.get_state(self.problem)
 
-        #set up dicts for domain types and problem objects
+        #set up dicts for nested domain types
         self.pddltypes = self.mapTyps("types", self.domain)
-        self.probjects = self.mapTyps("objects", self.problem)
+        #self.probjects = self.mapTyps("objects", self.problem)
         
         #loop for creating the list of dicts of actions
         self.actions = []
@@ -44,10 +45,6 @@ class PDDLController:
                 return x
         print("error: no such action name: " + name)
 
-    #returns a state e.g. the init section of a problem
-    def reset_state(self):
-        return "    " + PDDLAccessor.getSection("init", self.problem).rpartition(")")[0]
-
     #returns a dict with concrete parameters for replacing the variables
     def adjustParameters(self, action, params):
         paramargs = action.get("parameters") 
@@ -70,7 +67,7 @@ class PDDLController:
 
         return result
 
-    #returns a dict of the different types in the domain
+    #returns a dict of the different types in the domain, well actually only the super and sub-types
     def mapTyps(self, section, target):
         typs = PDDLAccessor.getSection(section, target)
         result = {}
@@ -84,7 +81,7 @@ class PDDLController:
             i -=1
         
         return result
-
+    """
     #applies an action from an action string expression eg. (actionName arg1 arg2) with the variables filled out
     def applyAction(self, actionString, thesaurus):
         name = actionString.partition("(")[2].partition(" ")[0]
@@ -100,6 +97,7 @@ class PDDLController:
         #on failure:
         print("action "+ actionString + " NOT allowed")
         return False
+    """
 
     #a flexible version of applyAction, that applies an action to a given state
     def apply_action_to_state(self, actionString, state, thesaurus):
@@ -118,6 +116,7 @@ class PDDLController:
         return ""
 
     #applies the current state (:init...) to the pddl problem file
+    #can and should be disconnected from the class
     def writeChange(self):
         tmp = self.problem
         tmpfirst = tmp.partition("init")[0]+"init"
@@ -128,6 +127,7 @@ class PDDLController:
         file.close()
 
     #change the goal of the problem
+    #was moved from this section of the code to StoryTeller.py
     
 """
 #testing stuff beyond this point
