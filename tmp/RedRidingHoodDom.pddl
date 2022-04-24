@@ -1,8 +1,8 @@
 (define (domain lrrh)
 (:requirements :universal-preconditions :disjunctive-preconditions :quantified-preconditions :typing :equality :negative-preconditions :conditional-effects)
 (:types
-    location - info
     location
+    location - info
     character
 )
 (:predicates

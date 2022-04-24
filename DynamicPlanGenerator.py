@@ -5,6 +5,7 @@ import Critic
 import copy
 import json
 import PlanApi
+from PlanningMain.PlanApi import FD_Api
 import StoryTeller
 
 class DPG():
@@ -13,9 +14,14 @@ class DPG():
         self.tensionCurve = tensionCurve
         self.lex = lexicon
 
-    def gene_story(self, noS, maxGenerations = 100, acceptanceCriteria = 0.02):
-        fnoS = int(noS/4)
-        temp = self.storyTeller.story_book(int(fnoS))
+    def gene_story(self, noS, fnoS = 0, inoS = 0, maxGenerations = 100, acceptanceCriteria = 0.02):
+        if (fnoS < 1):
+            fnoS = int(noS/4)
+        if (inoS < 1):
+            inoS = fnoS
+
+                
+        temp = self.storyTeller.story_book(inoS)
         storybook = []
         for s in temp:
             storybook.append(s[0])
@@ -131,40 +137,45 @@ test stuff
 
 """
 
-pd = "AdventureDomCopy.pddl"
-pp = "AdventureProbCopycopy.pddl"
+pd = "AdventureDomCopycopy.pddl"
+pp = "AdventureProbCopycopycopy.pddl"
 
 pd1 = "RedRidingHoodDom.pddl"
+pp1 = "RedHoodProbTwo.pddl"
 
-pp2 = "RedHoodProbTwo.pddl"
-
-l2 = "tmp/Adventurelex.json"
+pd2 = "CharacterPlanningDom.pddl"
+pp2 = "OVERHERE.pddl"
+l = "tmp/Adventurelex.json"
 l1 = "tmp/RedRidingLex.json"
-
-lex = json.load(open(l1))
 
 t1 = time.time()
 
-thing = DPG(pd1, pp2, lex, "hoppitty")
+thing = DPG(pd2, pp2, json.load(open(l)))#, api=FD_Api)#, "hoppitty")
 
 #pprint(thing.storyTeller.giantTortoise.thesaurus)
+
+pft = thing.storyTeller.planApi.get_plan()
+if pft == "":
+    print ("error")
+    exit()
+print(pft)
 
 funk = []
 
 
 
 for k in range(3):
-    temp = thing.gene_story(20, acceptanceCriteria= 0.02)
+    temp = thing.gene_story(20, fnoS= 5, inoS= 5, maxGenerations= 100, acceptanceCriteria = 0.02)
     funk.append(temp)
     t2 = time.time()
     print(t2 - t1)
     print(k)
 
 for f in funk:
-    print(f[0][0])
-    print()
-    print(f[1][0])
-    print()
+    for s in range(3):
+        print()
+        print(f[s][0])
+        print()
 
     #for s in f:
     #    print(len(s[2]))
@@ -173,7 +184,6 @@ for f in funk:
 
 t2 = time.time()
 print(t2 - t1)
-print(k)
 
 """
 gotta rewamp stuff beyond this point

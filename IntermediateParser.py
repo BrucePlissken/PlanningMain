@@ -182,6 +182,7 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
                 acc = applyFunction(temp, lookUpbook, func, pddlProblem, acc, andOp)
                 #print(acc)
 
+        #currently "when" only works in forall loop
         if "when" in expressions:
             
 

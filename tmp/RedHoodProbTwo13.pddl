@@ -4,10 +4,8 @@
     home woods grandmasHouse - location
 )
 (:init
-    (atloc littleredridinghood home)
     (atloc grandma grandmashouse)
     (atloc bigbadwolf woods)
-    (atloc lumberjack woods)
     (isconnected home woods)
     (isconnected woods grandmashouse)
     (haveaxe lumberjack)
@@ -16,9 +14,13 @@
     (unaware bigbadwolf grandmashouse)
     (unaware bigbadwolf home)
     (areenemies lumberjack bigbadwolf)
+    (atloc littleredridinghood woods)
+    (atloc lumberjack grandmashouse)
+    (isdead littleredridinghood)
+    (cantmove bigbadwolf)
+    (isswallowed littleredridinghood bigbadwolf)
 )
 (:goal
-    (and (not (atloc bigbadwolf home))
-)
+    (and (atloc littleredridinghood grandmashouse))
   )
 )

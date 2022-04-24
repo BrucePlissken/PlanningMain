@@ -1,0 +1,23 @@
+{
+    "plan" : 
+    {   
+        "(kidnap" : [1,1],
+        "(slay" : [1,2],
+        "(request" : [1,1],
+        "(endscort": [1,-2],
+        "(deliver" : [1,-2]
+    }
+    ,
+    "state": {
+    },
+    "holder" :
+    {
+        "(untie" : [1,-1],
+        "(investigatetrack": [1,1],
+        "(dismember": [1,1],
+        "(gowith" : [0,0],
+        "(move" : [0,0],
+        "(travel" : [0,0],
+        "(askinfo" : [0,0]
+    }
+}

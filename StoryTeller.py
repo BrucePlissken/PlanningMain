@@ -41,7 +41,8 @@ class StoryTeller:
 
         output = self.planApi.get_plan(show = False)
         
-        #in current configuration this isn't nescesarry, it is useful for making multiple acts/bigger stories, but maybe that should be handled somewhere else in a different maner
+        #in current configuration this isn't nescesarry(only because it is requested higher up) , it is useful for making multiple acts/bigger stories, but maybe that should be handled somewhere else in a different maner
+        
         if (output != ""):
             act = output.splitlines()
             for x in act:

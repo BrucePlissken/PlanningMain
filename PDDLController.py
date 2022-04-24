@@ -17,7 +17,7 @@ class PDDLController:
         #self.state = self.get_state(self.problem)
 
         #set up dicts for nested domain types
-        self.pddltypes = self.mapTyps("types", self.domain)
+        self.pddltypes = self.mapTyps2("types", self.domain)
         #self.probjects = self.mapTyps("objects", self.problem)
         
         #loop for creating the list of dicts of actions
@@ -81,6 +81,23 @@ class PDDLController:
             i -=1
         
         return result
+
+    def mapTyps2(self, section, target):
+        typs = PDDLAccessor.getSection(section, target).partition(')')[0].strip().split('\n')
+        result = {}
+        for l in typs:
+            if (l.__contains__("-")):
+                kvpair = l.partition("-")
+                k = "-" + kvpair[2].partition("\n")[0]
+                v = kvpair[0].rpartition("\n")[2].split()
+                result[k] = v
+                #typs = typs.partition(k)[2]
+            else:
+                result['- '+(l.strip())] = []
+
+        return result
+
+
     """
     #applies an action from an action string expression eg. (actionName arg1 arg2) with the variables filled out
     def applyAction(self, actionString, thesaurus):

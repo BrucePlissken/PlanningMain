@@ -5,7 +5,6 @@ it works by using a pddlController to identify, seperate and categorize differen
 Auth: Jakob Ehlers
 """
 import PDDLController
-import PDDLAccessor
 import IntermediateParser
 from IntermediateParser import *
 import random
@@ -34,9 +33,8 @@ class GiantTortoise:
             if (result.__contains__(temp) == False):
                 result.append(temp)
         self.goalPredicates = result
-        probjects = self.pc.mapTyps("objects", problemS)
+        probjects = self.pc.mapTyps2("objects", problemS)
         self.thesaurus = {**expandDict(self.pc.pddltypes, probjects, "- "), **probjects}
-
         self.genome = [len(self.goalPredicates)] + self.mapGenome(self.thesaurus)
         if (seed != ""):
             random.seed(seed)

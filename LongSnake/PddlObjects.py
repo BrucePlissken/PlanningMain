@@ -1,8 +1,7 @@
 class Location:
-    def __init__(self, name):
+    def __init__(self, name, atloc = []):
         self.name = name
-        self.onground = []
-        self.atloc = []
+        self.predicates = {"whereabouts" : atloc}
 
 class Area(Location):
     def __init__(self, name):
@@ -15,19 +14,17 @@ class Site(Location):
         self.name = parentLocation_name + name
 
 class Character:
-    def __init__(self, name):
+    def __init__(self, name, whereabouts):
         self.name = name
-        self.can = []
-        self.knows = []
-        self.havething = []
-        self.havebodypart = []
-        self.alive = True
+        self.predicates = {
+            "whereabouts" : [whereabouts],
+            "inventory" : []
+        }
+
 
 class Item:
-    def __init__(self, name, subtype = "item", properties = []):
+    def __init__(self, name):
         self.name = name
-        self.subtype = subtype
-        self.properties = properties
 
 class Trophy(Item):
     def __init__(self, name):

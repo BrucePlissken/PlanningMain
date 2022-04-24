@@ -1,4 +1,5 @@
 import os
+from pprint import pprint
 import subprocess
 import sys
 import requests
@@ -91,9 +92,9 @@ class Cloud_Planner_Api(Plan_Api):
         #with open("planFileNameHolder", 'w') as f:
         #    f.write('\n'.join([act['name'] for act in resp['result']['plan']]))
         if (resp['status'] == 'error'):
-            #print()
-            #print(resp)
-            #print()
+          #  print()
+            print(resp)
+          #  print()
             plan = ''
         else:
             plan = ('\n'.join([act['name'] for act in resp['result']['plan']]))

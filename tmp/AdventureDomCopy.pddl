@@ -1,9 +1,9 @@
 (define (domain adc)
-(:requirements :universal-preconditions :disjunctive-preconditions :quantified-preconditions :typing :equality :negative-preconditions)
+(:requirements :universal-preconditions :disjunctive-preconditions :quantified-preconditions :typing :equality :negative-preconditions :conditional-effects)
 (:types
     concept monster location character - info
     player npc - character
-    area site - location
+    site area - location
     consumable weapon trophy item - thing
 )
 
@@ -12,7 +12,7 @@
     (onGround ?i - thing ?loc - location)
     (canTrack ?char - character)
     (havething ?char - character ?i - thing)
-    (inArea ?site - site ?area - area)
+    (inArea ?site - location ?area - area)
     (trackInfo ?inf - info ?loc - location ?lair - location)
     (isSus ?char - character)
     (isAvailable ?char - character)
