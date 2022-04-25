@@ -1,5 +1,6 @@
 import os
 import PDDLAccessor
+from PDDLAccessor import *
 import GiantTortoise
 from GiantTortoise import GiantTortoise
 
@@ -131,41 +132,3 @@ class StoryTeller:
     def get_state(self, problemString):
         return "    " + PDDLAccessor.getSection("init", problemString).rpartition(")")[0]
     
-
-def copyFile(source, newFile):
-    openFile = open(source)
-    fileContent = openFile.read()
-    openFile.close()
-    openFile = open(newFile, "w")
-    openFile.write(fileContent)
-    openFile.close()
-
-def changeGoal(prob, newGoal, newFile = ""):
-    if (newFile == ""):
-        newFile = prob
-    file = open(prob)
-    tmp = file.read()
-    file.close()
-    tmp = tmp.partition("(:goal")
-    result = tmp[0] + tmp[1] + "\n    (and " + newGoal + ")\n  )\n)"
-    #print(result)
-    file = open(newFile, "w")
-    file.write(result)
-    file.close()
-
-def changeState(prob, newState, newFile = ""):
-    if (newFile == ""):
-        newFile = prob
-    file = open(prob)
-    tmp = file.read()
-    file.close()
-    tmp = tmp.partition("(:init")
-    result = tmp[0] + tmp[1] + "\n" + newState + ")\n(:goal" + tmp[2].partition("(:goal")[2]
-    file = open(newFile, "w")
-    file.write(result)
-    file.close()
-
-def printPlan(plan):
-    openPlan = open(plan)
-    print(openPlan.read())
-    openPlan.close()

@@ -79,7 +79,8 @@ class Cloud_Planner_Api(Plan_Api):
     def __init__(self, dom, prob):
         super().__init__(dom, prob)
         self.tmpPath = "tmp/"
-        self.updateParams()
+        if (dom != '' and prob != ''):
+            self.updateParams()
 
     def updateParams(self):
         self.parameters = {
@@ -92,9 +93,10 @@ class Cloud_Planner_Api(Plan_Api):
         #with open("planFileNameHolder", 'w') as f:
         #    f.write('\n'.join([act['name'] for act in resp['result']['plan']]))
         if (resp['status'] == 'error'):
-          #  print()
-            print(resp)
-          #  print()
+            if (show):
+                print()
+                print(resp)
+                print()
             plan = ''
         else:
             plan = ('\n'.join([act['name'] for act in resp['result']['plan']]))

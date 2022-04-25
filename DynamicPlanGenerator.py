@@ -1,4 +1,4 @@
-from pprint import pprint
+import pprint
 import time
 import random
 import Critic
@@ -19,8 +19,7 @@ class DPG():
             fnoS = int(noS/4)
         if (inoS < 1):
             inoS = fnoS
-
-                
+          
         temp = self.storyTeller.story_book(inoS)
         storybook = []
         for s in temp:
@@ -150,7 +149,7 @@ l1 = "tmp/RedRidingLex.json"
 
 t1 = time.time()
 
-thing = DPG(pd2, pp2, json.load(open(l)))#, api=FD_Api)#, "hoppitty")
+thing = DPG(pd1, pp1, json.load(open(l1)))#, api=FD_Api)#, "hoppitty")
 
 #pprint(thing.storyTeller.giantTortoise.thesaurus)
 

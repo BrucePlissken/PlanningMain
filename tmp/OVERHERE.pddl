@@ -1,9 +1,9 @@
 (define (problem OVERHERE) (:domain cpd)
 (:objects
     Cewmann_village manor_Cewmann_village house_4_Cewmann_village house_3_Cewmann_village house_2_Cewmann_village house_1_Cewmann_village farm_4_Cewmann_village farm_3_Cewmann_village farm_2_Cewmann_village farm_1_Cewmann_village shop_2_Cewmann_village shop_1_Cewmann_village inn_1_Cewmann_village Wellspring_village church_Wellspring_village house_3_Wellspring_village house_2_Wellspring_village house_1_Wellspring_village farm_5_Wellspring_village farm_4_Wellspring_village farm_3_Wellspring_village farm_2_Wellspring_village farm_1_Wellspring_village shop_2_Wellspring_village shop_1_Wellspring_village Sherfield_village manor_Sherfield_village house_4_Sherfield_village house_3_Sherfield_village house_2_Sherfield_village house_1_Sherfield_village farm_3_Sherfield_village farm_2_Sherfield_village farm_1_Sherfield_village Kilkenny_forrest - location
-    Elegia Vincenta Alibert Hildegod Ermenbert Joan-Stephanie Waldeger Sighilde Olivera Haelcar Demetrius Ermentaria Berthold Honest Sabata Herois Honorius Gilbald Kale Walrich Wilbald Thecla Piat Urith Wojslav Engelmar Ansgot Gautlinde Wigand Calvo Aldhelm Maenwallon Hudrich Micah Clemence Eckrich Eloise Godo Beauvis Plena Victoria Eleanor Sumarlidi Madalulf Abba Caesar Herzog Antelm Theodore Maol Sicleramna Framengilde Drew Cynthius Bertbert Wojciech Sclavo Deurhoiarn Godwi Regalis - character
-    Carla - agent
- )
+    Elegia Vincenta Alibert Hildegod Ermenbert Joan-Stephanie Waldeger Sighilde Olivera Haelcar Demetrius Ermentaria Berthold Honest Sabata Herois Honorius Gilbald Kale Walrich Wilbald Thecla Piat Urith Wojslav Engelmar Ansgot Gautlinde Wigand Calvo Aldhelm Hudrich Micah Clemence Eckrich Eloise Godo Beauvis Plena Victoria Eleanor Sumarlidi Madalulf Abba Caesar Herzog Antelm Theodore Maol Sicleramna Framengilde Drew Cynthius Bertbert Wojciech Sclavo Deurhoiarn Godwi Regalis Carla - character
+    Maenwallon - agent
+)
 (:init
     (atloc manor_Cewmann_village Cewmann_village)
     (atloc house_4_Cewmann_village Cewmann_village)
@@ -67,7 +67,6 @@
     (whereabouts farm_5_Wellspring_village Wigand)
     (whereabouts farm_4_Wellspring_village Calvo)
     (whereabouts farm_4_Wellspring_village Aldhelm)
-    (whereabouts farm_4_Wellspring_village Maenwallon)
     (whereabouts farm_3_Wellspring_village Hudrich)
     (whereabouts farm_3_Wellspring_village Micah)
     (whereabouts farm_2_Wellspring_village Clemence)
@@ -97,10 +96,9 @@
     (whereabouts farm_3_Sherfield_village Godwi)
     (whereabouts farm_2_Sherfield_village Regalis)
     (whereabouts farm_2_Sherfield_village Carla)
+    (whereabouts farm_4_Wellspring_village Maenwallon)
 )
 (:goal
-    (and
-        (isdead Godo)
-    )
-)
+    (and (isdead Honorius))
+  )
 )

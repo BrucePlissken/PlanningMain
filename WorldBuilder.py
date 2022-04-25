@@ -2,8 +2,6 @@ import json
 import random
 import pprint
 from random import choices
-
-from numpy import where
 from ProblemWriter import PddlProblemWriter
 from LongSnake.PddlObjects import *
 
@@ -147,9 +145,9 @@ world = {
 pprint.pprint(world)
 dom = "tmp/CharacterPlanningDom.pddl"
 ppw = PddlProblemWriter(dom)
+"""
 thin = ppw.unwrap_dict(world)
 ppw.create_problem_file("OVERHERE", thin[0], thin[1])
-"""
 pprint.pprint(town1)
 pprint.pprint(town2)
 pprint.pprint(town3)
@@ -163,6 +161,6 @@ world = {"area" : [town1,town2,town3]}
 #print(town1)
 
 
-with open('world.json', 'w') as fp:
-    json.dump(world, fp)
 """
+with open('tmp/world.json', 'w') as fp:
+    json.dump(world, fp, indent=4)
