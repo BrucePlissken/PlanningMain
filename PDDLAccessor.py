@@ -47,7 +47,6 @@ def parseAction(name, domain):
                 }
     return action
 
-
 def copyFile(source, newFile):
     openFile = open(source)
     fileContent = openFile.read()
@@ -63,7 +62,7 @@ def changeGoal(prob, newGoal, newFile = ""):
     tmp = file.read()
     file.close()
     tmp = tmp.partition("(:goal")
-    result = tmp[0] + tmp[1] + "\n    (and " + newGoal + ")\n  )\n)"
+    result = tmp[0] + tmp[1] + "\n    (and\n        " + newGoal + "\n    )\n)\n)"
     #print(result)
     file = open(newFile, "w")
     file.write(result)

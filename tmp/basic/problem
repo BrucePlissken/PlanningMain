@@ -1,3 +1,0 @@
-(defproblem problem basic
-  ((have kiwi)) ((swap banjo kiwi))
-    ((have banjo)) ((swap kiwi banjo)))

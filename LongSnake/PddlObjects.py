@@ -21,7 +21,6 @@ class Character:
             "inventory" : []
         }
 
-
 class Item:
     def __init__(self, name):
         self.name = name
@@ -30,13 +29,12 @@ class Trophy(Item):
     def __init__(self, name):
         super().__init__(name)
 
-
 prefabthings = [
-    ["dagger", "weapon", ["cancut"]],
-    ["stick", "weapon", []],
-    ["bread", "consumable", []],
-    ["crusifix", "item", []],
-    ["poison", "consumable", ["poisonuos"]]
+    ["dagger", "- weapon", ["cancut"]],
+    ["stick", "- weapon", []],
+    ["bread", "- consumable", []],
+    ["crusifix", "- item", []],
+    ["poison", "- consumable", ["poisonuos"]]
 ]
     
 sites = [

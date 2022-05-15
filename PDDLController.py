@@ -44,6 +44,7 @@ class PDDLController:
             if (x.get("name") == name):
                 return x
         print("error: no such action name: " + name)
+        return False
 
     #returns a dict with concrete parameters for replacing the variables
     def adjustParameters(self, action, params):
@@ -97,25 +98,6 @@ class PDDLController:
 
         return result
 
-
-    """
-    #applies an action from an action string expression eg. (actionName arg1 arg2) with the variables filled out
-    def applyAction(self, actionString, thesaurus):
-        name = actionString.partition("(")[2].partition(" ")[0]
-        action = self.getAction(name)
-        #adds a dict with substitutions for the action parameters to the excisting dict of pddl types
-        lookUpBook = {**self.adjustParameters(action, actionString), **thesaurus}#self.pddltypes}
-        
-        #check for precondition satisfaction
-        if (applyFunction(action.get("precondition"), lookUpBook, precondCheck, self.state,True,andOp)):
-            #applying the allowed change to self.state
-            self.state = applyFunction(action.get("effect"), lookUpBook, applyEffect, self.state, self.state, andOp)
-            return True
-        #on failure:
-        print("action "+ actionString + " NOT allowed")
-        return False
-    """
-
     #a flexible version of applyAction, that applies an action to a given state
     def apply_action_to_state(self, actionString, state, thesaurus):
         name = actionString.partition("(")[2].partition(" ")[0]
@@ -134,6 +116,7 @@ class PDDLController:
 
     #applies the current state (:init...) to the pddl problem file
     #can and should be disconnected from the class
+    #pretty sure this isn't in use anywhere
     def writeChange(self):
         tmp = self.problem
         tmpfirst = tmp.partition("init")[0]+"init"
@@ -143,9 +126,28 @@ class PDDLController:
         file.write(result)
         file.close()
 
-    #change the goal of the problem
-    #was moved from this section of the code to StoryTeller.py
-    
+    def action_to_string(self, action_name):
+        action = self.getAction(action_name)
+        if not action:
+            return False
+
+        param = action['parameters']
+
+        prec = applyFunction(action['precondition'], '', listyfy, '', [], andOp)
+        precondition = '(and'
+        for p in prec:
+            precondition = precondition + ' ' + p
+        precondition = precondition + ')'
+        
+        eff = applyFunction(action['effect'], '', listyfy, '', [], andOp)
+        effect = '(and'
+        for e in eff:
+            effect = effect + ' ' + e
+        effect = effect + ')'
+
+        result = '(:action ' + action['name'] + '\n    :parameters ' + param + '\n    :precondition ' + precondition + '\n    :effect ' + effect + '\n)'
+        return result
+
 """
 #testing stuff beyond this point
 

@@ -50,7 +50,10 @@
     (havebodypart lady vampireheart)
 )
 (:goal
-    (and (atloc priest crypt)
+    (and
+        (havething girl goblinhead)
+(havething farmer goblinhead)
+
+    )
 )
-  )
 )

@@ -95,40 +95,58 @@ def create_town(placeType, houses, shops, farms, inns, mainBuilding, name = ''):
 
     return result
 
-def populate(whereabouts, min = 0, max = 4, thing = False):
+def populate(whereabouts, min = 0, max = 4):
     number = random.randrange(min,max +1)
     ppl = []
     while (number > 0):
         char = create_character('', whereabouts)
-        if (thing) :
-            it = rndm_thing()
-            if (it != -1):
-                char["predicates"]["inventory"].append(it)
         ppl.append(char)
         number -=1
     return ppl
 
-def rndm_thing():
+def rndm_thing(holder, no):
     numbers = [0, 1, 2, 3, 4]
-    weights = [2,0.2,0.2,0.2,0.01]
-
-    n = choices(numbers, weights)
-
+    weights = [0.2,0.4,0.3,0.2,0.01]
+    n = random.choices(numbers, weights)
     thing = prefabthings[n[0]]
-    result = Item(thing[0])
+    result = {
+        "name" : thing[0] +"_" + str(no),
+        "predicates" : {
+        }
+        }
+    holder[thing[1]].append(result)
+
+def mk_things(no):
+    result = {
+        "- consumable" : [],
+        "- weapon" : [],
+        "- item" : []}
+    for n in range(no):
+        rndm_thing(result, n)
     return result
 
-def populate_area(area, thing = False):
+def populate_area(area):
     result = []
     for x in area[0]["predicates"]["atloc"]:
-        pp = (populate([x] ,thing = thing))
+        pp = populate([x])
         result = result + pp
     return result
+
+def get_character(world, character = ''):
+    if (character == ''):
+        n = random.randint(0, len(world["- character"]) -1)
+        return world["- character"][n]
+
+def grant_item(character, item):
+    character["predicates"]["inventory"].append(item["name"])
 
 def create_village(name = '', main = -1):
     if main == -1:
         main = random.randrange(4,6)
     return create_town(0, random.randrange(3,6), random.randrange(0,3),random.randrange(3,7), random.randrange(0,2), main, name)
+
+"""
+testing stuff
 
 town1 = create_village(main=5)
 ppl1 = populate_area(town1)
@@ -137,15 +155,23 @@ ppl2 = populate_area(town2)
 town3 = create_village(main=5)
 ppl3 = populate_area(town3)
 forrest = create_town_location(4)
+items = mk_things(50)
 
 world = {
     "- location" : town1 + town2 + town3 + [forrest],
     "- character" : ppl1 + ppl2 + ppl3
 }
-pprint.pprint(world)
+for c in items["- consumable"]:
+    grant_item(get_character(world), c)
+for w in items["- weapon"]:
+    grant_item(get_character(world), w)
+for i in items["- item"]:
+    grant_item(get_character(world), i)
+
+world.update(items)
+#pprint.pprint(world)
 dom = "tmp/CharacterPlanningDom.pddl"
 ppw = PddlProblemWriter(dom)
-"""
 thin = ppw.unwrap_dict(world)
 ppw.create_problem_file("OVERHERE", thin[0], thin[1])
 pprint.pprint(town1)
@@ -161,6 +187,6 @@ world = {"area" : [town1,town2,town3]}
 #print(town1)
 
 
-"""
 with open('tmp/world.json', 'w') as fp:
     json.dump(world, fp, indent=4)
+"""

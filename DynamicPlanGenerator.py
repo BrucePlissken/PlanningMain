@@ -1,11 +1,9 @@
-import pprint
 import time
 import random
 import Critic
 import copy
 import json
 import PlanApi
-from PlanningMain.PlanApi import FD_Api
 import StoryTeller
 
 class DPG():
@@ -149,7 +147,7 @@ l1 = "tmp/RedRidingLex.json"
 
 t1 = time.time()
 
-thing = DPG(pd1, pp1, json.load(open(l1)))#, api=FD_Api)#, "hoppitty")
+thing = DPG(pd, pp, json.load(open(l)))#, api=FD_Api)#, "hoppitty")
 
 #pprint(thing.storyTeller.giantTortoise.thesaurus)
 
@@ -163,8 +161,8 @@ funk = []
 
 
 
-for k in range(3):
-    temp = thing.gene_story(20, fnoS= 5, inoS= 5, maxGenerations= 100, acceptanceCriteria = 0.02)
+for k in range(1):
+    temp = thing.gene_story(20, fnoS= 5, inoS= 5, maxGenerations= 20, acceptanceCriteria = 0.02)
     funk.append(temp)
     t2 = time.time()
     print(t2 - t1)

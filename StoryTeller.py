@@ -2,13 +2,12 @@ import os
 import PDDLAccessor
 from PDDLAccessor import *
 import GiantTortoise
-from GiantTortoise import GiantTortoise
 
 class StoryTeller:
     def __init__(self, domainF, problemF, seed, api):
         tmp = "tmp/"
         problemS = PDDLAccessor.fileToString(tmp + problemF)
-        self.giantTortoise = GiantTortoise(tmp+domainF, problemS, seed)
+        self.giantTortoise = GiantTortoise.GiantTortoise(tmp+domainF, problemS, seed)
         self.pddlController = self.giantTortoise.pc
         self.startState = self.get_state(problemS)
         self.sasPlan = "..\sas_plan"
