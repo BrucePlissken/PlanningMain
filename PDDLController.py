@@ -6,7 +6,7 @@ import PDDLAccessor
 import IntermediateParser
 from IntermediateParser import *
 
-#I decoupled the problem from this part of the code, if there is residue it is merely superstition on the coders part... this should be split into a domain holder and a problem controller
+#I decoupled the problem from this part of the code, if there is residue it is merely superstition on the coders part...
 class PDDLController:
     def __init__(self, domain):#, prob):
         self.domainFile = domain

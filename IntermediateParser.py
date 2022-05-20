@@ -106,23 +106,28 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
         if "and" in expressions:
             for e in expressions["and"][::-1]:
                 #print("and...")
-                acc = applyFunction(e, lookUpbook, func, pddlProblem, acc, andOp)
+                #acc = 
+                applyFunction(e, lookUpbook, func, pddlProblem, acc, andOp)
         
         if "or" in expressions:
             for e in expressions["or"]:
                 #print("or")
                 #this should probably be the way it is implemented across the board
-                acc =  orOp(applyFunction(e, lookUpbook, func, pddlProblem, acc, nonOp), acc)
+                #acc =  
+                orOp(applyFunction(e, lookUpbook, func, pddlProblem, acc, nonOp), acc)
         
         if "not" in expressions:
             if(isinstance(expressions, list)):
                 for e in expressions["not"]:    
-                    acc = applyFunction(e, lookUpbook, func, pddlProblem, acc, notOp)
+                    #acc = 
+                    applyFunction(e, lookUpbook, func, pddlProblem, acc, notOp)
             else:
-                acc = applyFunction(expressions["not"], lookUpbook, func, pddlProblem, acc, notOp)
+                #acc = 
+                applyFunction(expressions["not"], lookUpbook, func, pddlProblem, acc, notOp)
 
         if "increase" in expressions:
-                acc = func(expressions["increase"], lookUpbook, addOp, pddlProblem, acc)
+                #acc = 
+                func(expressions["increase"], lookUpbook, addOp, pddlProblem, acc)
 
         if "exists" in expressions:
             typ = expressions["exists"][0].partition(" -")
@@ -139,7 +144,8 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
                 #print(temp)
                 temp = parsePddlExpression(temp)
                 #print(temp)
-                acc = applyFunction(temp, lookUpbook, func, pddlProblem, acc, andOp)
+                #acc = 
+                applyFunction(temp, lookUpbook, func, pddlProblem, acc, andOp)
 
         if "forall" in expressions:
             typi = expressions["forall"][0].partition(" -")
@@ -165,7 +171,8 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
                 #this is some aweful hard-coding it will need a bit of thinking
                     #print(acc)
                 #print(expressions["forall"][1]["when"][1])
-                acc = applyFunction(expressions["forall"][1]["when"][1], lookUpbook, func, pddlProblem, acc, andOp)
+                #acc = 
+                applyFunction(expressions["forall"][1]["when"][1], lookUpbook, func, pddlProblem, acc, andOp)
             else: typs = lookUpbook[typ]
             for x in typs:
                 #print(x)
@@ -179,7 +186,8 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
                     continue
                 temp = parsePddlExpression(temp)
                 #print(temp)
-                acc = applyFunction(temp, lookUpbook, func, pddlProblem, acc, andOp)
+                #acc = 
+                applyFunction(temp, lookUpbook, func, pddlProblem, acc, andOp)
                 #print(acc)
 
         #currently "when" only works in forall loop
@@ -268,9 +276,6 @@ def listyfy(expression, lookUpbook, operator, pddlProblem, acc):
     result = operator(expression, "").strip()
     acc.append(result)
     return copy.deepcopy(acc)
-
-
-
 
 def printExpression(expression, noot, pddlProblem, number = 0):
     result = expression

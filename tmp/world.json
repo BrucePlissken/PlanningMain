@@ -1,245 +1,245 @@
 {
     "- location": [
         {
-            "name": "Cewmann_village",
+            "name": "cewmann_village",
             "predicates": {
                 "atloc": [
-                    "manor_Cewmann_village",
-                    "house_4_Cewmann_village",
-                    "house_3_Cewmann_village",
-                    "house_2_Cewmann_village",
-                    "house_1_Cewmann_village",
-                    "farm_4_Cewmann_village",
-                    "farm_3_Cewmann_village",
-                    "farm_2_Cewmann_village",
-                    "farm_1_Cewmann_village",
-                    "shop_2_Cewmann_village",
-                    "shop_1_Cewmann_village",
-                    "inn_1_Cewmann_village"
+                    "manor_cewmann_village",
+                    "house_4_cewmann_village",
+                    "house_3_cewmann_village",
+                    "house_2_cewmann_village",
+                    "house_1_cewmann_village",
+                    "farm_4_cewmann_village",
+                    "farm_3_cewmann_village",
+                    "farm_2_cewmann_village",
+                    "farm_1_cewmann_village",
+                    "shop_2_cewmann_village",
+                    "shop_1_cewmann_village",
+                    "inn_1_cewmann_village"
                 ]
             }
         },
         {
-            "name": "manor_Cewmann_village",
+            "name": "manor_cewmann_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "house_4_Cewmann_village",
+            "name": "house_4_cewmann_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "house_3_Cewmann_village",
+            "name": "house_3_cewmann_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "house_2_Cewmann_village",
+            "name": "house_2_cewmann_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "house_1_Cewmann_village",
+            "name": "house_1_cewmann_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "farm_4_Cewmann_village",
+            "name": "farm_4_cewmann_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "farm_3_Cewmann_village",
+            "name": "farm_3_cewmann_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "farm_2_Cewmann_village",
+            "name": "farm_2_cewmann_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "farm_1_Cewmann_village",
+            "name": "farm_1_cewmann_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "shop_2_Cewmann_village",
+            "name": "shop_2_cewmann_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "shop_1_Cewmann_village",
+            "name": "shop_1_cewmann_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "inn_1_Cewmann_village",
+            "name": "inn_1_cewmann_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "Wellspring_village",
+            "name": "wellspring_village",
             "predicates": {
                 "atloc": [
-                    "church_Wellspring_village",
-                    "house_3_Wellspring_village",
-                    "house_2_Wellspring_village",
-                    "house_1_Wellspring_village",
-                    "farm_5_Wellspring_village",
-                    "farm_4_Wellspring_village",
-                    "farm_3_Wellspring_village",
-                    "farm_2_Wellspring_village",
-                    "farm_1_Wellspring_village",
-                    "shop_2_Wellspring_village",
-                    "shop_1_Wellspring_village"
+                    "church_wellspring_village",
+                    "house_3_wellspring_village",
+                    "house_2_wellspring_village",
+                    "house_1_wellspring_village",
+                    "farm_5_wellspring_village",
+                    "farm_4_wellspring_village",
+                    "farm_3_wellspring_village",
+                    "farm_2_wellspring_village",
+                    "farm_1_wellspring_village",
+                    "shop_2_wellspring_village",
+                    "shop_1_wellspring_village"
                 ]
             }
         },
         {
-            "name": "church_Wellspring_village",
+            "name": "church_wellspring_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "house_3_Wellspring_village",
+            "name": "house_3_wellspring_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "house_2_Wellspring_village",
+            "name": "house_2_wellspring_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "house_1_Wellspring_village",
+            "name": "house_1_wellspring_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "farm_5_Wellspring_village",
+            "name": "farm_5_wellspring_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "farm_4_Wellspring_village",
+            "name": "farm_4_wellspring_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "farm_3_Wellspring_village",
+            "name": "farm_3_wellspring_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "farm_2_Wellspring_village",
+            "name": "farm_2_wellspring_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "farm_1_Wellspring_village",
+            "name": "farm_1_wellspring_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "shop_2_Wellspring_village",
+            "name": "shop_2_wellspring_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "shop_1_Wellspring_village",
+            "name": "shop_1_wellspring_village",
             "predicates": {
-                "atloc": ["rake"]
+                "atloc": []
             }
         },
         {
-            "name": "Sherfield_village",
+            "name": "sherfield_village",
             "predicates": {
                 "atloc": [
-                    "manor_Sherfield_village",
-                    "house_4_Sherfield_village",
-                    "house_3_Sherfield_village",
-                    "house_2_Sherfield_village",
-                    "house_1_Sherfield_village",
-                    "farm_3_Sherfield_village",
-                    "farm_2_Sherfield_village",
-                    "farm_1_Sherfield_village"
+                    "manor_sherfield_village",
+                    "house_4_sherfield_village",
+                    "house_3_sherfield_village",
+                    "house_2_sherfield_village",
+                    "house_1_sherfield_village",
+                    "farm_3_sherfield_village",
+                    "farm_2_sherfield_village",
+                    "farm_1_sherfield_village"
                 ]
             }
         },
         {
-            "name": "manor_Sherfield_village",
+            "name": "manor_sherfield_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "house_4_Sherfield_village",
+            "name": "house_4_sherfield_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "house_3_Sherfield_village",
+            "name": "house_3_sherfield_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "house_2_Sherfield_village",
+            "name": "house_2_sherfield_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "house_1_Sherfield_village",
+            "name": "house_1_sherfield_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "farm_3_Sherfield_village",
+            "name": "farm_3_sherfield_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "farm_2_Sherfield_village",
+            "name": "farm_2_sherfield_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "farm_1_Sherfield_village",
+            "name": "farm_1_sherfield_village",
             "predicates": {
                 "atloc": []
             }
         },
         {
-            "name": "Kilkenny_forrest",
+            "name": "kilkenny_forrest",
             "predicates": {
                 "atloc": []
             }
@@ -247,103 +247,103 @@
     ],
     "- character": [
         {
-            "name": "Elegia",
+            "name": "elegia",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "manor_Cewmann_village"
+                    "manor_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Vincenta",
+            "name": "vincenta",
             "predicates": {
                 "inventory": [
                     "stick_49"
                 ],
                 "whereabouts": [
-                    "house_3_Cewmann_village"
+                    "house_3_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Alibert",
+            "name": "alibert",
             "predicates": {
                 "inventory": [
                     "dagger_4",
                     "crusifix_16"
                 ],
                 "whereabouts": [
-                    "house_3_Cewmann_village"
+                    "house_3_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Hildegod",
+            "name": "hildegod",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_3_Cewmann_village"
+                    "house_3_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Ermenbert",
+            "name": "ermenbert",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_2_Cewmann_village"
+                    "house_2_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Joan-Stephanie",
+            "name": "joan-stephanie",
             "predicates": {
                 "inventory": [
                     "bread_31",
                     "stick_39"
                 ],
                 "whereabouts": [
-                    "house_2_Cewmann_village"
+                    "house_2_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Waldeger",
+            "name": "waldeger",
             "predicates": {
                 "inventory": [
                     "stick_46"
                 ],
                 "whereabouts": [
-                    "house_2_Cewmann_village"
+                    "house_2_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Sighilde",
+            "name": "sighilde",
             "predicates": {
                 "inventory": [
                     "dagger_42"
                 ],
                 "whereabouts": [
-                    "house_2_Cewmann_village"
+                    "house_2_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Olivera",
+            "name": "olivera",
             "predicates": {
                 "inventory": [
                     "bread_45",
                     "dagger_13"
                 ],
                 "whereabouts": [
-                    "house_1_Cewmann_village"
+                    "house_1_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Haelcar",
+            "name": "haelcar",
             "predicates": {
                 "inventory": [
                     "bread_27",
@@ -351,92 +351,92 @@
                     "stick_44"
                 ],
                 "whereabouts": [
-                    "house_1_Cewmann_village"
+                    "house_1_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Demetrius",
+            "name": "demetrius",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_1_Cewmann_village"
+                    "house_1_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Ermentaria",
+            "name": "ermentaria",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_1_Cewmann_village"
+                    "house_1_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Berthold",
+            "name": "berthold",
             "predicates": {
                 "inventory": [
                     "dagger_19",
                     "stick_23"
                 ],
                 "whereabouts": [
-                    "farm_2_Cewmann_village"
+                    "farm_2_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Honest",
+            "name": "honest",
             "predicates": {
                 "inventory": [
                     "stick_7",
                     "stick_21"
                 ],
                 "whereabouts": [
-                    "farm_2_Cewmann_village"
+                    "farm_2_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Sabata",
+            "name": "sabata",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "farm_1_Cewmann_village"
+                    "farm_1_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Herois",
+            "name": "herois",
             "predicates": {
                 "inventory": [
                     "crusifix_47"
                 ],
                 "whereabouts": [
-                    "farm_1_Cewmann_village"
+                    "farm_1_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Honorius",
+            "name": "honorius",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "shop_2_Cewmann_village"
+                    "shop_2_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Gilbald",
+            "name": "gilbald",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "shop_2_Cewmann_village"
+                    "shop_2_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Kale",
+            "name": "kale",
             "predicates": {
                 "inventory": [
                     "bread_48",
@@ -444,74 +444,74 @@
                     "dagger_33"
                 ],
                 "whereabouts": [
-                    "shop_1_Cewmann_village"
+                    "shop_1_cewmann_village"
                 ]
             }
         },
         {
-            "name": "Walrich",
+            "name": "walrich",
             "predicates": {
                 "inventory": [
                     "crusifix_10"
                 ],
                 "whereabouts": [
-                    "church_Wellspring_village"
+                    "church_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Wilbald",
+            "name": "wilbald",
             "predicates": {
                 "inventory": [
                     "bread_34"
                 ],
                 "whereabouts": [
-                    "church_Wellspring_village"
+                    "church_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Thecla",
+            "name": "thecla",
             "predicates": {
                 "inventory": [
                     "stick_25"
                 ],
                 "whereabouts": [
-                    "church_Wellspring_village"
+                    "church_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Piat",
+            "name": "piat",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_3_Wellspring_village"
+                    "house_3_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Urith",
+            "name": "urith",
             "predicates": {
                 "inventory": [
                     "stick_1"
                 ],
                 "whereabouts": [
-                    "house_2_Wellspring_village"
+                    "house_2_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Wojslav",
+            "name": "wojslav",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_1_Wellspring_village"
+                    "house_1_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Engelmar",
+            "name": "engelmar",
             "predicates": {
                 "inventory": [
                     "dagger_26",
@@ -519,362 +519,362 @@
                     "crusifix_40"
                 ],
                 "whereabouts": [
-                    "farm_5_Wellspring_village"
+                    "farm_5_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Ansgot",
+            "name": "ansgot",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "farm_5_Wellspring_village"
+                    "farm_5_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Gautlinde",
+            "name": "gautlinde",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "farm_5_Wellspring_village"
+                    "farm_5_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Wigand",
+            "name": "wigand",
             "predicates": {
                 "inventory": [
                     "dagger_41"
                 ],
                 "whereabouts": [
-                    "farm_5_Wellspring_village"
+                    "farm_5_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Calvo",
+            "name": "calvo",
             "predicates": {
                 "inventory": [
                     "stick_8"
                 ],
                 "whereabouts": [
-                    "farm_4_Wellspring_village"
+                    "farm_4_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Aldhelm",
+            "name": "aldhelm",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "farm_4_Wellspring_village"
+                    "farm_4_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Maenwallon",
+            "name": "maenwallon",
             "predicates": {
                 "inventory": [
                     "bread_3"
                 ],
                 "whereabouts": [
-                    "farm_4_Wellspring_village"
+                    "farm_4_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Hudrich",
+            "name": "hudrich",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "farm_3_Wellspring_village"
+                    "farm_3_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Micah",
+            "name": "micah",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "farm_3_Wellspring_village"
+                    "farm_3_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Clemence",
+            "name": "clemence",
             "predicates": {
                 "inventory": [
                     "crusifix_14"
                 ],
                 "whereabouts": [
-                    "farm_2_Wellspring_village"
+                    "farm_2_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Eckrich",
+            "name": "eckrich",
             "predicates": {
                 "inventory": [
                     "bread_6"
                 ],
                 "whereabouts": [
-                    "farm_2_Wellspring_village"
+                    "farm_2_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Eloise",
+            "name": "eloise",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "farm_1_Wellspring_village"
+                    "farm_1_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Godo",
+            "name": "godo",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "farm_1_Wellspring_village"
+                    "farm_1_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Beauvis",
+            "name": "beauvis",
             "predicates": {
                 "inventory": [
                     "stick_29",
                     "crusifix_32"
                 ],
                 "whereabouts": [
-                    "farm_1_Wellspring_village"
+                    "farm_1_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Plena",
+            "name": "plena",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "shop_1_Wellspring_village"
+                    "shop_1_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Victoria",
+            "name": "victoria",
             "predicates": {
                 "inventory": [
                     "stick_5",
                     "stick_28"
                 ],
                 "whereabouts": [
-                    "shop_1_Wellspring_village"
+                    "shop_1_wellspring_village"
                 ]
             }
         },
         {
-            "name": "Eleanor",
+            "name": "eleanor",
             "predicates": {
                 "inventory": [
                     "dagger_20"
                 ],
                 "whereabouts": [
-                    "manor_Sherfield_village"
+                    "manor_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Sumarlidi",
+            "name": "sumarlidi",
             "predicates": {
                 "inventory": [
                     "bread_2",
                     "bread_9"
                 ],
                 "whereabouts": [
-                    "manor_Sherfield_village"
+                    "manor_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Madalulf",
+            "name": "madalulf",
             "predicates": {
                 "inventory": [
                     "bread_0"
                 ],
                 "whereabouts": [
-                    "manor_Sherfield_village"
+                    "manor_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Abba",
+            "name": "abba",
             "predicates": {
                 "inventory": [
                     "bread_11"
                 ],
                 "whereabouts": [
-                    "manor_Sherfield_village"
+                    "manor_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Caesar",
+            "name": "caesar",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_4_Sherfield_village"
+                    "house_4_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Herzog",
+            "name": "herzog",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_4_Sherfield_village"
+                    "house_4_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Antelm",
+            "name": "antelm",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_3_Sherfield_village"
+                    "house_3_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Theodore",
+            "name": "theodore",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_3_Sherfield_village"
+                    "house_3_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Maol",
+            "name": "maol",
             "predicates": {
                 "inventory": [
                     "crusifix_15"
                 ],
                 "whereabouts": [
-                    "house_3_Sherfield_village"
+                    "house_3_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Sicleramna",
+            "name": "sicleramna",
             "predicates": {
                 "inventory": [
                     "crusifix_12"
                 ],
                 "whereabouts": [
-                    "house_3_Sherfield_village"
+                    "house_3_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Framengilde",
+            "name": "framengilde",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_2_Sherfield_village"
+                    "house_2_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Drew",
+            "name": "drew",
             "predicates": {
                 "inventory": [
                     "bread_24"
                 ],
                 "whereabouts": [
-                    "house_2_Sherfield_village"
+                    "house_2_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Cynthius",
+            "name": "cynthius",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_2_Sherfield_village"
+                    "house_2_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Bertbert",
+            "name": "bertbert",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_1_Sherfield_village"
+                    "house_1_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Wojciech",
+            "name": "wojciech",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "house_1_Sherfield_village"
+                    "house_1_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Sclavo",
+            "name": "sclavo",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "farm_3_Sherfield_village"
+                    "farm_3_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Deurhoiarn",
+            "name": "deurhoiarn",
             "predicates": {
                 "inventory": [
                     "dagger_36",
                     "crusifix_35"
                 ],
                 "whereabouts": [
-                    "farm_3_Sherfield_village"
+                    "farm_3_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Godwi",
+            "name": "godwi",
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
-                    "farm_3_Sherfield_village"
+                    "farm_3_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Regalis",
+            "name": "regalis",
             "predicates": {
                 "inventory": [
                     "dagger_43",
                     "crusifix_17"
                 ],
                 "whereabouts": [
-                    "farm_2_Sherfield_village"
+                    "farm_2_sherfield_village"
                 ]
             }
         },
         {
-            "name": "Carla",
+            "name": "carla",
             "predicates": {
                 "inventory": [
                     "crusifix_22",
                     "crusifix_37"
                 ],
                 "whereabouts": [
-                    "farm_2_Sherfield_village"
+                    "farm_2_sherfield_village"
                 ]
             }
         }
@@ -930,10 +930,6 @@
         }
     ],
     "- weapon": [
-        {
-            "name": "rake",
-            "predicates": {}
-        },
         {
             "name": "stick_1",
             "predicates": {}

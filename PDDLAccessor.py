@@ -2,7 +2,7 @@
 Methods for accessing the pddl files
 Auth: Jakob Ehlers
 """
-
+import re
 import IntermediateParser
 
 #returns a file as string opening and closing    
@@ -15,6 +15,7 @@ def fileToString(fileName):
 #returns a given section by counting parenthesis, n value should be set to 0 if starting outside a parenthesis
 def getSection(name, target, n = 1):
     temp = target.partition(name)[2].lstrip()
+    temp = re.sub(r';.*', '', temp)
     result = ""
     for x in temp:
         result = result + x

@@ -16,6 +16,7 @@ def create_character(name, whereabouts):
     if (name == ''):
         number = random.randrange(0,len(nameList))
         name = nameList.pop(number)
+        name = name.lower()
     char = {
             "name" : name,
             "predicates" : {
@@ -30,6 +31,7 @@ def create_town_location(place, name = ''):
         number = random.randrange(0,len(townNameList))
         name = townNameList.pop(number).split()[0]
         name = name+"_"+areas[place]
+        name = name.lower()
     loc = {
             "name" : name,                
             "predicates" : {
@@ -43,6 +45,7 @@ def create_site(number, building, parent, atloc = []):
     if (number != 0):
         name = name +str(number) +"_"
     name = name + parent
+    name = name.lower()
     loc = {
             "name" : name,                
             "predicates" : {
@@ -178,11 +181,6 @@ pprint.pprint(town1)
 pprint.pprint(town2)
 pprint.pprint(town3)
 pprint.pprint(forrest)
-town1 = dictify_area(town1)
-town2 = dictify_area(town2)
-town3 = dictify_area(town3)
-
-world = {"area" : [town1,town2,town3]}
 
 #print(town1)
 
