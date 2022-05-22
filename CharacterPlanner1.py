@@ -1,11 +1,11 @@
 import json
 import PlanApi
 from PDDLAccessor import *
-from PlanningMain.LongSnake.PddlObjects import Character
 import ProblemWriter
 import pprint
 import random
 from WorldInterface import *
+import re
 
 class CharacterPlanner():
     def __init__(self, world, domain, problem = '', seed = '', planApi = PlanApi.Cloud_Planner_Api, tmpProbnm = "tmpProb", tmpDomnm = 'tmpDom'):
@@ -72,6 +72,30 @@ class CharacterPlanner():
 
         return {'types' : result_t, 'vars' : result_v, 'precondition': action['precondition'], 'effect': action['effect']}
 
+    def update_world(self, oldWorld, newWorld):
+        for smth in newWorld:
+            for th in newWorld[smth]:
+                if smth not in oldWorld:
+                    for pdt in self.pdc.pddltypes:
+                        if smth.partition(' ')[2] in self.pdc.pddltypes[pdt]:
+                            smth = pdt
+                
+                pff = get_smth(oldWorld, th['name'])
+                oldWorld[smth].remove(pff)
+                oldWorld[smth].append(th)
+            
+    def mk_character_plan(self, character, world, goal):
+        mk_agent(world, character)
+        self.custom_problem(world, self.tmpProp)
+        changeGoal('tmp/'+self.tmpProp +'.pddl', goal)
+        self.update_problem_address(cp.tmpProp +'.pddl')
+        result = self.run_planner()
+        result = re.sub(r'(;.*)', '', result)
+        result = result.strip()
+        
+        result = result.split('\n')
+        return result
+        
 
 def open_world(world):        
     result = json.load(open(world))
@@ -95,7 +119,7 @@ def add_associations(world, subject, acc):
     for p in subject["predicates"]:
         for n in subject["predicates"][p]:
             for t in world:
-                x = get_smth(world,t,n)
+                x = get_smth(world,n,t)
                 if x:
                     if t in acc:
                         acc[t].append(x)
@@ -111,12 +135,11 @@ world = "world.json"
 dom = "CharacterPlanningDom.pddl"
 prob = "OVERHERE.pddl"
 cp = CharacterPlanner(world, dom, prob)#, planApi=PlanApi.FD_Api)
-cp.custom_domain(['pick_up','move','give','take','kill'])#,'wt_for_sleep'])
+cp.custom_domain(['pick_up','move','give','take','kill','wt_for_sleep'])
 cp.update_problem_address(cp.tmpProp +'.pddl')
 
 n_w = {}
 agnt = get_character(cp.world)
-mk_agent(n_w, agnt)
 
 vict = get_character(cp.world)
 n_w.update({"- character" : [vict]})
@@ -127,27 +150,34 @@ holder = find_holder(cp.world,it)
 
 n_w[holder[0]].append(holder[1])
 
+
+
 add_associations(cp.world, agnt, n_w)
 add_associations(cp.world, vict, n_w)
 add_associations(cp.world, holder[1], n_w)
 
 goal = "(inventory " + it + " " + vict["name"] + ")"
-cp.custom_problem(n_w, cp.tmpProp)
-changeGoal('tmp/'+cp.tmpProp +'.pddl', goal)
 
-cp.update_problem_address(cp.tmpProp +'.pddl')
 
-plan = cp.run_planner().split('\n')
+plan = cp.mk_character_plan(agnt, n_w,goal)
 
 for n in range(len(plan)):
     dis = cp.disect_plan_action(plan[n])
     apply_action_to_world(n_w, dis)
 
+cp.update_world(cp.world, n_w)
+#pprint.pprint(cp.world)
 
 
 print(goal)
+print()
 print(plan)
+print()
 #print(dis)
+
+#pprint.pprint(cp.world)
+print()
+
 pprint.pprint(n_w)
 """
 print()

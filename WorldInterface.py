@@ -1,8 +1,13 @@
 import random
 from IntermediateParser import *
 
-def get_smth(w,t,n):
-    if t in w:
+def get_smth(w,n,t = ''):
+    if t == '':
+        for x in w:
+            result = get_smth(w,n,x)
+            if result != False:
+                return result
+    elif t in w:
         for m in w[t]:
             if m["name"].lower() == n.lower():
                 return m
@@ -43,7 +48,7 @@ def sorta_get_smth(world, name, lex):
     t = 0
     smth = False
     while (smth == False):
-        smth = get_smth(world, ts[t], name)
+        smth = get_smth(world, name, ts[t])
         t+=1
     return smth
 
