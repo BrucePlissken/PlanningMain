@@ -8,14 +8,9 @@ from IntermediateParser import *
 
 #I decoupled the problem from this part of the code, if there is residue it is merely superstition on the coders part...
 class PDDLController:
-    def __init__(self, domain):#, prob):
+    def __init__(self, domain):
         self.domainFile = domain
-        #self.problemFile = prob
         self.domain = PDDLAccessor.fileToString(domain)
-        #self.problem = PDDLAccessor.fileToString(prob)
-        #
-        #self.state = self.get_state(self.problem)
-
         #set up dicts for nested domain types
         self.pddltypes = self.mapTyps2("types", self.domain)
         #self.probjects = self.mapTyps("objects", self.problem)
@@ -104,7 +99,6 @@ class PDDLController:
         action = self.getAction(name)
         #adds a dict with substitutions for the action parameters to the excisting dict of pddl types
         lookUpBook = {**self.adjustParameters(action, actionString), **thesaurus}
-        #print(lookUpBook)
         #check for precondition satisfaction
         if (applyFunction(action.get("precondition"), lookUpBook, precondCheck, state,True,andOp)):
             #applying the allowed change to state
@@ -126,6 +120,7 @@ class PDDLController:
         file.write(result)
         file.close()
 
+    #takes the name of an action and reconstructs it from the deconstructed dict version to it's original (pddl)string format
     def action_to_string(self, action_name):
         action = self.getAction(action_name)
         if not action:
@@ -147,6 +142,7 @@ class PDDLController:
 
         result = '(:action ' + action['name'] + '\n    :parameters ' + param + '\n    :precondition ' + precondition + '\n    :effect ' + effect + '\n)'
         return result
+
 
 """
 #testing stuff beyond this point
