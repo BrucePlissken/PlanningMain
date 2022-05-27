@@ -100,7 +100,9 @@ class Cloud_Planner_Api(Plan_Api):
             plan = ''
         else:
             plan = ('\n'.join([act['name'] for act in resp['result']['plan']]))
-            #pprint(resp['result'])
+            if(show):
+                #pprint(resp['result']['output'])
+                pprint(resp)
         #print(plan)
         
         return plan

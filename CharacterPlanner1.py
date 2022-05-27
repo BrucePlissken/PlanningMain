@@ -26,7 +26,7 @@ class CharacterPlanner():
         self.planner.updateParams()
 
     def run_planner(self):
-        return self.planner.get_plan(False)
+        return self.planner.get_plan()#False)
 
     def custom_problem(self, new_world, prob_name, goal = "", metric = ""):
         temp = self.writer.unwrap_dict(new_world)
@@ -108,7 +108,8 @@ class CharacterPlanner():
                 for g in itL:
                     goal = goal + g
                 #print(goal)
-                plan = self.mk_character_plan(c,world,goal, "(:metric minimize (total-cost))\n")
+                plan = self.mk_character_plan(c,world,goal, "(:metric minimize (cost))\n")
+                print(plan)
                 if not plan:
                     pass
                     """
@@ -200,11 +201,11 @@ cp.resolve_plan_step(cp.world)
 cp.resolve_plan_step(cp.world)
 cp.formulate_goals(cp.world)
 cp.resolve_goals(cp.world)
+"""
 cp.resolve_plan_step(cp.world)
 cp.resolve_goals(cp.world)
 
 pprint.pprint(cp.world)
-"""
 mom = get_smth(cp.world, 'mom')
 goal = ''
 for g in rc["goals"]:
