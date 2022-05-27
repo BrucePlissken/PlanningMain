@@ -45,11 +45,12 @@ class PddlProblemWriter:
     def predicate_string(self, thing):
         result = ""
         for t in thing:
-            preds = t["predicates"]
-            for k in preds:
-                for x in preds[k]:
-                    temp = "    " + parenthesise(k + " " + x + " "+ t["name"])
-                    result = result + temp + "\n"
+            if "predicates" in t:
+                preds = t["predicates"]
+                for k in preds:
+                    for x in preds[k]:
+                        temp = "    " + parenthesise(k + " " + x + " "+ t["name"])
+                        result = result + temp + "\n"
         return result
 
     def probject_string(self, probT, l):
@@ -59,7 +60,7 @@ class PddlProblemWriter:
         result = result + probT + "\n"
         return result
 
-    def create_problem_file(self, name, probjects, initial, goals = ""):        
+    def create_problem_file(self, name, probjects, initial, goals = "", metric = ""):
         path = "tmp/"+name + ".pddl"
         file = open(path, "w")
         file.write(self.make_header(name))
@@ -68,8 +69,13 @@ class PddlProblemWriter:
         file.write("(:objects\n")
         file.write(probjects)
         file.write(")\n(:init\n")
+        #this needs to be made flexible
+        if metric != "":
+            file.write("    (= (total-cost) 0)\n")
         file.write(initial)
         file.write(")\n(:goal\n    (and\n    "+goals+"\n    )\n)\n")
+        if metric != "":
+            file.write(metric)
         #file.write("(:metric minimize (total-cost))\n")
         file.write(")")
         file.close

@@ -3,7 +3,6 @@ Class for holding domain info and applying it to pddl problems stuff
 auth: Jakob Ehlers
 """
 import PDDLAccessor
-import IntermediateParser
 from IntermediateParser import *
 
 #I decoupled the problem from this part of the code, if there is residue it is merely superstition on the coders part...

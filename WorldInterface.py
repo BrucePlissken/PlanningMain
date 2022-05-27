@@ -1,5 +1,6 @@
 import random
 from IntermediateParser import *
+import json
 
 def get_smth(w,n,t = ''):
     if t == '':
@@ -41,16 +42,18 @@ def check_precondition(world, lex):
 def apply_action_to_world(world, lex):
     if check_precondition(world, lex):
         applyFunction(lex["effect"], lex, apply_action_to_world_shell, world, world, andOp)
-
+"""
 def sorta_get_smth(world, name, lex):
         
     ts = lex['types'][name]
     t = 0
     smth = False
     while (smth == False):
-        smth = get_smth(world, name, ts[t])
+        smth = get_smth(world, name)#, ts[t])
         t+=1
+    
     return smth
+"""
 
 def prec_check(world, precondition, lex):
     result = True
@@ -59,7 +62,7 @@ def prec_check(world, precondition, lex):
     prec = precond.pop(0)
     name = precond.pop()
 
-    smth = sorta_get_smth(world, name, lex)
+    smth = get_smth(world, name)#sorta_get_smth(world, name, lex)
 
     if prec in smth['predicates']:
         for p in precond:
@@ -84,11 +87,15 @@ def quantify_expr_vars(expr, lex):
 def action_world(world, effect, lex, remove):
     effect = quantify_expr_vars(effect, lex)
 
+    #print(effect)
     effe = effect.split()
+    #ignoring func for now
+    if len(effe) < 2:
+        return
     pred = effe.pop(0)
     name = effe.pop()
 
-    smth = sorta_get_smth(world, name, lex)
+    smth = get_smth(world, name) #sorta_get_smth(world, name, lex)
 
     if pred in smth['predicates']:
         for p in effe:
@@ -101,6 +108,38 @@ def action_world(world, effect, lex, remove):
     else:
         smth['predicates'][pred] = effe
     return smth
+
+def open_world(world):        
+    result = json.load(open(world))
+    return result
+
+def mk_agent(world, agent):
+    if agent in world['- character']:
+        world['- character'].remove(agent)
+    world["- agent"] = [agent]
+
+def pop_character(world, character = ''):
+    if (character == ''):
+        n = random.randint(0, len(world["- character"]) -1)
+        return world["- character"].pop(n)
+
+def get_character(world, character = ''):
+    if (character == ''):
+        n = random.randint(0, len(world["- character"]) -1)
+        return world["- character"][n]
+
+#recursively adds types from world, associated to subject, to accumulator
+def add_associations(world, subject, acc):
+    for p in subject["predicates"]:
+        for n in subject["predicates"][p]:
+            for t in world:
+                x = get_smth(world,n,t)
+                if x:
+                    if t in acc:
+                        acc[t].append(x)
+                    else:
+                        acc.update({t : [x]})
+                    add_associations(world,x,acc)
 
 """
 testing stuff

@@ -73,7 +73,7 @@ class FD_Api(Plan_Api):
         
         if (os.path.exists(self.sasPlan)):
             return read_file(self.sasPlan)
-        return ""
+        return ''
 
 class Cloud_Planner_Api(Plan_Api):
     def __init__(self, dom, prob):
@@ -88,19 +88,19 @@ class Cloud_Planner_Api(Plan_Api):
             'problem': read_file(self.tmpPath + self.prob)}
 
     def get_plan(self, show = True):
-        resp = requests.post('http://dry-tundra-82186.herokuapp.com/solve',
-                     verify=False, json=self.parameters).json()
+        resp = requests.post('http://dry-tundra-82186.herokuapp.com/solve-and-validate',#'C:\Users\Tron\Desktop\Swu\Planner\cloud-solver',#
+                     verify=True, json=self.parameters).json()
         #with open("planFileNameHolder", 'w') as f:
         #    f.write('\n'.join([act['name'] for act in resp['result']['plan']]))
         if (resp['status'] == 'error'):
             if (show):
                 print()
-                print(resp)
+                pprint(resp)
                 print()
             plan = ''
         else:
             plan = ('\n'.join([act['name'] for act in resp['result']['plan']]))
-        
+            #pprint(resp['result'])
         #print(plan)
         
         return plan
