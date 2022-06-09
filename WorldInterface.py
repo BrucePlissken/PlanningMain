@@ -14,6 +14,12 @@ def get_smth(w,n,t = ''):
                 return m
     return False
 
+def get_t(w, n):
+    for t in w:
+        for thing in w[t]:
+            if thing['name'] == n:
+                return t
+
 def rnd_t(w):
     l = list(w.keys())
     return random.choices(l)[0]
@@ -23,13 +29,15 @@ def rnd_n(w, t):
     n = i[0]["name"]
     return n
 
-def find_holder(w,n):
+def find_holders(w,n):
+    result = []
     for t in w:
         for c in w[t]:
             for p in c["predicates"]:
                 for name in c["predicates"][p]:
                     if name == n:
-                        return (t,c)
+                        result.append((t,c))
+    return result
 
 def check_precondition(world, lex):
     acc = []
@@ -42,18 +50,9 @@ def check_precondition(world, lex):
 def apply_action_to_world(world, lex):
     if check_precondition(world, lex):
         applyFunction(lex["effect"], lex, apply_action_to_world_shell, world, world, andOp)
-"""
-def sorta_get_smth(world, name, lex):
-        
-    ts = lex['types'][name]
-    t = 0
-    smth = False
-    while (smth == False):
-        smth = get_smth(world, name)#, ts[t])
-        t+=1
-    
-    return smth
-"""
+        return True
+    print('precondCheck failed')
+    return False
 
 def prec_check(world, precondition, lex):
     result = True
@@ -62,7 +61,7 @@ def prec_check(world, precondition, lex):
     prec = precond.pop(0)
     name = precond.pop()
 
-    smth = get_smth(world, name)#sorta_get_smth(world, name, lex)
+    smth = get_smth(world, name)
 
     if prec in smth['predicates']:
         for p in precond:
@@ -95,7 +94,7 @@ def action_world(world, effect, lex, remove):
     pred = effe.pop(0)
     name = effe.pop()
 
-    smth = get_smth(world, name) #sorta_get_smth(world, name, lex)
+    smth = get_smth(world, name)
 
     if pred in smth['predicates']:
         for p in effe:
@@ -127,6 +126,28 @@ def get_character(world, character = ''):
     if (character == ''):
         n = random.randint(0, len(world["- character"]) -1)
         return world["- character"][n]
+
+def formulate_goal(char):
+        if 'mk_goal_double' in char['predicates']:
+            if 'goals' not in char:
+                char['goals'] = []
+            #formulates "mk_goal_double"'s into comprehensive goals
+            while(len(char['predicates']['mk_goal_double']) > 1):
+                tmpgoal = []
+                #a mk_goal_double contains three pieces of information; predicate and two vars,
+                for n in range(3):
+                    tmpgoal.append(char['predicates']['mk_goal_double'].pop(0))
+                goal = mk_goal_double(tmpgoal)
+                if goal not in char['goals']:
+                    char['goals'].append(goal)
+
+def mk_goal_double(goal):
+    result = '('
+    result = result + goal.pop(0)
+    for n in range(len(goal)):
+        result = result + ' ' + goal[n]
+    result = result + ')'
+    return result
 
 #recursively adds types from world, associated to subject, to accumulator
 def add_associations(world, subject, acc):

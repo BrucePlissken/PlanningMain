@@ -1,7 +1,8 @@
 """
 the Critic
-the Critic compares how close two curves are at eachother.
-the use of this is to take a desired tension curve, and compare it to the tension curve of a dynamically generated story/plan
+the Critic compares how close two curves are to eachother.
+the use of this is to take a desired tension curve, and compare it to the tension curve of a dynamically generated story/plan.
+as of now it get's normalized on both x and y coordinates
 """
 
 #linear algebra

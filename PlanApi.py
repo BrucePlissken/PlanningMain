@@ -88,8 +88,8 @@ class Cloud_Planner_Api(Plan_Api):
             'problem': read_file(self.tmpPath + self.prob)}
 
     def get_plan(self, show = True):
-        resp = requests.post('http://dry-tundra-82186.herokuapp.com/solve-and-validate',#'C:\Users\Tron\Desktop\Swu\Planner\cloud-solver',#
-                     verify=True, json=self.parameters).json()
+        resp = requests.post('http://dry-tundra-82186.herokuapp.com/solve', verify=False, json=self.parameters)
+        print(resp)
         #with open("planFileNameHolder", 'w') as f:
         #    f.write('\n'.join([act['name'] for act in resp['result']['plan']]))
         if (resp['status'] == 'error'):

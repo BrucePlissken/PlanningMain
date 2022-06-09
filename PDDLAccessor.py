@@ -64,7 +64,6 @@ def changeGoal(prob, newGoal, newFile = ""):
     file.close()
     tmp = tmp.partition("(:goal")
     result = tmp[0] + tmp[1] + "\n    (and\n        " + newGoal + "\n    )\n)\n)"
-    #print(result)
     file = open(newFile, "w")
     file.write(result)
     file.close()
@@ -80,6 +79,12 @@ def changeState(prob, newState, newFile = ""):
     file = open(newFile, "w")
     file.write(result)
     file.close()
+
+def plan_splitter(plan):
+    result = re.sub(r'(;.*)', '', plan)
+    result = result.strip()
+    result = result.split('\n')
+    return result
 
 def printPlan(plan):
     openPlan = open(plan)

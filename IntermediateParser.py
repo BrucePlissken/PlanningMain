@@ -110,12 +110,16 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
                 applyFunction(e, lookUpbook, func, pddlProblem, acc, andOp)
         
         if "or" in expressions:
+            tacc = []
             for e in expressions["or"]:
                 #print("or")
                 #this should probably be the way it is implemented across the board
                 #acc =  
-                orOp(applyFunction(e, lookUpbook, func, pddlProblem, acc, nonOp), acc)
-        
+                orOp(applyFunction(e, lookUpbook, func, pddlProblem, tacc, andOp), acc)
+                #applyFunction(e, lookUpbook, func, pddlProblem, tacc, orOp)
+            if True not in tacc:
+                acc = acc and False
+
         if "not" in expressions:
             if(isinstance(expressions, list)):
                 for e in expressions["not"]:    

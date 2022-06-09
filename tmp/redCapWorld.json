@@ -102,19 +102,24 @@
     ],
     "- pred": [
         {
-            "name": "inventory"
+            "name": "inventory",
+            "predicates": {}
         },
         {
-            "name": "whereabouts"
+            "name": "whereabouts",
+            "predicates": {}
         },
         {
-            "name": "atloc"
+            "name": "atloc",
+            "predicates": {}
         },
         {
-            "name": "isdead"
+            "name": "isdead",
+            "predicates": {}
         },
         {
-            "name": "isasleep"
+            "name": "isasleep",
+            "predicates": {}
         }
     ]
     

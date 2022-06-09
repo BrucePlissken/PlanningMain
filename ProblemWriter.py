@@ -71,7 +71,7 @@ class PddlProblemWriter:
         file.write(")\n(:init\n")
         #this needs to be made flexible
         if metric != "":
-            file.write("    (= (cost) 0)\n")
+            file.write("    (= (total-cost) 0)\n")
         file.write(initial)
         file.write(")\n(:goal\n    (and\n    "+goals+"\n    )\n)\n")
         if metric != "":

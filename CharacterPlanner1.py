@@ -1,5 +1,4 @@
 import random
-import re
 from PDDLAccessor import *
 from WorldInterface import *
 import PlanApi
@@ -10,8 +9,7 @@ class CharacterPlanner():
         self.writer = ProblemWriter.PddlProblemWriter("tmp/" +domain)
         self.pdc = self.writer.pdc
         self.planner = planApi(domain, tmpProbnm + '.pddl')
-        self.world_loc = "tmp/" + world
-        self.world = open_world(self.world_loc)
+        self.world = open_world("tmp/" + world)
         self.tmpProp = tmpProbnm
         self.tmpDom = tmpDomnm
         if (seed != ''):
@@ -26,7 +24,7 @@ class CharacterPlanner():
         self.planner.updateParams()
 
     def run_planner(self):
-        return self.planner.get_plan()#False)
+        return self.planner.get_plan(show= False)
 
     def custom_problem(self, new_world, prob_name, goal = "", metric = ""):
         temp = self.writer.unwrap_dict(new_world)
@@ -92,7 +90,7 @@ class CharacterPlanner():
 
         self.custom_problem(tmp_world, self.tmpProp, goal, metric)
         #changeGoal('tmp/'+self.tmpProp +'.pddl', goal)
-        self.update_problem_address(cp.tmpProp +'.pddl')
+        self.update_problem_address(self.tmpProp +'.pddl')
         plan = self.run_planner()
         if plan == '':
             return False
@@ -108,7 +106,7 @@ class CharacterPlanner():
                 for g in itL:
                     goal = goal + g
                 #print(goal)
-                plan = self.mk_character_plan(c,world,goal, "(:metric minimize (cost))\n")
+                plan = self.mk_character_plan(c,world,goal, "(:metric minimize (total-cost))\n")
                 print(plan)
                 if not plan:
                     pass
@@ -141,41 +139,21 @@ class CharacterPlanner():
 
     def resolve_plan_step(self, world):
         for c in world["- character"]:
-            if 'plan' in c:
+            if 'plan' in c and len(c['plan']) > 0:
                 p = c['plan'].pop(0)
                 #print(p)
                 pd = self.disect_plan_action(p)
                 #print(pd)
                 apply_action_to_world(world, pd)
 
-    def formulate_goals(self, world):
-        for c in world['- character']:
-            if 'mk_goal_double' in c['predicates']:
-                if 'goals' not in c:
-                    c['goals'] = []
-                
-                while(len(c['predicates']['mk_goal_double']) > 1):
-                    tmpgoal = []
-                    for n in range(3):
-                        tmpgoal.append(c['predicates']['mk_goal_double'].pop(0))
-                    goal = mk_goal_double(tmpgoal)
-                    if goal not in c['goals']:
-                        c['goals'].append(goal)
-                
-
-def mk_goal_double(goal):
-    result = '('
-    result = result + goal.pop(0)
-    for n in range(len(goal)):
-        result = result + ' ' + goal[n]
-    result = result + ')'
-    return result
-
-def plan_splitter(plan):
-    result = re.sub(r'(;.*)', '', plan)
-    result = result.strip()
-    result = result.split('\n')
-    return result
+    def get_impending_plan_steps(self, world):
+        result = []
+        for c in world["- character"]:
+            if 'plan' in c:
+                p = c['plan'][0]
+                result.append(p)
+        return result
+    
     
 """
 testing stuff
@@ -186,9 +164,9 @@ world2 = "redCapWorld.json"
 dom = "CharacterPlanningDom.pddl"
 dom2 = "redcapdom.pddl"
 prob = "OVERHERE.pddl"
-cp = CharacterPlanner(world2, dom2)#, planApi=PlanApi.FD_Api)
+cp = CharacterPlanner(world2, dom2, planApi=PlanApi.FD_Api)
 #cp.custom_domain(['pick_up','move','give'])#,'take','kill','wt_for_sleep'])
-cp.update_problem_address(cp.tmpProp +'.pddl')
+#cp.update_problem_address(cp.tmpProp +'.pddl')
 #pprint.pprint(cp.world)
 
 #c = get_smth(cp.world, "redcap")
@@ -199,13 +177,16 @@ cp.resolve_goals(cp.world)
 #c['plan'] = plan_splitter(plan)
 cp.resolve_plan_step(cp.world)
 cp.resolve_plan_step(cp.world)
-cp.formulate_goals(cp.world)
-cp.resolve_goals(cp.world)
-"""
-cp.resolve_plan_step(cp.world)
+formulate_goal(get_smth(cp.world, 'redcap'))
 cp.resolve_goals(cp.world)
 
+cp.resolve_plan_step(cp.world)
+"""
+cp.resolve_plan_step(cp.world)
+cp.resolve_plan_step(cp.world)
 pprint.pprint(cp.world)
+cp.resolve_goals(cp.world)
+
 mom = get_smth(cp.world, 'mom')
 goal = ''
 for g in rc["goals"]:
