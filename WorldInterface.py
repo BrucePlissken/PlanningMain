@@ -30,13 +30,16 @@ def rnd_n(w, t):
     return n
 
 def find_holders(w,n):
-    result = []
+    result = {}
     for t in w:
         for c in w[t]:
             for p in c["predicates"]:
                 for name in c["predicates"][p]:
                     if name == n:
-                        result.append((t,c))
+                        if t in result:
+                            result[t].append(c)
+                        else:
+                            result.update({t:[c]})
     return result
 
 def check_precondition(world, lex):
@@ -149,10 +152,10 @@ def mk_goal_double(goal):
     result = result + ')'
     return result
 
-#recursively adds types from world, associated to subject, to accumulator
-def add_associations(world, subject, acc):
-    for p in subject["predicates"]:
-        for n in subject["predicates"][p]:
+#recursively adds types from world, associated to character, to accumulator
+def add_associations(world, character, acc):
+    for p in character["predicates"]:
+        for n in character["predicates"][p]:
             for t in world:
                 x = get_smth(world,n,t)
                 if x:
@@ -161,6 +164,16 @@ def add_associations(world, subject, acc):
                     else:
                         acc.update({t : [x]})
                     add_associations(world,x,acc)
+
+def merge_worlds(acc,nw):
+    for t in nw:
+        if t not in acc:
+            acc.update(t)
+        else:
+            for thing in nw[t]:
+                if thing not in acc[t]:
+                    acc[t].append(thing)
+        
 
 """
 testing stuff

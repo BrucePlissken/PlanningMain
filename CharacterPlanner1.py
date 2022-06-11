@@ -1,17 +1,20 @@
 import random
 from PDDLAccessor import *
+from mockdbapi import MockDbJs
 from WorldInterface import *
 import PlanApi
 import ProblemWriter
+import pprint
 
-class CharacterPlanner():
-    def __init__(self, world, domain, seed = '', planApi = PlanApi.Cloud_Planner_Api, tmpProbnm = "tmpProb", tmpDomnm = 'tmpDom'):
+class CharacterPlanner:
+    def __init__(self, world, domain, databaseadress, databaseApi = MockDbJs, planApi = PlanApi.Cloud_Planner_Api, tmpProbnm = "tmpProb", tmpDomnm = 'tmpDom', seed = ''):
         self.writer = ProblemWriter.PddlProblemWriter("tmp/" +domain)
-        self.pdc = self.writer.pdc
+        self.pddlcontroler = self.writer.pdc
         self.planner = planApi(domain, tmpProbnm + '.pddl')
-        self.world = open_world("tmp/" + world)
+        self.world = json.load(open("tmp/" + world))
         self.tmpProp = tmpProbnm
         self.tmpDom = tmpDomnm
+        self.knowledgedb = databaseApi(databaseadress)
         if (seed != ''):
             random.seed(seed)
 
@@ -43,12 +46,13 @@ class CharacterPlanner():
         f.close()
         self.update_domain_address(self.tmpDom+'.pddl')
 
+    #takes in a plan-action and returns a dict of info for feeding to the intermediate parser
     def disect_plan_action(self, planAction):
         result_t = {}
         result_v = {}
         pa = planAction.replace('(', '').replace(')','').split()
         name = pa.pop(0)
-        action = self.pdc.getAction(name)
+        action = self.pddlcontroler.getAction(name)
         tmp = []
         for x in action["parameters"].replace('(', '').replace(')','').split():
             if(x[0] == '?'):
@@ -59,8 +63,8 @@ class CharacterPlanner():
             else:
                 for t in tmp:
                     r_v = ['- ' + x]
-                    for pdt in self.pdc.pddltypes:
-                        if x in self.pdc.pddltypes[pdt]:
+                    for pdt in self.pddlcontroler.pddltypes:
+                        if x in self.pddlcontroler.pddltypes[pdt]:
                             r_v.append(pdt)
                     
                     result_t[t] = r_v
@@ -72,10 +76,10 @@ class CharacterPlanner():
         for smth in newWorld:
             for th in newWorld[smth]:
                 if smth not in oldWorld:
-                    for pdt in self.pdc.pddltypes:
-                        if smth.partition(' ')[2] in self.pdc.pddltypes[pdt]:
+                    for pdt in self.pddlcontroler.pddltypes:
+                        if smth.partition(' ')[2] in self.pddlcontroler.pddltypes[pdt]:
                             smth = pdt
-                        elif smth in self.pdc.pddltypes[pdt]:
+                        elif smth in self.pddlcontroler.pddltypes[pdt]:
                             smth = pdt
                 
                 oldThing = get_smth(oldWorld, th['name'])
@@ -83,7 +87,8 @@ class CharacterPlanner():
                 oldWorld[smth].append(th)
             
     def mk_character_plan(self, character, world, goal, metric = ""):
-        tmp_world = copy.deepcopy(world)
+        #tmp_world = copy.deepcopy(world)
+        tmp_world = self.mk_known_world(world, character, goal)
         mk_agent(tmp_world, character)
         if 'actions' in character:
             self.custom_domain(character['actions'])
@@ -96,6 +101,41 @@ class CharacterPlanner():
             return False
         #result = plan_splitter(plan)
         return plan
+
+    #takes a world and a character, and returns a world with the characters emidiate associations
+    #to be expanded upon, perhaps with a database of known things... thinking of some one to many sql shenanigans
+    def mk_known_world(self, world, character, goal = ''):
+        known_world = {'- character': [character],
+                     '- pred': world['- pred']}
+        add_associations(world, character, known_world)
+        pfft = find_holders(world, character['predicates']['whereabouts'][0])
+        merge_worlds(known_world, pfft)
+
+
+        #goal loop for adding goal specific info. This might be replaced in it's entirety as knowledge db gets implemented
+        goalthings = goal.replace('(', ' ')
+        goalthings = goalthings.replace(')', ' ')
+        goalthings = goalthings.split()
+        
+        for gt in goalthings:
+            oldthing = get_smth(world, gt)
+            if oldthing != False:
+                intemp = get_smth(known_world, gt)
+                if intemp == False:
+                    tp = get_t(world, gt)
+                    tmp = { tp : [oldthing]}
+                    merge_worlds(known_world, tmp)
+        
+        
+        known = self.knowledgedb.get_knldg(character['name'])
+        for k in known:
+            if not get_smth(known_world, k):
+                t = get_t(world, k)
+                smth = get_smth(world, k, t)
+                tmp = {t:[smth]}
+                merge_worlds(known_world,tmp)
+
+        return known_world
 
     def resolve_goals(self, world):
         for c in world["- character"]:
@@ -164,7 +204,8 @@ world2 = "redCapWorld.json"
 dom = "CharacterPlanningDom.pddl"
 dom2 = "redcapdom.pddl"
 prob = "OVERHERE.pddl"
-cp = CharacterPlanner(world2, dom2, planApi=PlanApi.FD_Api)
+db2 = 'redcapknowledgedb.json'
+cp = CharacterPlanner(world2, dom2, db2, planApi=PlanApi.FD_Api)
 #cp.custom_domain(['pick_up','move','give'])#,'take','kill','wt_for_sleep'])
 #cp.update_problem_address(cp.tmpProp +'.pddl')
 #pprint.pprint(cp.world)

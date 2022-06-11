@@ -86,9 +86,6 @@ def attempt_parse_action_request(name, ls, loc, superloc):
     return action
 
 
-
-
-
 world2 = "redCapWorld.json"
 dom2 = "redcapdom.pddl"
 cp = CharacterPlanner(world2, dom2, planApi=PlanApi.FD_Api)

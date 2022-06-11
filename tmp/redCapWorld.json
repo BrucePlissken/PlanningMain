@@ -60,7 +60,6 @@
         {
             "name": "mom",
             "actions" : ["tell_double"],
-            "helpers" : ["redcap"],
             "goals" : ["(mk_goal_double inventory cake grandma redcap)", "(mk_goal_double inventory wine grandma redcap)"],
             "predicates": {
                 "inventory": [],

@@ -1,0 +1,5 @@
+{
+    "mom": ["grandma","redcap","grandmas_house", "meadow","village", "forrest","path","moms_house","cake","wine"],
+    "redcap" : ["grandma","mom","grandmas_house", "meadow","village", "forrest","path","moms_house"],
+    "grandma": ["grandmas_house", "forrest"]
+}
