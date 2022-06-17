@@ -4,7 +4,6 @@ from mockdbapi import MockDbJs
 from WorldInterface import *
 import PlanApi
 import ProblemWriter
-import pprint
 
 class CharacterPlanner:
     def __init__(self, world, domain, databaseadress, databaseApi = MockDbJs, planApi = PlanApi.Cloud_Planner_Api, tmpProbnm = "tmpProb", tmpDomnm = 'tmpDom', seed = ''):
@@ -46,6 +45,20 @@ class CharacterPlanner:
         f.close()
         self.update_domain_address(self.tmpDom+'.pddl')
 
+
+    #check weather goals of a char have been achieved in a world, and if so removes the goal from the list of goals and if empty removes the entry from char
+    def check_goal_resolved(self, world, char):
+        name = char['name']
+        if 'goals' in char:
+            for g in char['goals']:
+                prec = g.replace('(', '').replace(')','')
+                lex = copy.deepcopy(self.pddlcontroler.pddltypes)
+                lex.update({'precondition' : prec,
+                            'vars' : []}) 
+                if check_precondition(world, lex):
+                    print(f'{name} resolved goal: {g}')
+                    remove_item_from_thing(char, 'goals', g)
+
     #takes in a plan-action and returns a dict of info for feeding to the intermediate parser
     def disect_plan_action(self, planAction):
         result_t = {}
@@ -62,14 +75,24 @@ class CharacterPlanner:
                 pass
             else:
                 for t in tmp:
-                    r_v = ['- ' + x]
-                    for pdt in self.pddlcontroler.pddltypes:
-                        if x in self.pddlcontroler.pddltypes[pdt]:
-                            r_v.append(pdt)
-                    
-                    result_t[t] = r_v
+                    tis = get_t(self.world, t)
+                    if tis:
+                        tis = tis.split()[1]
+                        #r_v = ['- ' + x]
+                        r_v = ['- ' + tis]
+                        for pdt in self.pddlcontroler.pddltypes:
+                            if tis in self.pddlcontroler.pddltypes[pdt]:
+                                r_v.append(pdt)
+                        result_t[t] = r_v
+                        if ('- ' + x in r_v or (x == 'agent' and '- character' in r_v)):
+                            pass
+                        else:
+                            strong = f'{t} is not - {x}, but - {tis}'
+                            return strong
+                    else:
+                        strong = f'there is no {t}'
+                        return strong
                 tmp = []
-
         return {'types' : result_t, 'vars' : result_v, 'precondition': action['precondition'], 'effect': action['effect']}
 
     def update_world(self, oldWorld, newWorld):
@@ -88,7 +111,7 @@ class CharacterPlanner:
             
     def mk_character_plan(self, character, world, goal, metric = ""):
         #tmp_world = copy.deepcopy(world)
-        tmp_world = self.mk_known_world(world, character, goal)
+        tmp_world = self.mk_known_world(world, character)
         mk_agent(tmp_world, character)
         if 'actions' in character:
             self.custom_domain(character['actions'])
@@ -104,7 +127,7 @@ class CharacterPlanner:
 
     #takes a world and a character, and returns a world with the characters emidiate associations
     #to be expanded upon, perhaps with a database of known things... thinking of some one to many sql shenanigans
-    def mk_known_world(self, world, character, goal = ''):
+    def mk_known_world(self, world, character):
         known_world = {'- character': [character],
                      '- pred': world['- pred']}
         add_associations(world, character, known_world)
@@ -113,6 +136,7 @@ class CharacterPlanner:
 
 
         #goal loop for adding goal specific info. This might be replaced in it's entirety as knowledge db gets implemented
+        """
         goalthings = goal.replace('(', ' ')
         goalthings = goalthings.replace(')', ' ')
         goalthings = goalthings.split()
@@ -125,7 +149,7 @@ class CharacterPlanner:
                     tp = get_t(world, gt)
                     tmp = { tp : [oldthing]}
                     merge_worlds(known_world, tmp)
-        
+        """
         
         known = self.knowledgedb.get_knldg(character['name'])
         for k in known:
@@ -137,47 +161,46 @@ class CharacterPlanner:
 
         return known_world
 
-    def resolve_goals(self, world):
-        for c in world["- character"]:
-            if "goals" in c:
-                #print(c["name"])
-                goal = ''
-                itL = copy.copy(c['goals'])
+    def goals_to_plans(self, world, c):
+        if "goals" in c:
+            #print(c["name"])
+            goal = ''
+            itL = copy.copy(c['goals'])
+            for g in itL:
+                goal = goal + g
+            #print(goal)
+            plan = self.mk_character_plan(c,world,goal, "(:metric minimize (total-cost))\n")
+            print(plan)
+            if not plan:
+                pass
+                """
                 for g in itL:
-                    goal = goal + g
-                #print(goal)
-                plan = self.mk_character_plan(c,world,goal, "(:metric minimize (total-cost))\n")
-                print(plan)
-                if not plan:
-                    pass
-                    """
-                    for g in itL:
-                        plan = self.mk_character_plan(c,world,goal)
-                        if not plan:
-                            dg = self.deconstruct_goal(g)
-                            #c["goals"].remove(g)
-                            if "abstract_goal" not in c["predicates"]:
-                                c["predicates"]["abstract_goal"] = []
-                            for ag in dg:
-                                if ag not in c["predicates"]["abstract_goal"]:
-                                    c["predicates"]["abstract_goal"].append(ag)
-                    """
+                    plan = self.mk_character_plan(c,world,goal)
+                    if not plan:
+                        dg = self.deconstruct_goal(g)
+                        #c["goals"].remove(g)
+                        if "abstract_goal" not in c["predicates"]:
+                            c["predicates"]["abstract_goal"] = []
+                        for ag in dg:
+                            if ag not in c["predicates"]["abstract_goal"]:
+                                c["predicates"]["abstract_goal"].append(ag)
+                """
+            else:
+                plan = plan_splitter(plan)
+                if "plan" not in c:
+                    c["plan"] = plan
                 else:
-                    plan = plan_splitter(plan)
-                    if "plan" not in c:
-                        c["plan"] = plan
-                    else:
-                        c["plan"] = plan
-                        
-                        #for p in plan:
-                        #    c["plan"].append(p)
+                    c["plan"] = plan
+                    
+                    #for p in plan:
+                    #    c["plan"].append(p)
     """
     def deconstruct_goal(self, goal):
         tmp = goal.partition(' ')[2].rpartition(")")[0]
         return tmp.split()
     """
 
-    def resolve_plan_step(self, world):
+    def apply_plan_step(self, world):
         for c in world["- character"]:
             if 'plan' in c and len(c['plan']) > 0:
                 p = c['plan'].pop(0)
@@ -186,19 +209,41 @@ class CharacterPlanner:
                 #print(pd)
                 apply_action_to_world(world, pd)
 
-    def get_impending_plan_steps(self, world):
-        result = []
-        for c in world["- character"]:
-            if 'plan' in c:
-                p = c['plan'][0]
-                result.append(p)
-        return result
+
     
     
 """
 testing stuff
 """
-import pprint
+
+world2 = "redCapWorld.json"
+dom2 = "redcapdom.pddl"
+db2 = 'redcapknowledgedb.json'
+
+
+data = [world2,dom2,db2]
+cp = CharacterPlanner(data[0], data[1], data[2], planApi=PlanApi.FD_Api)
+
+tests = ['(move redcap moms_house village village)', '(pick_up redcap cake moms_house)', '(move redcap village path path)','(move redcap moms_house grandmas_house village)']
+results = []
+for test in tests:
+    results.append(check_precondition(cp.world, cp.disect_plan_action(test))[0])
+
+for test in tests:
+    results.append(apply_action_to_world(cp.world, cp.disect_plan_action(test)))
+
+expected = [True,True,False,False,True,False,True,False]
+
+#print(f' results: {results}')
+
+if results == expected:
+    print('WI-test success')
+
+
+
+
+
+"""
 world = "world.json"
 world2 = "redCapWorld.json"
 dom = "CharacterPlanningDom.pddl"
@@ -216,13 +261,14 @@ cp.resolve_goals(cp.world)
 #print(plan)
 #print(plan)
 #c['plan'] = plan_splitter(plan)
-cp.resolve_plan_step(cp.world)
-cp.resolve_plan_step(cp.world)
+cp.apply_plan_step(cp.world)
+cp.apply_plan_step(cp.world)
 formulate_goal(get_smth(cp.world, 'redcap'))
 cp.resolve_goals(cp.world)
 
-cp.resolve_plan_step(cp.world)
-"""
+
+cp.apply_plan_step(cp.world)
+
 cp.resolve_plan_step(cp.world)
 cp.resolve_plan_step(cp.world)
 pprint.pprint(cp.world)

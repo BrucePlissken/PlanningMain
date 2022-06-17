@@ -104,21 +104,44 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
     if(isinstance(expressions, dict)):
         
         if "and" in expressions:
-            for e in expressions["and"][::-1]:
+            for e in expressions["and"]:#[::-1]:
                 #print("and...")
                 #acc = 
                 applyFunction(e, lookUpbook, func, pddlProblem, acc, andOp)
         
         if "or" in expressions:
             tacc = []
+            #print(expressions["or"])
             for e in expressions["or"]:
-                #print("or")
                 #this should probably be the way it is implemented across the board
                 #acc =  
-                orOp(applyFunction(e, lookUpbook, func, pddlProblem, tacc, andOp), acc)
-                #applyFunction(e, lookUpbook, func, pddlProblem, tacc, orOp)
-            if True not in tacc:
-                acc = acc and False
+                #orOp(applyFunction(e, lookUpbook, func, pddlProblem, tacc, andOp), acc)
+                #print(f'or: {tmp}')
+                snap = applyFunction(e, lookUpbook, func, pddlProblem, [], andOp)
+
+                tacc.append(snap)
+            """
+            if (True, '') not in tacc:
+                acc = acc + tacc
+            """
+            ssion = []
+            #under construction
+            #only valid for (bool, str)
+            for ession in tacc:
+                hap = True
+                for sion in ession:
+                    ssion.append(sion)
+                    ion = sion[0]
+                    hap = hap and ion                    
+                if hap:
+                    return acc.append(sion)
+            
+            for sion in ssion:
+                acc.append(sion)
+            return acc
+                    
+                    
+
 
         if "not" in expressions:
             if(isinstance(expressions, list)):
@@ -213,6 +236,21 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
                     #print(expressions["when"][1])
                     #print(acc)
 
+        if "=" in expressions:
+            """
+            tmp = expressions['='].split()
+            for e in range(2):
+                if tmp[e] in lookUpbook['vars']:
+                    tmp[e] = lookUpbook['vars'][tmp[e]][0]
+
+            if tmp[0] == tmp[1]:
+                acc.append(True)
+            else:
+                acc.append(False)
+            """
+            #print(expressions)
+            applyFunction(expressions['='], lookUpbook, func, pddlProblem, acc, andOp)
+
         return acc
         
     return func(expressions, lookUpbook, operator, pddlProblem, acc)
@@ -234,6 +272,11 @@ def stringReplacer(expression, lookUpbook, operator, pddlProblem, acc):
     #print(result)
     return result
 
+def eqOp(it, em):
+    result = it == em
+    #print (result)
+    return result
+
 def ifOp(it, em):
     if type(it) is bool:
         if(it):
@@ -251,11 +294,19 @@ def nonOp(it, em):
 
 def andOp(it, em):
     if type(it) is bool:
-        return it & em
+        result = it and em
+       #print(f'and bool {it}, and em {em} and result: {result}')
+        return result
     elif type(it) is str:
         return "(and (" + it + ") " + em +")"
+    elif type(em) is list:
+        #print(f'heyyo ANDAND {it}, and em {em}')
+        return em.append(it)
+    elif type(it) is tuple:
+        #print(f'heyyo and tup tup {it}, and em {em}')
+        return (it[0] and em[0], it[1] + ' ' + em[1])
     elif type(it) is list:
-        it.append(em)
+        return it.append(em)
 
 def notOp(it, em):
     #print("not")
@@ -265,14 +316,19 @@ def notOp(it, em):
         return "(not (" + it + ")) " +em 
 
 def orOp(it, em):
+    #print(f'or it {it} em {em}')
     if type(it) is bool:
         return it | em
     elif type(it) is str:
-        return "(or (" + it + ") " +em +")" 
+        return "(or (" + it + ") " +em +")"
+    elif type(it) is tuple:
+        return (it[0] or em[0], it[1] + ' ' + em[1])
 
 def addOp(it,em):
     if type(it) is bool:
         return it
+
+
 
 def listyfy(expression, lookUpbook, operator, pddlProblem, acc):
     if (operator == andOp or operator == ifOp or operator == orOp):
