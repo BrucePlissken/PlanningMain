@@ -38,13 +38,14 @@ class CharacterPlanner:
         for a in actions:
             tmp = '\n(:action ' + a +'\n    '
             pff = getSection(a,dom[2])
+            if pff == '':
+                continue
             result = result + tmp + pff
         result = result + '\n)'
         f = open('tmp/'+self.tmpDom+'.pddl','w')
         f.write(result)
         f.close()
         self.update_domain_address(self.tmpDom+'.pddl')
-
 
     #check weather goals of a char have been achieved in a world, and if so removes the goal from the list of goals and if empty removes the entry from char
     def check_goal_resolved(self, world, char):
@@ -224,23 +225,43 @@ db2 = 'redcapknowledgedb.json'
 data = [world2,dom2,db2]
 cp = CharacterPlanner(data[0], data[1], data[2], planApi=PlanApi.FD_Api)
 
-tests = ['(move redcap moms_house village village)', '(pick_up redcap cake moms_house)', '(move redcap village path path)','(move redcap moms_house grandmas_house village)']
-results = []
-for test in tests:
-    results.append(check_precondition(cp.world, cp.disect_plan_action(test))[0])
+WI_test = ['(move redcap moms_house village village)', '(pick_up redcap cake moms_house)', '(move redcap village path path)','(move redcap moms_house grandmas_house village)','(move redcap path village path)','(move redcap village moms_house village)']
+WI_results = []
 
-for test in tests:
-    results.append(apply_action_to_world(cp.world, cp.disect_plan_action(test)))
+for test in WI_test:
+    WI_results.append(check_precondition(cp.world, cp.disect_plan_action(test))[0])
 
-expected = [True,True,False,False,True,False,True,False]
+for test in WI_test:
+    WI_results.append(apply_action_to_world(cp.world, cp.disect_plan_action(test)))
+
+WI_expected = [True,True,False,False,False,False, True,False,True,False,True,True]
 
 #print(f' results: {results}')
 
-if results == expected:
+if WI_results == WI_expected:
     print('WI-test success')
+else: 
+    print('WI-test failure')
 
 
+c = get_smth(cp.world, "redcap")
+plan = cp.mk_character_plan(c, cp.world, "(inventory wine grandma) (inventory cake grandma)", "(:metric minimize (total-cost))\n")
 
+plan = plan_splitter(plan)
+
+plan_test =['(pick_up redcap wine moms_house)',
+'(pick_up redcap cake moms_house)',
+'(move redcap moms_house village village)',
+'(move redcap village path path)',
+'(move redcap path forrest path)',
+'(move redcap forrest grandmas_house forrest)',
+'(give redcap grandma wine grandmas_house)',
+'(give redcap grandma cake grandmas_house)']
+
+if plan == plan_test:
+    print('plan-test success')
+else:
+    print(f'plan-test failure {plan}')
 
 
 """
@@ -255,8 +276,8 @@ cp = CharacterPlanner(world2, dom2, db2, planApi=PlanApi.FD_Api)
 #cp.update_problem_address(cp.tmpProp +'.pddl')
 #pprint.pprint(cp.world)
 
-#c = get_smth(cp.world, "redcap")
-#plan = cp.mk_character_plan(c, cp.world, "(inventory wine grandma) (inventory cake grandma)", "(:metric minimize (total-cost))\n")
+c = get_smth(cp.world, "redcap")
+plan = cp.mk_character_plan(c, cp.world, "(inventory wine grandma) (inventory cake grandma)", "(:metric minimize (total-cost))\n")
 cp.resolve_goals(cp.world)
 #print(plan)
 #print(plan)

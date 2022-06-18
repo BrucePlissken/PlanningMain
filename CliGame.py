@@ -2,6 +2,7 @@
 auth: Jakob Ehlers
 a simple cli game for playing around within dynamic stories
 """
+from requests import head
 from CharacterPlanner1 import *
 import pprint
 
@@ -18,11 +19,14 @@ class CliGame:
         #cp.goals_to_plans(cp.world, get_smth(cp.world, 'mom'))
         while(run):
             #gather data
+            headline = ''
             whereabouts = char['predicates']['whereabouts'][0]
             others = []
             connections = []
             items = []
             name = char['name']
+            inventory = char['predicates']['inventory']
+            actions = char['actions']
 
             #changing abstract goals to concrete goals, to be depricated
             if 'mk_goal_double' in char['predicates']:
@@ -54,7 +58,8 @@ class CliGame:
             if 'goals' in char:
                 goals = char['goals']
             
-            self.std_display(char, whereabouts, others, connections, goals, items)
+
+            self.std_display(headline, inventory, whereabouts, others, connections, goals, items, actions)
             run = self.input_loop(char,name,whereabouts,connections)
 
     def input_loop(self, char, name, whereabouts, connections):
@@ -77,12 +82,14 @@ class CliGame:
                     #if so attempt to parse it
                     action = self.attempt_parse_action_request(name, x, whereabouts, connections[0]) 
                     if action != False:
+                        fails = []
                         for a in action:
                             canDo = check_precondition(self.cp.world, self.cp.disect_plan_action(a))
                             if (canDo[0]):
                                 self.resolve_actions(self.cp.world, name, a)
                                 return True
-                        print(f'{action} failed, because {canDo[1]}')
+                            fails.append(canDo[1])
+                        print(f'{action} failed, because {fails}')
                     else:
                         print(f'could not parse action {x[0]}')
 
@@ -99,11 +106,12 @@ class CliGame:
                       '(' + ls[0] + ' ' + name  + ' ' + loc + ' ' + ls[1] + ' ' + loc +')']
         if ls[0] in ['drop', 'pick_up']:
             action = ['(' + ls[0] + ' ' + name + ' ' + ls[1] + ' ' + loc + ')']
-        if ls[0] in ['give', 'kill', 'take']:
+        if ls[0] in ['give', 'kill', 'take', 'talk']:
             if len(ls) < 3:
                 print(f'missing input to complete action: {ls[0]}')
                 return False
             action = ['(' + ls[0] + ' ' + name + ' ' + ls[1] + ' '+ ls[2] +' '+ loc +')','(' + ls[0] + ' ' + name + ' '+ ls[2] + ' ' + ls[1] +' '+ loc +')']
+
 
         return action
 
@@ -125,8 +133,10 @@ class CliGame:
     
 
     #dumb text ui
-    def std_display(self, char, whereabouts, others, connections, goals, items):        
-        print(f'\n\n\n\n\n\n\ninventory: {char["predicates"]["inventory"] }\n')
+    def std_display(self, headLine = [], inventory = [], whereabouts = [], others = [], connections = [], goals = [], items = [], actions = []):        
+        print(f'\n\n\n\n\n\n\n {headLine}')
+        if inventory != []:
+            print(f'inventory: {inventory}\n')
         if len(goals) > 0:
             print(f'goals: {goals}\n')
         print(f'  you are at {whereabouts}. connections: {connections}')
@@ -134,7 +144,7 @@ class CliGame:
             print(f'  other characters here are: {others}')
         if len(items) > 0:
             print(f'  items here are: {items}')
-        print(f'\n  actions: {char["actions"]} and [\'wait\', \'quit\']')
+        print(f'\n  actions: {actions} and  [\'wait\', \'quit\']')
 
 
 world2 = "redCapWorld.json"

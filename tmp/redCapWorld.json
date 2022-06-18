@@ -15,11 +15,17 @@
         {
             "name": "forrest",
             "predicates": {
-                "atloc": ["grandmas_house", "meadow"]
+                "atloc": ["grandmas_house", "meadow", "hunting_lodge"]
             }
         },
         {
             "name": "grandmas_house",
+            "predicates": {
+                "atloc": []
+            }
+        },
+        {
+            "name": "hunting_lodge",
             "predicates": {
                 "atloc": []
             }
@@ -29,7 +35,7 @@
             "predicates": {
                 "atloc": ["cake", "wine"]
             }
-        },        
+        },
         {
             "name": "meadow",
             "predicates": {
@@ -40,7 +46,7 @@
     "- character": [
         {
             "name": "redcap",
-            "actions" : ["move", "give", "pick_up"],
+            "actions" : ["move", "give", "pick_up", "kill"],
             "predicates": {
                 "inventory": [],
                 "whereabouts": [
@@ -54,6 +60,15 @@
                 "inventory": [],
                 "whereabouts": [
                     "grandmas_house"
+                ]
+            }
+        },
+        {
+            "name": "hunter",
+            "predicates": {
+                "inventory": ["gun"],
+                "whereabouts": [
+                    "hunting_lodge"
                 ]
             }
         },
