@@ -4,6 +4,7 @@ import subprocess
 import sys
 import requests
 import js2py
+from PDDLAccessor import *
 
 sys.path.append('../')
 
@@ -18,7 +19,8 @@ class Plan_Api:
 
     def get_plan(self):
         pass
-
+"""
+"""
 #magic from fast-downward
 DRIVER_DIR = os.path.abspath(os.path.dirname(__file__))
 REPO_ROOT_DIR = os.path.dirname(DRIVER_DIR)
@@ -27,11 +29,19 @@ BUILDS_DIR = os.path.join(REPO_ROOT_DIR, "builds")
 #planner = plan_manager.PlanManager('plannies')
 class FD_Api(Plan_Api):
     def __init__(self, dom, prob):
-        super().__init__(dom, prob)
+        self.dom = name_extractor(dom)
+
+        print()
+        print(self.dom)
+        print()
+
+        self.prob = name_extractor(prob)
         self.sasPlan = "..\sas_plan"
         self.updateParams()
         
     def updateParams(self):
+        dom = "PlanningMain\\tmp\\" + name_extractor(self.dom) + ".pddl"
+        prob = "PlanningMain\\tmp\\" + name_extractor(self.prob) + ".pddl"
         self.parameters = [
             #"downward\\misc\\tests\\benchmarks\\gripper\\domain.pddl",
             #"downward\\misc\\tests\\benchmarks\\gripper\\prob01.pddl",
@@ -43,8 +53,8 @@ class FD_Api(Plan_Api):
             #"hcea=cea()", 
             #"--debug",
             
-            "PlanningMain\\tmp\\" +self.dom,
-            "PlanningMain\\tmp\\" +self.prob,
+            dom,
+            prob,
 
             "--search-options",
 
@@ -81,22 +91,20 @@ class FD_Api(Plan_Api):
 class Cloud_Planner_Api(Plan_Api):
     def __init__(self, dom, prob):
         super().__init__(dom, prob)
-        self.tmpPath = "tmp/"
         if (dom != '' and prob != ''):
             self.updateParams()
 
     def updateParams(self):
         self.parameters = {
-            'domain': read_file(self.tmpPath + self.dom),
-            'problem': read_file(self.tmpPath + self.prob)}
+            'domain': read_file(self.dom),
+            'problem': read_file(self.prob)}
 
     def get_plan(self, show = True):
 
-        resp = requests.post('http://dry-tundra-82186.herokuapp.com/solve', verify=False, json=self.parameters)
+        resp = requests.post('http://solver.planning.domains/solve', verify=False, json=self.parameters)
         """
+        resp = requests.post('http://dry-tundra-82186.herokuapp.com/solve', verify=False, json=self.parameters)
         resp = requests.post('http://calm-everglades-35579.herokuapp.com/solve', verify=False, json=self.parameters)
-        resp = requests.post('http://solver.planning.domains/solve',
-                     verify=False, json=self.parameters)
         """
         if (resp.status_code != 200):
             result = 'Response <' + str(resp.status_code) +'>: ' + resp.reason

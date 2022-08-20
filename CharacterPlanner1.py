@@ -6,11 +6,11 @@ import PlanApi
 import ProblemWriter
 
 class CharacterPlanner:
-    def __init__(self, world, domain, databaseadress, databaseApi = MockDbJs, planApi = PlanApi.Cloud_Planner_Api, tmpProbnm = "tmpProb", tmpDomnm = 'tmpDom', seed = ''):
-        self.writer = ProblemWriter.PddlProblemWriter("tmp/" +domain)
+    def __init__(self, world, domain, databaseadress, databaseApi = MockDbJs, planApi = PlanApi.Cloud_Planner_Api, tmpProbnm = "tmp/tmpProb.pddl", tmpDomnm = 'tmp/tmpDom.pddl', seed = ''):
+        self.writer = ProblemWriter.PddlProblemWriter(domain)
         self.pddlcontroler = self.writer.pdc
-        self.planner = planApi(domain, tmpProbnm + '.pddl')
-        self.world = json.load(open("tmp/" + world))
+        self.planner = planApi(domain, tmpProbnm)
+        self.world = json.load(open(world))
         self.tmpProp = tmpProbnm
         self.tmpDom = tmpDomnm
         self.knowledgedb = databaseApi(databaseadress)
@@ -44,7 +44,7 @@ class CharacterPlanner:
                 continue
             result = result + tmp + pff
         result = result + '\n)'
-        f = open('tmp/'+self.tmpDom+'.pddl','w')
+        f = open(self.tmpDom+'.pddl','w')
         f.write(result)
         f.close()
         self.update_domain_address(self.tmpDom+'.pddl')
@@ -121,7 +121,7 @@ class CharacterPlanner:
 
         self.custom_problem(tmp_world, self.tmpProp, goal, metric)
         #changeGoal('tmp/'+self.tmpProp +'.pddl', goal)
-        self.update_problem_address(self.tmpProp +'.pddl')
+        self.update_problem_address(self.tmpProp)
         plan = self.run_planner(show)
         if plan == '':
             return False
@@ -231,9 +231,9 @@ class CharacterPlanner:
 testing stuff
 """
 
-world2 = "redCapWorld.json"
-dom2 = "redcapdom.pddl"
-db2 = 'redcapknowledgedb.json'
+world2 = "Resource/redCapWorld.json"
+dom2 = "Resource/redcapdom.pddl"
+db2 = 'Resource/redcapknowledgedb.json'
 
 
 data = [world2,dom2,db2]
@@ -259,7 +259,7 @@ else:
 
 
 c = get_smth(cp.world, "redcap")
-plan = cp.mk_character_plan(c, cp.world, "(inventory wine grandma) (inventory cake grandma)", "(:metric minimize (total-cost))\n")
+plan = cp.mk_character_plan(c, cp.world, "(inventory wine grandma) (inventory cake grandma)", "(:metric minimize (total-cost))\n", show = False)
 
 if plan != False:
     plan = plan_splitter(plan)

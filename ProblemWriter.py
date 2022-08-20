@@ -2,6 +2,8 @@ import json
 import PDDLController
 import pprint
 
+from PlanningMain.PDDLAccessor import name_extractor
+
 class PddlProblemWriter:
     def __init__(self, domain):
         self.pdc = PDDLController.PDDLController(domain)
@@ -60,8 +62,9 @@ class PddlProblemWriter:
         result = result + probT + "\n"
         return result
 
-    def create_problem_file(self, name, probjects, initial, goals = "", metric = ""):
-        path = "tmp/"+name + ".pddl"
+    def create_problem_file(self, path, probjects, initial, goals = "", metric = ""):
+        name = name_extractor(path)
+        print(name)
         file = open(path, "w")
         file.write(self.make_header(name))
         file.close()

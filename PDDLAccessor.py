@@ -90,6 +90,10 @@ def printPlan(plan):
     openPlan = open(plan)
     print(openPlan.read())
     openPlan.close()
+
+def name_extractor(path):
+    name = path.rpartition('/')[2].partition('.')[0]
+    return name
 """
 #testing stuff beyond this point
 
