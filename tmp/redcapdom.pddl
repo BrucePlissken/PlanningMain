@@ -1,7 +1,7 @@
 ;Header and description
 (define (domain fairy_tale_dom)
 ;remove requirements that are not needed
-(:requirements :typing :conditional-effects :negative-preconditions :strips :disjunctive-preconditions :equality :action-costs)
+(:requirements :typing :conditional-effects :negative-preconditions :strips :disjunctive-preconditions :equality :equality :fluents)
 (:types ;todo: enumerate types and their hierarchy here, e.g. car truck bus - vehicle
     character item location pred - omni
     agent - character
@@ -10,7 +10,7 @@
 ; un-comment following line if constants are needed
 (:constants )
 (:predicates ;todo: define predicates here
-    (inventory ?item - item ?char - character)
+    (inventory ?item - item ?char - omni)
     (whereabouts ?loc - location ?char - character)
     (atloc ?o - omni ?loc - location)
     (isdead ?char - character)

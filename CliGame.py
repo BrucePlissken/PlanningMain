@@ -2,21 +2,19 @@
 auth: Jakob Ehlers
 a simple cli game for playing around within dynamic stories
 """
-from requests import head
 from CharacterPlanner1 import *
 import pprint
 
 class CliGame:
 
     def __init__(self, data) -> None:
-        self.cp = CharacterPlanner(data[0], data[1], data[2], planApi=PlanApi.FD_Api)
+        self.cp = CharacterPlanner(data[0], data[1], data[2], planApi=PlanApi.Cloud_Planner_Api)
 
     def game_loop(self, name):
         run = True
         cp = self.cp
         char = get_smth(cp.world, name)
-        #this is hardcoding:
-        #cp.goals_to_plans(cp.world, get_smth(cp.world, 'mom'))
+        db = cp.knowledgedb
         while(run):
             #gather data
             headline = ''
@@ -37,20 +35,26 @@ class CliGame:
             holders = find_holders(cp.world, whereabouts)
             if '- location' in holders:
                 for l in holders['- location']:
-                    connections.append(l['name'])
+                    kn = db.get_knldg(name)
+                    #print(kn)
+                    if (l['name'] in kn):
+                        connections.append(l['name'])
             if '- character' in holders:
                 for c in holders['- character']:
                     if c['name'] != name:
                         others.append(c['name'])
-            
+            """
             if len(connections) == 0:
-                connections.append(whereabouts)
+                if (whereabouts in db.get_knldg(name)):
+                    connections.append(whereabouts)
+            """
 
             #using get smt to find lower connections and items at location
             for i in get_smth(self.cp.world, whereabouts)['predicates']['atloc']:
                 it = get_t(self.cp.world,i)
                 if it == '- location':
-                    connections.append(i)
+                    if (i in db.get_knldg(name)):
+                        connections.append(i)
                 if it in ['- item', '- weapon', '- consumable']:
                     items.append(i)
 

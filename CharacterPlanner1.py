@@ -25,11 +25,13 @@ class CharacterPlanner:
         self.planner.dom = domain
         self.planner.updateParams()
 
-    def run_planner(self):
-        return self.planner.get_plan(show= False)
+    def run_planner(self, show = False ):
+        return self.planner.get_plan(show)
 
     def custom_problem(self, new_world, prob_name, goal = "", metric = ""):
+        #pprint.pprint(new_world)
         temp = self.writer.unwrap_dict(new_world)
+       # pprint.pprint(temp[1])
         self.writer.create_problem_file(prob_name, temp[0], temp[1], goal, metric)
 
     def custom_domain(self, actions):
@@ -47,7 +49,7 @@ class CharacterPlanner:
         f.close()
         self.update_domain_address(self.tmpDom+'.pddl')
 
-    #check weather goals of a char have been achieved in a world, and if so removes the goal from the list of goals and if empty removes the entry from char
+    #check wether goals of a char have been achieved in a world, and if so removes the goal from the list of goals and if empty removes the entry from char
     def check_goal_resolved(self, world, char):
         name = char['name']
         if 'goals' in char:
@@ -110,7 +112,7 @@ class CharacterPlanner:
                 oldWorld[smth].remove(oldThing)
                 oldWorld[smth].append(th)
             
-    def mk_character_plan(self, character, world, goal, metric = ""):
+    def mk_character_plan(self, character, world, goal, metric = "", show = False):
         #tmp_world = copy.deepcopy(world)
         tmp_world = self.mk_known_world(world, character)
         mk_agent(tmp_world, character)
@@ -120,20 +122,22 @@ class CharacterPlanner:
         self.custom_problem(tmp_world, self.tmpProp, goal, metric)
         #changeGoal('tmp/'+self.tmpProp +'.pddl', goal)
         self.update_problem_address(self.tmpProp +'.pddl')
-        plan = self.run_planner()
+        plan = self.run_planner(show)
         if plan == '':
             return False
         #result = plan_splitter(plan)
         return plan
 
-    #takes a world and a character, and returns a world with the characters emidiate associations
+    #takes a world and a character, and returns a world with the characters imediate associations
     #to be expanded upon, perhaps with a database of known things... thinking of some one to many sql shenanigans
     def mk_known_world(self, world, character):
         known_world = {'- character': [character],
                      '- pred': world['- pred']}
         add_associations(world, character, known_world)
+
         pfft = find_holders(world, character['predicates']['whereabouts'][0])
         merge_worlds(known_world, pfft)
+        #pprint.pprint(known_world)
 
 
         #goal loop for adding goal specific info. This might be replaced in it's entirety as knowledge db gets implemented
@@ -154,9 +158,19 @@ class CharacterPlanner:
         
         known = self.knowledgedb.get_knldg(character['name'])
         for k in known:
+            q = []
             if not get_smth(known_world, k):
                 t = get_t(world, k)
-                smth = get_smth(world, k, t)
+                smth = copy.copy(get_smth(world, k, t))
+                for p in smth["predicates"]:
+                    #print(smth["name"])
+                    #print(smth["predicates"][p])
+                    for i in smth["predicates"][p]:
+                        #print(i)
+                        if i not in known:
+                            q.append(i)
+                for s in q:    
+                    smth["predicates"][p].remove(s)
                 tmp = {t:[smth]}
                 merge_worlds(known_world,tmp)
 
@@ -223,7 +237,7 @@ db2 = 'redcapknowledgedb.json'
 
 
 data = [world2,dom2,db2]
-cp = CharacterPlanner(data[0], data[1], data[2], planApi=PlanApi.FD_Api)
+cp = CharacterPlanner(data[0], data[1], data[2], planApi=PlanApi.Cloud_Planner_Api)
 
 WI_test = ['(move redcap moms_house village village)', '(pick_up redcap cake moms_house)', '(move redcap village path path)','(move redcap moms_house grandmas_house village)','(move redcap path village path)','(move redcap village moms_house village)']
 WI_results = []
@@ -247,7 +261,8 @@ else:
 c = get_smth(cp.world, "redcap")
 plan = cp.mk_character_plan(c, cp.world, "(inventory wine grandma) (inventory cake grandma)", "(:metric minimize (total-cost))\n")
 
-plan = plan_splitter(plan)
+if plan != False:
+    plan = plan_splitter(plan)
 
 plan_test =['(pick_up redcap wine moms_house)',
 '(pick_up redcap cake moms_house)',
@@ -256,7 +271,7 @@ plan_test =['(pick_up redcap wine moms_house)',
 '(move redcap path forrest path)',
 '(move redcap forrest grandmas_house forrest)',
 '(give redcap grandma wine grandmas_house)',
-'(give redcap grandma cake grandmas_house)']
+'(give redcap grandma cake grandmas_house)',]
 
 if plan == plan_test:
     print('plan-test success')

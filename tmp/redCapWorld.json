@@ -46,7 +46,7 @@
     "- character": [
         {
             "name": "redcap",
-            "actions" : ["move", "give", "pick_up", "kill"],
+            "actions" : ["move", "give", "pick_up"],
             "predicates": {
                 "inventory": [],
                 "whereabouts": [

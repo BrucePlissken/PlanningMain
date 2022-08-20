@@ -3,11 +3,14 @@ from pprint import pprint
 import subprocess
 import sys
 import requests
+import js2py
+
 sys.path.append('../')
+
 
 class Plan_Api:
     def __init__(self, dom, prob):
-        self.dom = dom        
+        self.dom = dom
         self.prob = prob
 
     def updateParams(self):
@@ -88,8 +91,19 @@ class Cloud_Planner_Api(Plan_Api):
             'problem': read_file(self.tmpPath + self.prob)}
 
     def get_plan(self, show = True):
+
         resp = requests.post('http://dry-tundra-82186.herokuapp.com/solve', verify=False, json=self.parameters)
-        print(resp)
+        """
+        resp = requests.post('http://calm-everglades-35579.herokuapp.com/solve', verify=False, json=self.parameters)
+        resp = requests.post('http://solver.planning.domains/solve',
+                     verify=False, json=self.parameters)
+        """
+        if (resp.status_code != 200):
+            result = 'Response <' + str(resp.status_code) +'>: ' + resp.reason
+            #print(f'Response <{resp.status_code}>: {resp.reason}')
+            #print(result)
+            return result
+        resp = resp.json()
         #with open("planFileNameHolder", 'w') as f:
         #    f.write('\n'.join([act['name'] for act in resp['result']['plan']]))
         if (resp['status'] == 'error'):
@@ -106,6 +120,15 @@ class Cloud_Planner_Api(Plan_Api):
         #print(plan)
         
         return plan
+
+class Js_Cloud_planner(Plan_Api):
+    def get_plan(self, show =True):
+        
+        js2py.translate_file('tryinthis.js', 'tryinthis.py')
+        # example.py can be now imported and used!
+        from tryinthis import tryinthis
+        tryinthis.cplanner(self.dom, self.prob)
+        
 
 def read_file(fileName):
     openedFile = open(fileName)
