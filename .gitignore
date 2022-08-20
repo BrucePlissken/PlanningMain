@@ -1,8 +1,6 @@
 /JSHOP2
-*.class
-/__pychache__
-/LongSnake/__pychache__
+/__pycache__
+/LongSnake/__pycache__
 /trashcan
-/pychache
-/__pychache__
 /node_modules
+*.class
