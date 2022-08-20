@@ -237,7 +237,7 @@ db2 = 'Resource/redcapknowledgedb.json'
 
 
 data = [world2,dom2,db2]
-cp = CharacterPlanner(data[0], data[1], data[2], planApi=PlanApi.Cloud_Planner_Api)
+cp = CharacterPlanner(data[0], data[1], data[2], planApi=PlanApi.FD_Api)
 
 WI_test = ['(move redcap moms_house village village)', '(pick_up redcap cake moms_house)', '(move redcap village path path)','(move redcap moms_house grandmas_house village)','(move redcap path village path)','(move redcap village moms_house village)']
 WI_results = []
