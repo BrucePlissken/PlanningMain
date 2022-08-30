@@ -64,7 +64,6 @@ class PddlProblemWriter:
 
     def create_problem_file(self, path, probjects, initial, goals = "", metric = ""):
         name = name_extractor(path)
-        print(name)
         file = open(path, "w")
         file.write(self.make_header(name))
         file.close()

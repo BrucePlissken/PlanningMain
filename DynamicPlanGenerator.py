@@ -7,7 +7,7 @@ import PlanApi
 import StoryTeller
 
 class DPG():
-    def __init__(self, planDomain, planProblem, lexicon, seed = "", api = PlanApi.Cloud_Planner_Api, tensionCurve = ([0,1,2,3,4,5,6],[0,1,2,2.5,3,1.5,0])):
+    def __init__(self, planDomain, planProblem, lexicon, seed = "", api = PlanApi.FD_Api, tensionCurve = ([0,1,2,3,4,5,6],[0,1,2,2.5,3,1.5,0])):
         self.storyTeller = StoryTeller.StoryTeller(planDomain, planProblem, seed, api)
         self.tensionCurve = tensionCurve
         self.lex = lexicon
@@ -134,20 +134,20 @@ test stuff
 
 """
 
-pd = "AdventureDomCopycopy.pddl"
-pp = "AdventureProbCopycopycopy.pddl"
+pd = "tmp/AdventureDomCopycopy.pddl"
+pp = "tmp/AdventureProbCopycopycopy.pddl"
 
-pd1 = "RedRidingHoodDom.pddl"
-pp1 = "RedHoodProbTwo.pddl"
+pd1 = "tmp/RedRidingHoodDom.pddl"
+pp1 = "tmp/RedHoodProbTwo.pddl"
 
-pd2 = "CharacterPlanningDom.pddl"
-pp2 = "OVERHERE.pddl"
+pd2 = "tmp/CharacterPlanningDom.pddl"
+pp2 = "tmp/OVERHERE.pddl"
 l = "tmp/Adventurelex.json"
 l1 = "tmp/RedRidingLex.json"
 
 t1 = time.time()
 
-thing = DPG(pd, pp, json.load(open(l)))#, api=FD_Api)#, "hoppitty")
+thing = DPG(pd1, pp1, json.load(open(l1)))#, api=FD_Api)#, "hoppitty")
 
 #pprint(thing.storyTeller.giantTortoise.thesaurus)
 

@@ -4,6 +4,7 @@ Auth: Jakob Ehlers
 """
 import copy
 import re
+from typing import List
 
 def prsExp(expstr):
 
@@ -111,7 +112,9 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
         
         if "or" in expressions:
             tacc = []
-            #print(expressions["or"])
+            if type(acc == bool):
+                return acc
+
             for e in expressions["or"]:
                 #this should probably be the way it is implemented across the board
                 #acc =  
@@ -120,10 +123,7 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
                 snap = applyFunction(e, lookUpbook, func, pddlProblem, [], andOp)
 
                 tacc.append(snap)
-            """
-            if (True, '') not in tacc:
-                acc = acc + tacc
-            """
+            
             ssion = []
             #under construction
             #only valid for (bool, str)

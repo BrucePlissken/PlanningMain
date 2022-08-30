@@ -5,12 +5,11 @@ import GiantTortoise
 
 class StoryTeller:
     def __init__(self, domainF, problemF, seed, api):
-        tmp = "tmp/"
-        problemS = PDDLAccessor.fileToString(tmp + problemF)
-        self.giantTortoise = GiantTortoise.GiantTortoise(tmp+domainF, problemS, seed)
+        problemS = PDDLAccessor.fileToString(problemF)
+        self.giantTortoise = GiantTortoise.GiantTortoise(domainF, problemS, seed)
         self.pddlController = self.giantTortoise.pc
         self.startState = self.get_state(problemS)
-        self.sasPlan = "..\sas_plan"
+        #self.sasPlan = "..\sas_plan"
         self.planApi = api(domainF, problemF)
         self.problemF = problemF
 
@@ -23,10 +22,10 @@ class StoryTeller:
             problem = self.problemF.partition(".")
             problem = problem[0] + str(n) + problem[1] + problem[2] 
 
-        copyFile("tmp/"+self.problemF, "tmp/" + problem)
+        copyFile(self.problemF, problem)
 
         if (state != ""):
-            changeState("tmp/" + problem, state)
+            changeState(problem, state)
 
         goalGene = ""
         if type(gene) is str:
@@ -34,7 +33,7 @@ class StoryTeller:
         else:
             goalGene = self.giantTortoise.makeGoalGene(gene)
         
-        changeGoal("tmp/"+problem, goalGene)
+        changeGoal(problem, goalGene)
 
         self.planApi.prob = problem
         self.planApi.updateParams()
@@ -50,11 +49,11 @@ class StoryTeller:
                     break
                 state = self.pddlController.apply_action_to_state(x, state, self.giantTortoise.thesaurus)
                 if (state != ""):
-                    changeState("tmp/" + problem, state)
+                    changeState(problem, state)
             if (act[0][0] == ";"):
                 act = ""
 
-        os.remove("tmp/" + problem)
+        os.remove(problem)
         return (act, state, gene)
     
     #input ints for amount of stories and acts of the stories

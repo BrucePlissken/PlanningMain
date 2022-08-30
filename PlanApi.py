@@ -30,11 +30,6 @@ BUILDS_DIR = os.path.join(REPO_ROOT_DIR, "builds")
 class FD_Api(Plan_Api):
     def __init__(self, dom, prob):
         self.dom = name_extractor(dom)
-
-        print()
-        print(self.dom)
-        print()
-
         self.prob = name_extractor(prob)
         self.sasPlan = "..\sas_plan"
         self.updateParams()
@@ -78,7 +73,7 @@ class FD_Api(Plan_Api):
             ]
 
     #run driver
-    def get_plan(self, show = True):
+    def get_plan(self, show = False):
         if (os.path.exists(self.sasPlan)):
             os.remove(self.sasPlan)
         cmd = [sys.executable, "downward/fast-downward.py"] + self.parameters
@@ -128,15 +123,6 @@ class Cloud_Planner_Api(Plan_Api):
         #print(plan)
         
         return plan
-
-class Js_Cloud_planner(Plan_Api):
-    def get_plan(self, show =True):
-        
-        js2py.translate_file('tryinthis.js', 'tryinthis.py')
-        # example.py can be now imported and used!
-        from tryinthis import tryinthis
-        tryinthis.cplanner(self.dom, self.prob)
-        
 
 def read_file(fileName):
     openedFile = open(fileName)
