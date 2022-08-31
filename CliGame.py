@@ -151,9 +151,9 @@ class CliGame:
         print(f'\n  actions: {actions} and  [\'wait\', \'quit\']')
 
 
-world2 = "redCapWorld.json"
-dom2 = "redcapdom.pddl"
-db2 = 'redcapknowledgedb.json'
+world2 = "Resource/redCapWorld.json"
+dom2 = "Resource/redcapdom.pddl"
+db2 = 'Resource/redcapknowledgedb.json'
 
 instance = CliGame([world2,dom2,db2])
 instance.game_loop('redcap')

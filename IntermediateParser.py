@@ -112,32 +112,33 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
         
         if "or" in expressions:
             tacc = []
-            if type(acc == bool):
-                return acc
+            ssion = []
 
+            #handling or will check for each expr in the or enclosure and put them in a temporary accumulator list
             for e in expressions["or"]:
-                #this should probably be the way it is implemented across the board
-                #acc =  
-                #orOp(applyFunction(e, lookUpbook, func, pddlProblem, tacc, andOp), acc)
-                #print(f'or: {tmp}')
                 snap = applyFunction(e, lookUpbook, func, pddlProblem, [], andOp)
 
                 tacc.append(snap)
             
-            ssion = []
             #under construction
-            #only valid for (bool, str)
-            for ession in tacc:
-                hap = True
-                for sion in ession:
-                    ssion.append(sion)
-                    ion = sion[0]
-                    hap = hap and ion                    
-                if hap:
-                    return acc.append(sion)
+            #only valid for bool and tuple(bool, str)
+            if type(acc) == bool:
+                for sion in tacc:
+                    acc = acc and sion
+                        
+            if type(acc) == list:
+                for ession in tacc:
+                    hap = True
+                    for sion in ession:
+                        ssion.append(sion)
+                        ion = sion[0]
+                        hap = hap and ion                    
+                    if hap:
+                        return acc.append(sion)
+                
+                for sion in ssion:
+                    acc.append(sion)
             
-            for sion in ssion:
-                acc.append(sion)
             return acc
                     
                     
@@ -313,7 +314,9 @@ def notOp(it, em):
     if type(it) is bool:
         return (not it) & em
     elif type(it) is str:
-        return "(not (" + it + ")) " +em 
+        if type(em) is str:
+            return "(not (" + it + ")) " +em
+        return "(not (" + it + ")) "
 
 def orOp(it, em):
     #print(f'or it {it} em {em}')
