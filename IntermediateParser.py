@@ -100,6 +100,7 @@ def whiteSpaceMatters(expression):
     result = re.sub("\)\s*", ")", expression)
     return result.lower()
 
+#iterates the expressions dict and applies the function via the operator to the accumelator, lookupbook and pddlproblem are two different sources to check against
 def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
 
     if(isinstance(expressions, dict)):

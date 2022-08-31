@@ -127,7 +127,6 @@ class GiantTortoise:
             return self.mk_random_dna()
         elif (n < 90):
             #print("split")
-
             return self.dna_mitosis(dna)
         else:
             #print("join")
@@ -141,11 +140,7 @@ class GiantTortoise:
             for effect in action["effect"]["and"]:
                 ton = False
                 if (type(effect) is dict):
-                    #let's try skipping the "nots" and instead add them later on, by checking against the current state
-                    #this introduces another issue however, where a not clause can cause an unachievable goal. Seems the safer route is to check for both
-                    #or let's ignore not alltogether
-                    #todo include foralls and when
-                    #continue
+                    #todo include when
                     if (list(effect.keys()).__contains__("not")):
                         ton = True
                         effect = effect["not"]
