@@ -8,7 +8,7 @@ import pprint
 class CliGame:
 
     def __init__(self, data) -> None:
-        self.cp = CharacterPlanner(data[0], data[1], data[2], planApi=PlanApi.Cloud_Planner_Api)
+        self.cp = CharacterPlanner(data[0], data[1], data[2], planApi=PlanApi.FD_Api)
 
     def game_loop(self, name):
         run = True
@@ -43,11 +43,6 @@ class CliGame:
                 for c in holders['- character']:
                     if c['name'] != name:
                         others.append(c['name'])
-            """
-            if len(connections) == 0:
-                if (whereabouts in db.get_knldg(name)):
-                    connections.append(whereabouts)
-            """
 
             #using get smt to find lower connections and items at location
             for i in get_smth(self.cp.world, whereabouts)['predicates']['atloc']:
@@ -66,6 +61,7 @@ class CliGame:
             self.std_display(headline, inventory, whereabouts, others, connections, goals, items, actions)
             run = self.input_loop(char,name,whereabouts,connections)
 
+    #waits for player input
     def input_loop(self, char, name, whereabouts, connections):
         while True:
             #collecting input
@@ -74,7 +70,7 @@ class CliGame:
                 #is it exit command? breaks loop by flipping run to false.
                 if x[0].lower() in ['quit','exit','q']:
                     return False
-                #breaks input loop
+                #breaks input loop 
                 elif x[0].lower() in ['wait']:
                     self.resolve_actions(self.cp.world, name)
                     return True
@@ -100,6 +96,7 @@ class CliGame:
                 else:
                     print(f'{x[0]} is not an available action')
 
+    #tries to make sense of the players input
     def attempt_parse_action_request(self, name, ls, loc, superloc):
         if len(ls) < 2:
             print(f'missing input to complete action: {ls[0]}')
@@ -119,11 +116,12 @@ class CliGame:
 
         return action
 
+    #takes and resolves an action to be applied to a world by a character, followed by other impending actions in the world
     def resolve_actions(self, world, character, action = [], doneList = []):
+
         if action != []:
             action = [(character, action)]
-        impendingActions = action + get_impending_plan_steps(world, [character] + doneList)
-        #print(impendingActions)
+        impendingActions = action + get_impending_plan_steps(world, blackList= [character] + doneList)
 
         for a in impendingActions:
             if apply_action_to_world(world, self.cp.disect_plan_action(a[1])):
