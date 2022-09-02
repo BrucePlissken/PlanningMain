@@ -1,20 +1,29 @@
 """
 Let's try to make a genetic algorithm
-The Giant Tortoise lost the genetic lottory by being so tasty that bringing one to london to be officially given a name proved quite challenging for pekish sailors.
+The Giant Tortoise lost the genetic lottory by being so tasty that bringing one to London to officially be given a name proved quite challenging for the pekish sailors.
 it works by using a pddlController to identify, seperate and categorize different atributes as "genes" and "dna", it also contains methods for shaking them up
 Auth: Jakob Ehlers
 """
 import PDDLController
-import IntermediateParser
 from IntermediateParser import *
 import random
 import copy
+import pprint
+
+from PlanningMain.PDDLAccessor import fileToString
 
 class GiantTortoise:
     def __init__(self, domainF, problemS, seed):
         self.pc = PDDLController.PDDLController(domainF)#, problemS)
         #self.goalPredicates = self.getGoalPredicates()
         pist = []
+
+        """
+        #pprint.pprint(fileToString(domainF), sort_dicts= False)
+        pprint.pprint(self.pc.domain, sort_dicts= False)
+        print()
+        pprint.pprint(self.pc.actions, sort_dicts= False)
+        """
         for action in self.pc.actions:
             pist = pist + applyFunction(action["effect"],self.pc.pddltypes, listyfy, "",pist,andOp)
         result = []
@@ -133,6 +142,8 @@ class GiantTortoise:
             return self.join_dna(dna,genes)
 
     #creates a list of achievable goal-state expressions from action effects and domain predicates
+    #depricated
+    """
     def getGoalPredicates(self):
         result = []
         temp = ""
@@ -159,6 +170,7 @@ class GiantTortoise:
                 if (result.__contains__(temp) == False):
                     result.append(temp)
         return result
+    """
 
 
     #takes a dna strand and makes it into a goal-gene
@@ -202,7 +214,7 @@ class GiantTortoise:
         result = self.substituteVar(cellShell, dna)
         return result
 
-    #takes in an expression and, if no variable is given the first, ?smth variable that gets substituted with a fitting string from the thesaurus
+    #takes in an expression and, if no variable is given, the first ?smth variable that gets substituted with a fitting string from the thesaurus
     #maybe this should be made more general and put in the parser
     def substituteVar(self, predicate, rootdna):
 
@@ -237,6 +249,7 @@ class GiantTortoise:
             temp = len(source[x])
             result.append(temp)
         
+        #print(f"map genome {result}")
         return result
 
 #expand definitions so upper categories include sub's content
@@ -262,18 +275,18 @@ testing stuff
 """        
 """
 import pprint
-
+import PDDLAccessor
 
 pd = "tmp/AdventureDomCopy.pddl"
 pp = "tmp/AdventureProbCopycopy.pddl"
 
-pd1 = "RedRidingHoodDom.pddl"
-pp1 = "RedRidingHoodProb.pddl"
+pd1 = "tmp/RedRidingHoodDom.pddl"
+pp1 = "tmp/RedRidingHoodProb.pddl"
 
-pp2 = "RedHoodProbTwo.pddl"
+pp2 = "tmp/RedHoodProbTwo.pddl"
 
-tmp = "tmp/"
-dna = GiantTortoise(tmp+pd1,tmp+pp1)
+problemS = PDDLAccessor.fileToString(pp2)
+dna = GiantTortoise(pd1, problemS, '')
 
 pprint.pprint(dna.thesaurus, sort_dicts=False)
 
@@ -281,11 +294,13 @@ pprint.pprint(dna.thesaurus, sort_dicts=False)
 for x in dna.goalPredicates:
     print(x)
 
-
+print()
 print(dna.genome)
 print()
-pprint.pprint(dna.pc.probjects)
+
+#pprint.pprint(dna.pc.probjects)
 print()
 pprint.pprint(dna.pc.pddltypes)
-
+print()
+pprint.pprint(dna.goalPredicates)
 """

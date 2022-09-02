@@ -15,11 +15,13 @@ class PDDLController:
         #self.probjects = self.mapTyps("objects", self.problem)
         
         #loop for creating the list of dicts of actions
+        #reworking
         self.actions = []
-        n = self.domain.count("action")
+        n = self.domain.count("(:action ")
         tempDom = self.domain
+        print(n)
         while (n > 0):
-            tempDom = tempDom.partition("action ")[2]
+            tempDom = tempDom.partition("(:action ")[2]
             action = PDDLAccessor.parseAction(tempDom.partition("\n")[0], self.domain)
             self.actions.append(action)
             n -= 1
@@ -143,14 +145,14 @@ class PDDLController:
         return result
 
 
-"""
 #testing stuff beyond this point
 
+"""
 import pprint
 domainF = "tmp/AdventureDomCopy.pddl"
 problemF = "tmp/AdventureProbCopycopy.pddl"
 
-pc = PDDLController(domainF, problemF)
+pc = PDDLController(domainF)
 
 print("\npredicates:")
 pprint.pprint(pc.predicates)

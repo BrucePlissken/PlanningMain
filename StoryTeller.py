@@ -9,7 +9,6 @@ class StoryTeller:
         self.giantTortoise = GiantTortoise.GiantTortoise(domainF, problemS, seed)
         self.pddlController = self.giantTortoise.pc
         self.startState = self.get_state(problemS)
-        #self.sasPlan = "..\sas_plan"
         self.planApi = api(domainF, problemF)
         self.problemF = problemF
 

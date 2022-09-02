@@ -157,9 +157,10 @@ if pft == "":
     exit()
 print(pft)
 
+"""
 funk = []
 
-
+print(thing.storyTeller.giantTortoise.genome)
 
 for k in range(1):
     temp = thing.gene_story(20, fnoS= 5, inoS= 5, maxGenerations= 20, acceptanceCriteria = 0.02)
@@ -182,7 +183,6 @@ for f in funk:
 t2 = time.time()
 print(t2 - t1)
 
-"""
 gotta rewamp stuff beyond this point
 """
 

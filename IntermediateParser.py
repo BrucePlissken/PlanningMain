@@ -148,15 +148,17 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
         if "not" in expressions:
             if(isinstance(expressions, list)):
                 for e in expressions["not"]:    
-                    #acc = 
                     applyFunction(e, lookUpbook, func, pddlProblem, acc, notOp)
             else:
-                #acc = 
                 applyFunction(expressions["not"], lookUpbook, func, pddlProblem, acc, notOp)
 
+        #to be done
         if "increase" in expressions:
-                #acc = 
-                func(expressions["increase"], lookUpbook, addOp, pddlProblem, acc)
+                pass
+                print(f'expressions {expressions}')
+                func(expressions, lookUpbook, addOp, pddlProblem, acc)
+                """
+                """
 
         if "exists" in expressions:
             typ = expressions["exists"][0].partition(" -")
@@ -328,8 +330,12 @@ def orOp(it, em):
     elif type(it) is tuple:
         return (it[0] or em[0], it[1] + ' ' + em[1])
 
+#this is not really in use
 def addOp(it,em):
+    print(f' it: {it}')
+    print(f' em: {em}')
     if type(it) is bool:
+        print('bool')
         return it
 
 

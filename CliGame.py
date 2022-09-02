@@ -3,6 +3,7 @@ auth: Jakob Ehlers
 a simple cli game for playing around within dynamic stories
 """
 from CharacterPlanner1 import *
+import DynamicPlanGenerator
 import pprint
 
 class CliGame:
@@ -154,5 +155,26 @@ dom2 = "Resource/redcapdom.pddl"
 db2 = 'Resource/redcapknowledgedb.json'
 
 instance = CliGame([world2,dom2,db2])
+
+tchar = get_smth(instance.cp.world, 'redcap')
+print (tchar)
+print(tchar['actions'])
+
+tmp_world = cp.mk_known_world(cp.world, tchar)
+
+mk_agent(tmp_world, tchar)
+if 'actions' in tchar:
+    cp.custom_domain(tchar['actions'])
+
+cp.custom_problem(tmp_world, cp.tmpProp)
+#changeGoal('tmp/'+self.tmpProp +'.pddl', goal)
+cp.update_problem_address(cp.tmpProp)
+
+
+
+pprint.pprint(fileToString(cp.tmpDom))
+
+dpg = DynamicPlanGenerator.DPG(cp.tmpDom, cp.tmpProp, lexicon= json.load(open("tmp/RedRidingLex.json")))
+
 instance.game_loop('redcap')
 #pprint.pprint(instance.cp.world)

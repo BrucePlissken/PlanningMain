@@ -44,10 +44,10 @@ class CharacterPlanner:
                 continue
             result = result + tmp + pff
         result = result + '\n)'
-        f = open(self.tmpDom+'.pddl','w')
+        f = open(self.tmpDom,'w')
         f.write(result)
         f.close()
-        self.update_domain_address(self.tmpDom+'.pddl')
+        self.update_domain_address(self.tmpDom)
 
     #check wether goals of a char have been achieved in a world, and if so removes the goal from the list of goals and if empty removes the entry from char
     def check_goal_resolved(self, world, char):
@@ -115,6 +115,7 @@ class CharacterPlanner:
     def mk_character_plan(self, character, world, goal, metric = "", show = False):
         #tmp_world = copy.deepcopy(world)
         tmp_world = self.mk_known_world(world, character)
+
         mk_agent(tmp_world, character)
         if 'actions' in character:
             self.custom_domain(character['actions'])
@@ -127,6 +128,7 @@ class CharacterPlanner:
             return False
         #result = plan_splitter(plan)
         return plan
+
 
     #takes a world and a character, and returns a world with the characters imediate associations
     #to be expanded upon, perhaps with a database of known things... thinking of some one to many sql shenanigans
