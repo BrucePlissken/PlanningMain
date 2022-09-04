@@ -149,6 +149,10 @@ class CliGame:
             print(f'  items here are: {items}')
         print(f'\n  actions: {actions} and  [\'wait\', \'quit\']')
 
+"""
+testing stuff
+"""
+
 
 world2 = "Resource/redCapWorld.json"
 dom2 = "Resource/redcapdom.pddl"
@@ -156,9 +160,9 @@ db2 = 'Resource/redcapknowledgedb.json'
 
 instance = CliGame([world2,dom2,db2])
 
-tchar = get_smth(instance.cp.world, 'redcap')
-print (tchar)
-print(tchar['actions'])
+tchar = get_smth(instance.cp.world, 'bigbadwolf')
+#print (tchar)
+#print(tchar['actions'])
 
 tmp_world = cp.mk_known_world(cp.world, tchar)
 
@@ -172,9 +176,12 @@ cp.update_problem_address(cp.tmpProp)
 
 
 
-pprint.pprint(fileToString(cp.tmpDom))
+#pprint.pprint(fileToString(cp.tmpDom))
 
-dpg = DynamicPlanGenerator.DPG(cp.tmpDom, cp.tmpProp, lexicon= json.load(open("tmp/RedRidingLex.json")))
-
+dpg = DynamicPlanGenerator.DPG(cp.tmpDom, cp.tmpProp, lexicon= json.load(open("tmp/RedRidingLex.json")), tensionCurve=([0,1,2],[0,0,2]) )
+temp = dpg.gene_story(20, fnoS= 5, inoS= 1, maxGenerations= 20, acceptanceCriteria = 0.02)
+print(temp[0][0])
+"""
 instance.game_loop('redcap')
+"""
 #pprint.pprint(instance.cp.world)

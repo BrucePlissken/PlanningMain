@@ -73,6 +73,16 @@
             }
         },
         {
+            "name": "bigbadwolf",
+            "actions" : ["move","kill"],
+            "predicates": {
+                "inventory": ["gun"],
+                "whereabouts": [
+                    "path"
+                ]
+            }
+        },
+        {
             "name": "mom",
             "actions" : ["tell_double"],
             "quest" : ["(mk_goal_double inventory cake grandma redcap)(mk_goal_double inventory wine grandma redcap)(wherabouts moms_house redcap)"],

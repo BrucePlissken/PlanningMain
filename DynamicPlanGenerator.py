@@ -155,7 +155,7 @@ pft = thing.storyTeller.planApi.get_plan()
 if pft == "":
     print ("error")
     exit()
-print(pft)
+#print(pft)
 
 """
 funk = []

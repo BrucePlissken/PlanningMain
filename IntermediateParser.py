@@ -155,9 +155,9 @@ def applyFunction(expressions, lookUpbook, func, pddlProblem, acc, operator):
         #to be done
         if "increase" in expressions:
                 pass
+                """
                 print(f'expressions {expressions}')
                 func(expressions, lookUpbook, addOp, pddlProblem, acc)
-                """
                 """
 
         if "exists" in expressions:

@@ -19,7 +19,7 @@ class PDDLController:
         self.actions = []
         n = self.domain.count("(:action ")
         tempDom = self.domain
-        print(n)
+        #print(n)
         while (n > 0):
             tempDom = tempDom.partition("(:action ")[2]
             action = PDDLAccessor.parseAction(tempDom.partition("\n")[0], self.domain)
