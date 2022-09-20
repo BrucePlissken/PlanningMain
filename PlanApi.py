@@ -3,7 +3,6 @@ from pprint import pprint
 import subprocess
 import sys
 import requests
-import js2py
 from PDDLAccessor import *
 
 sys.path.append('../')
@@ -81,6 +80,10 @@ class FD_Api(Plan_Api):
         
         if (os.path.exists(self.sasPlan)):
             return read_file(self.sasPlan)
+
+        else: 
+            pass
+            #subprocess.run(cmd, cwd=REPO_ROOT_DIR, capture_output = show)
         return ''
 
 class Cloud_Planner_Api(Plan_Api):

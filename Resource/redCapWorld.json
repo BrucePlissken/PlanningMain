@@ -33,7 +33,7 @@
         {
             "name": "moms_house",
             "predicates": {
-                "atloc": ["cake", "wine"]
+                "atloc": ["cake", "wine","gun"]
             }
         },
         {
@@ -74,9 +74,9 @@
         },
         {
             "name": "bigbadwolf",
-            "actions" : ["move","kill"],
+            "actions" : ["move","kill","pick_up"],
             "predicates": {
-                "inventory": ["gun"],
+                "inventory": [],
                 "whereabouts": [
                     "path"
                 ]

@@ -21,17 +21,23 @@ def curve_chopper(curve, N = 50):
     y1 = curve[1][0]
     y2 = curve[1][1]
     
-    #slope = line((x1,y1), (x2,y2))
+    bigx = curve[0][len(curve[0]) -1]
+    print(f"curve {curve}")
 
     for x in range(N + 1):
-        xstep = x / N
+        xstep = (x / N) * bigx
+        #print(xstep)
+        
         if(xstep > x2):
             n +=1
+            """
+            if (n > len(curve[0]) -1):
+                break
+            """
             x1 = x2
             y1 = y2
             x2 = curve[0][n]
             y2 = curve[1][n]
-            #slope = line((x1,y1), (x2,y2))
 
         xline.append(xstep)
         yline.append(line((x1,y1), (x2,y2), xstep))
@@ -66,12 +72,19 @@ def normalize_curve(ycurve, xcurve = []):
 
 #uses previous functions to standerdize a list of points, by setting values to be between 0-1 and setting the no. of points to N
 def standardize_curve(xcurve, ycurve, N = 50):
-    return curve_chopper((normalize_curve(ycurve, xcurve)), N)
+        return curve_chopper((normalize_curve(ycurve, xcurve)), N)
 
 #compares two lists of points aka. tension curves, by standardizing them, and then seing how they compare. Lower is more alike
-def curve_comparer(curve1, curve2, N = 50):
-    sc1 = standardize_curve(curve1[0],curve1[1], N)
-    sc2 = standardize_curve(curve2[0],curve2[1], N)
+def curve_comparer(curve1, curve2, N = 50, normalize = True):
+
+    if normalize:
+        sc1 = standardize_curve(curve1[0],curve1[1], N)
+        sc2 = standardize_curve(curve2[0],curve2[1], N)
+    else:
+        sc1 = curve_chopper(curve1, N)
+        sc2 = curve_chopper(curve2, N)
+    #print(sc1[1])
+    #print(sc2[1])
     result = 0
     for y in range(N + 1):
         result += abs(sc1[1][y] - sc2[1][y])
@@ -79,6 +92,15 @@ def curve_comparer(curve1, curve2, N = 50):
     return result/N
 
 #test
+
+"""
+c1 = ([0,1,2,3],[0,1,2,3])
+c2 = ([0,1],[0,1])
+res = curve_comparer(c1,c2,10,True)
+print(res)
+
+"""
+
 """
 import numpy as np
 import matplotlib.pyplot as plt

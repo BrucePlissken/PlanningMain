@@ -1,3 +1,4 @@
+from locale import normalize
 import time
 import random
 import Critic
@@ -12,13 +13,13 @@ class DPG():
         self.tensionCurve = tensionCurve
         self.lex = lexicon
 
-    def gene_story(self, noS, fnoS = 0, inoS = 0, maxGenerations = 100, acceptanceCriteria = 0.02):
+    def gene_story(self, noS, fnoS = 0, inoS = 0, maxGenerations = 100, acceptanceCriteria = 0.02, normalize_critic = True, failure_tolerance = 20):
         if (fnoS < 1):
             fnoS = int(noS/4)
         if (inoS < 1):
             inoS = fnoS
           
-        temp = self.storyTeller.story_book(inoS)
+        temp = self.storyTeller.story_book(inoS, failure_tolerance = failure_tolerance)
         storybook = []
         for s in temp:
             storybook.append(s[0])
@@ -38,7 +39,7 @@ class DPG():
             for sto in range(len(arrangedStories)):
                 if (sto > len(arrangedStories) - 1):
                     break
-                grade = self.critic_holder(arrangedStories[sto])
+                grade = self.critic_holder(arrangedStories[sto], normalize= normalize_critic)
                 #if the grade of the story is sufficiently bad, reject it..
                 if (grade >= 2):
                     arrangedStories.pop(sto)
@@ -71,11 +72,11 @@ class DPG():
 
         return arrangedStories
 
-    def critic_holder(self, story):
+    def critic_holder(self, story, normalize =True):
         plancurve = self.plan_to_curve(story[0])
         if (plancurve == ([0], [0])):
             return 2
-        result = Critic.curve_comparer(plancurve,self.tensionCurve)
+        result = Critic.curve_comparer(plancurve,self.tensionCurve, normalize= normalize)
         
         divi = (len(plancurve[0]))
         result = result/divi

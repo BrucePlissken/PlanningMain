@@ -57,18 +57,21 @@ class StoryTeller:
     
     #input ints for amount of stories and acts of the stories
     #returns a list of random, (but different (first act dependant)) stories (list of acts (tupple: (plan, state, gene)))
-    def story_book(self, amount, acts = 1, startState = "", maxRev = 100):
+    def story_book(self, amount, acts = 1, startState = "", failure_tolerance = 15):
         storybook = []
         rejects = []
         n = 0
         storyStart = ("", "fart", [])
+        r = 0
 
         if (startState == ""):
             startState = self.startState
+        n = 0
 
-        while (len(storybook) < amount and n < maxRev):
+        while (len(storybook) < amount and n < amount *2 + failure_tolerance):
             story = storyStart
-            while (story[0] == ""):
+
+            while (story[0] == ""and n < failure_tolerance):
                 writeStory = True
                 gene1 = self.giantTortoise.mk_random_dna()
                 for gene in rejects:
@@ -83,6 +86,9 @@ class StoryTeller:
                     story = self.one_act(gene1, startState)
                     if (story != False):
                         rejects.append(gene1)
+                if (story[0] == ''):
+                    print(f"\n failure no: {n}, out of {failure_tolerance}\n story: \"{story[0]}\"")
+                    n+=1
             newStory = True
             for s in storybook:
                 if (list(s[0]) == list(story[0])):
@@ -96,7 +102,6 @@ class StoryTeller:
                     self.add_chapter(story, acts -1, temp)
                 #print(n)
                 storybook.append(temp)
-            n += 1
         return storybook
 
     #returns a list of acts, that follow an original act
