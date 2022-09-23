@@ -22,7 +22,7 @@ def curve_chopper(curve, N = 50):
     y2 = curve[1][1]
     
     bigx = curve[0][len(curve[0]) -1]
-    print(f"curve {curve}")
+    #print(f"curve {curve}")
 
     for x in range(N + 1):
         xstep = (x / N) * bigx

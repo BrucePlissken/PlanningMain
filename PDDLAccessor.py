@@ -94,6 +94,19 @@ def printPlan(plan):
 def name_extractor(path):
     name = path.rpartition('/')[2].partition('.')[0]
     return name
+
+def lol_in_list_of_lol(l1, l2):
+    for element in l2:
+        k = 1
+        for pos in range(0, len(l1)):
+            if (list(l1[pos]) == list(element)[pos]):
+                k += 1
+                if (k == len(element)):
+                    return True
+    return False
+                            
+    
+
 """
 #testing stuff beyond this point
 

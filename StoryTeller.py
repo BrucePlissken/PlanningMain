@@ -1,4 +1,5 @@
 import os
+from unittest import skip
 import PDDLAccessor
 from PDDLAccessor import *
 import GiantTortoise
@@ -40,7 +41,6 @@ class StoryTeller:
         output = self.planApi.get_plan(show = False)
         
         #in current configuration this isn't nescesarry(only because it is requested higher up) , it is useful for making multiple acts/bigger stories, but maybe that should be handled somewhere else in a different maner
-        
         if (output != ""):
             act = output.splitlines()
             for x in act:
@@ -68,12 +68,21 @@ class StoryTeller:
             startState = self.startState
         n = 0
 
+        #main loop for generating an amount of starting stories
         while (len(storybook) < amount and n < amount *2 + failure_tolerance):
             story = storyStart
 
+            #inner loop will go on, until a viable plan has been made. hold on, this should just be moved into the outer loop
             while (story[0] == ""and n < failure_tolerance):
                 writeStory = True
+
+                #gene1 is a string of random dna
                 gene1 = self.giantTortoise.mk_random_dna()
+                
+                #looping through the rejects to see if there is any need to even try to plan this or if it has already been attempted
+                if lol_in_list_of_lol(gene1, rejects):
+                    continue
+                """
                 for gene in rejects:
                     k = 1
                     for pos in range(0, len(gene)):
@@ -81,13 +90,15 @@ class StoryTeller:
                             k += 1
                             if (k == len(gene)):
                                 writeStory = False
-                            
+                """
                 if writeStory:
                     story = self.one_act(gene1, startState)
                     if (story != False):
-                        rejects.append(gene1)
+                        if gene1 not in rejects:
+                            rejects.append(gene1)
+                            #print(gene1)
                 if (story[0] == ''):
-                    print(f"\n failure no: {n}, out of {failure_tolerance}\n story: \"{story[0]}\"")
+                    print(f"\n failure no: {n}, out of {failure_tolerance}\n story: \"{story[0]}\", rejected stories no: {len(rejects)} ")
                     n+=1
             newStory = True
             for s in storybook:

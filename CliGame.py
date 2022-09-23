@@ -179,7 +179,7 @@ cp.update_problem_address(cp.tmpProp)
 #pprint.pprint(fileToString(cp.tmpDom))
 
 dpg = DynamicPlanGenerator.DPG(cp.tmpDom, cp.tmpProp, lexicon= json.load(open("tmp/RedRidingLex.json")), tensionCurve=([0,1,2,3],[0,1,2,3]) )
-temp = dpg.gene_story(20, fnoS= 5, inoS= 1, maxGenerations= 20, acceptanceCriteria = 0.02, normalize_critic= False)
+temp = dpg.gene_story(20, fnoS= 5, inoS= 1, maxGenerations= 20, acceptanceCriteria = 0.02, normalize_critic= False, failure_tolerance= 100)
 print(temp[0][0])
 """
 instance.game_loop('redcap')

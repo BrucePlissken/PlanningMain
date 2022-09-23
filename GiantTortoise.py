@@ -8,9 +8,6 @@ import PDDLController
 from IntermediateParser import *
 import random
 import copy
-import pprint
-
-from PlanningMain.PDDLAccessor import fileToString
 
 class GiantTortoise:
     def __init__(self, domainF, problemS, seed):
@@ -110,6 +107,8 @@ class GiantTortoise:
         roll = random.randint(skipGenes,len(dna)-1)
         random.shuffle(dna[roll])
     """
+
+    
 
     #randomizing between a couple of different ways to mutate a dna strand
     def mutate_dna(self, dna, genes, i = 22000):
