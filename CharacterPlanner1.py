@@ -111,7 +111,9 @@ class CharacterPlanner:
                 oldThing = get_smth(oldWorld, th['name'])
                 oldWorld[smth].remove(oldThing)
                 oldWorld[smth].append(th)
-            
+
+
+    #this plan generation has some hardcoding in it in the guise of the mk_agent which requires agent type to exist in the domain
     def mk_character_plan(self, character, world, goal, metric = "", show = False):
         #tmp_world = copy.deepcopy(world)
         tmp_world = self.mk_known_world(world, character)

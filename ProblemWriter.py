@@ -1,8 +1,8 @@
 import json
 import PDDLController
+import PDDLAccessor
 import pprint
 
-from PlanningMain.PDDLAccessor import name_extractor
 
 class PddlProblemWriter:
     def __init__(self, domain):
@@ -32,7 +32,7 @@ class PddlProblemWriter:
         #print(self.initial)
         return dictionary[k]
 
-    #somtimes I wish I was writing in a functional language
+    #sometimes I wish I was writing in a functional language
     def unwrap_dict(self, dictionary):
         keys = dictionary.keys()
         keys = list(keys)
@@ -63,7 +63,7 @@ class PddlProblemWriter:
         return result
 
     def create_problem_file(self, path, probjects, initial, goals = "", metric = ""):
-        name = name_extractor(path)
+        name = PDDLAccessor.name_extractor(path)
         file = open(path, "w")
         file.write(self.make_header(name))
         file.close()

@@ -1,4 +1,3 @@
-from locale import normalize
 import time
 import random
 import Critic
@@ -88,6 +87,7 @@ class DPG():
                 return True
         return False
 
+    """
     def split_story_dna_full(self, stories):
         dnaNo = len(stories) -1
         result = []
@@ -98,6 +98,7 @@ class DPG():
                     story = self.storyTeller.one_act([g], self.storyTeller.startState)
                     result.append(story)
         return result
+    """
 
     #no reason to write out the story when the dna is the active part
     def split_story_dna(self, stories):
@@ -158,13 +159,12 @@ if pft == "":
     exit()
 #print(pft)
 
-"""
 funk = []
 
 print(thing.storyTeller.giantTortoise.genome)
 
 for k in range(1):
-    temp = thing.gene_story(20, fnoS= 5, inoS= 5, maxGenerations= 20, acceptanceCriteria = 0.02)
+    temp = thing.gene_story(20, fnoS= 5, inoS= 5, maxGenerations= 30, acceptanceCriteria = 0.02,normalize_critic= False, failure_tolerance=15)
     funk.append(temp)
     t2 = time.time()
     print(t2 - t1)
@@ -174,7 +174,8 @@ for f in funk:
     for s in range(3):
         print()
         print(f[s][0])
-        print()
+        flint = thing.storyTeller.giantTortoise.makeGoalGene(f[s][2])
+        print(f"Gene-Goal:\n{flint}")
 
     #for s in f:
     #    print(len(s[2]))
@@ -184,6 +185,7 @@ for f in funk:
 t2 = time.time()
 print(t2 - t1)
 
+"""
 gotta rewamp stuff beyond this point
 """
 
