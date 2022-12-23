@@ -62,7 +62,7 @@ class CharacterPlanner:
                     print(f'{name} resolved goal: {g}')
                     remove_item_from_thing(char, 'goals', g)
 
-    #takes in a plan-action and returns a dict of info for feeding to the intermediate parser
+    #takes in a plan-action and returns a dict of info for feeding to the intermediate parser as a lex
     def disect_plan_action(self, planAction):
         result_t = {}
         result_v = {}
