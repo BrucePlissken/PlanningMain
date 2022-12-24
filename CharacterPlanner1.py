@@ -135,8 +135,11 @@ class CharacterPlanner:
     #takes a world and a character, and returns a world with the characters imediate associations
     #to be expanded upon, perhaps with a database of known things... thinking of some one to many sql shenanigans
     def mk_known_world(self, world, character):
-        known_world = {'- character': [character],
-                     '- pred': world['- pred']}
+        known_world = {
+                '- character': [character],
+                '- pred': world['- pred']
+                }
+        
         add_associations(world, character, known_world)
 
         pfft = find_holders(world, character['predicates']['whereabouts'][0])
