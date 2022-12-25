@@ -1,5 +1,4 @@
 import os
-from unittest import skip
 import PDDLAccessor
 from PDDLAccessor import *
 import GiantTortoise
@@ -18,6 +17,7 @@ class StoryTeller:
     #all these checks should be done in a higher up method that activates these methods..
     def one_act(self, gene, state, n = 0, problem = ""):
         act = ""
+        #if no problem name is specified, this bit of code will take the self.problemF(ile name) and give the name a number: n
         if (problem == ""):
             problem = self.problemF.partition(".")
             problem = problem[0] + str(n) + problem[1] + problem[2] 
@@ -27,6 +27,7 @@ class StoryTeller:
         if (state != ""):
             changeState(problem, state)
 
+        
         goalGene = ""
         if type(gene) is str:
             goalGene = gene

@@ -111,13 +111,15 @@ class DPG():
                     story = ([""],"",[g])
                     result.append(story)
         return result
-        
+    
+
     def story_to_plan_curve(self,story):
         temp = []
         for act in story:
             temp.append(self.plan_to_curve(act[0]))
         result = self.curve_merger(temp)
         return result
+
 
     def plan_to_curve(self, plan):
         x = [0]
