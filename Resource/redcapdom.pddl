@@ -3,7 +3,7 @@
 ;remove requirements that are not needed
 (:requirements :typing :conditional-effects :negative-preconditions :strips :disjunctive-preconditions :equality :action-costs)
 (:types ;todo: enumerate types and their hierarchy here, e.g. car truck bus - vehicle
-    character item location pred - omni
+    character item location - omni
     consumable weapon - item
 )
 ; un-comment following line if constants are needed

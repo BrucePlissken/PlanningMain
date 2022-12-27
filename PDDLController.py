@@ -1,6 +1,7 @@
 """
 Class for holding domain info and applying it to pddl problems stuff
 auth: Jakob Ehlers
+todo: un-objectify this class and turn it into a list of methods
 """
 import PDDLAccessor
 from IntermediateParser import *

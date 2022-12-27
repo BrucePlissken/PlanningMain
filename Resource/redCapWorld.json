@@ -124,28 +124,6 @@
             "name" :"amaryllis",
             "predicates": {}
         }
-    ],
-    "- pred": [
-        {
-            "name": "inventory",
-            "predicates": {}
-        },
-        {
-            "name": "whereabouts",
-            "predicates": {}
-        },
-        {
-            "name": "atloc",
-            "predicates": {}
-        },
-        {
-            "name": "isdead",
-            "predicates": {}
-        },
-        {
-            "name": "isasleep",
-            "predicates": {}
-        }
     ]
     
 }

@@ -1,6 +1,6 @@
 """
 Let's try to make a genetic algorithm
-The Giant Tortoise lost the genetic lottory by being so tasty that bringing one to London to officially be given a name proved quite challenging for the pekish sailors.
+The Giant Tortoise lost the genetic lottery by being so tasty that bringing one to London to officially be given a name proved quite challenging for the pekish sailors.
 it works by using a pddlController to identify, seperate and categorize different atributes as "genes" and "dna", it also contains methods for shaking them up
 Auth: Jakob Ehlers
 """
@@ -13,7 +13,6 @@ class GiantTortoise:
     def __init__(self, domainF, problemS, seed):
         self.pc = PDDLController.PDDLController(domainF)#, problemS)
         #self.goalPredicates = self.getGoalPredicates()
-        pist = []
 
         """
         #pprint.pprint(fileToString(domainF), sort_dicts= False)
@@ -21,9 +20,11 @@ class GiantTortoise:
         print()
         pprint.pprint(self.pc.actions, sort_dicts= False)
         """
+        pist = []
+        result = []
         for action in self.pc.actions:
             pist = pist + applyFunction(action["effect"],self.pc.pddltypes, listyfy, "",pist,andOp)
-        result = []
+        
         for effect in pist:
             if (effect.split()[0] == "(not"):
                 k = 1
@@ -39,8 +40,8 @@ class GiantTortoise:
             if (result.__contains__(temp) == False):
                 result.append(temp)
         self.goalPredicates = result
-        probjects = self.pc.mapTyps2("objects", problemS)
-        self.thesaurus = {**expandDict(self.pc.pddltypes, probjects, "- "), **probjects}
+        self.probjects = self.pc.mapTyps2("objects", problemS)
+        self.thesaurus = deeper_merge_dict_of_lists(expandDict(self.pc.pddltypes, self.probjects, "- "), self.probjects)
         self.genome = [len(self.goalPredicates)] + self.mapGenome(self.thesaurus)
         if (seed != ""):
             random.seed(seed)
@@ -216,24 +217,26 @@ class GiantTortoise:
     #takes in an expression and, if no variable is given, the first ?smth variable that gets substituted with a fitting string from the thesaurus
     #maybe this should be made more general and put in the parser
     def substituteVar(self, predicate, rootdna):
-
+        
         result = predicate
         dna = copy.deepcopy(rootdna)
+
         while (result.count("?") > 0):    
             temp = result.partition("?")
             variable = "?" + temp[2].partition(" ")[0]
             signifier = temp[2].partition("- ")[2].partition(")")[0]
-
             if(signifier.count(" ") > 0):
                 signifier = signifier.partition(" ")[0]
             signifier = "- " + signifier
+            #am I insane? why would I make this with side by side running counters, this should be done way more elegant and less fragile
+            #so that instead of being mached up with the arbtrary order of creation it is more controlled
+            #but until then if it works it works
             p = 1
             for x in self.thesaurus:
                 if (x == signifier):
                     no = dna[p].pop(0)
                 p += 1
             value = self.thesaurus[signifier][no]
-
             result = result.replace(variable,value)
 
             if (result.partition(signifier)[0].count("?") < 1):
@@ -250,6 +253,15 @@ class GiantTortoise:
         
         #print(f"map genome {result}")
         return result
+
+    def digout_dna_by_Signifier_from_chromosome(self, signifier, chromosome):
+        p = 1
+        for x in self.thesaurus:
+            if (x == signifier):
+                dna = chromosome[0][p]
+                return dna
+            p += 1
+        return False
 
 #expand definitions so upper categories include sub's content
 def expandDict(super_dict, sub_dict, prefix = ""):
@@ -269,6 +281,14 @@ def expandDict(super_dict, sub_dict, prefix = ""):
 
     return result
 
+#takes two dicts of lists and merges them at a slightly deeper level as to merge lists with the same key, or you know anything else that the += operator will work on.. yay python!
+def deeper_merge_dict_of_lists(d1,d2):
+    for l in d2:
+        if l in d1:
+            d1[l] += d2[l]
+        else:
+            d1[l] = d2[l]
+    return d1
 """
 testing stuff
 """        

@@ -166,7 +166,7 @@ funk = []
 print(thing.storyTeller.giantTortoise.genome)
 
 for k in range(1):
-    temp = thing.gene_story(20, fnoS= 5, inoS= 5, maxGenerations= 30, acceptanceCriteria = 0.02,normalize_critic= False, failure_tolerance=15)
+    temp = thing.gene_story(20, fnoS= 5, inoS= 5, maxGenerations= 30, acceptanceCriteria = 0.02,normalize_critic= True, failure_tolerance=15)
     funk.append(temp)
     t2 = time.time()
     print(t2 - t1)
