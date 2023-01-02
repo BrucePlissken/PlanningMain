@@ -4,6 +4,7 @@ import subprocess
 import sys
 import requests
 from PDDLAccessor import *
+import atexit
 
 sys.path.append('../')
 
@@ -42,9 +43,6 @@ class FD_Api(Plan_Api):
             #"PlanningMain\\tmp\\domdom.pddl",
             #"PlanningMain\\tmp\\probcopy.pddl",
             #"--evaluator",
-            #"hff=ff()", 
-            #"--evaluator",
-            #"hcea=cea()", 
             #"--debug",
             
             dom,
@@ -54,8 +52,12 @@ class FD_Api(Plan_Api):
 
             #"--run all",
             "--search",
-            #"lazy_greedy([hff, hcea], preferred=[hff, hcea])"
-            
+            #"--evaluator",
+            #"hff=ff()", 
+            #"hcea=cea()", 
+            "lazy_greedy([ff(), cea()], max_time = 5, preferred=[ff(), cea()])"
+            #"astar(lmcut())",
+            #"astar(ff())"
             #"astar(lmcount(lm_rhw()))"
             #"astar(cegar())",
             #"--sas-file"
@@ -63,8 +65,8 @@ class FD_Api(Plan_Api):
 
             #"eager(epsilon_greedy(cegar()), verbosity=silent)"
 
-            "astar(cg(max_cache_size=1000000, transform=no_transform(), cache_estimates=true))"
-            
+            #"astar(cg(max_cache_size=1000000, transform=no_transform(), cache_estimates=true))"
+            #"astar(cg(max_cache_size=1000,cache_estimates=true))"
             #"merge_and_shrink(transform=no_transform(), cache_estimates=true, merge_strategy, shrink_strategy, label_reduction=<none>, prune_unreachable_states=true, prune_irrelevant_states=true, max_states=-1, max_states_before_merge=-1, threshold_before_merge=-1, verbosity=normal, main_loop_max_time=infinity)"
 
             #"ff(transform=no_transform(), cache_estimates=true)"
@@ -76,8 +78,8 @@ class FD_Api(Plan_Api):
         if (os.path.exists(self.sasPlan)):
             os.remove(self.sasPlan)
         cmd = [sys.executable, "downward/fast-downward.py"] + self.parameters
-        result = subprocess.run(cmd, cwd=REPO_ROOT_DIR, capture_output = not show)
-        
+        result = subprocess.run(cmd, cwd=REPO_ROOT_DIR, capture_output = not show, timeout=600)
+
         if (os.path.exists(self.sasPlan)):
             return read_file(self.sasPlan)
 
@@ -101,8 +103,8 @@ class Cloud_Planner_Api(Plan_Api):
 
         resp = requests.post('http://solver.planning.domains/solve', verify=False, json=self.parameters)
         """
-        resp = requests.post('http://dry-tundra-82186.herokuapp.com/solve', verify=False, json=self.parameters)
         resp = requests.post('http://calm-everglades-35579.herokuapp.com/solve', verify=False, json=self.parameters)
+        resp = requests.post('http://dry-tundra-82186.herokuapp.com/solve', verify=False, json=self.parameters)
         """
         if (resp.status_code != 200):
             result = 'Response <' + str(resp.status_code) +'>: ' + resp.reason

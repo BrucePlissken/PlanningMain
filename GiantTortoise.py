@@ -47,13 +47,23 @@ class GiantTortoise:
             random.seed(seed)
 
     #returns a list of lists of ints with the numbers shuffeled
-    def mk_random_dna(self):
+    def mk_random_dna(self, max = -1):
         gene = []
-        for x in self.genome:
-            temp = range(0,x)
-            temp = list(temp)
-            random.shuffle(temp)
-            gene.append(temp)
+        if (max < 1):
+            for x in self.genome:
+                temp = range(0,x)
+                temp = list(temp)
+                random.shuffle(temp)
+                gene.append(temp)
+        else:
+            for x in self.genome:
+                n = max
+                if (x < max):
+                    n=x
+                temp = range(0, n)
+                temp = list(temp)
+                random.shuffle(temp)
+                gene.append(temp)
         return [gene]
 
     #takes two dna strands, and replaces a random gene from the first with the coresponing gene of the seccond
@@ -236,6 +246,9 @@ class GiantTortoise:
                 if (x == signifier):
                     no = dna[p].pop(0)
                 p += 1
+            if signifier == '- ':
+                print(f"sig {signifier}  no: {no}  dna: {dna}   result {result}")
+                
             value = self.thesaurus[signifier][no]
             result = result.replace(variable,value)
 

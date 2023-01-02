@@ -9,7 +9,7 @@
         {
             "name": "village",
             "predicates": {
-                "atloc": ["moms_house","gun"]
+                "atloc": ["moms_house"]
             }
         },
         {
@@ -58,6 +58,7 @@
             "name": "grandma",
             "predicates": {
                 "inventory": [],
+                "imobile": 1,
                 "whereabouts": [
                     "grandmas_house"
                 ]
@@ -66,28 +67,17 @@
         {
             "name": "hunter",
             "predicates": {
-                "inventory": [],
+                "hate" : ["bigbadwolf"],
+                "inventory": ["gun"],
                 "whereabouts": [
                     "hunting_lodge"
                 ]
             }
         },
         {
-            "name": "bigbadwolf",
-            "actions" : ["move","kill","pick_up"],
-            "predicates": {
-                "inventory": [],
-                "whereabouts": [
-                    "path"
-                ]
-            }
-        },
-        {
             "name": "mom",
-            "actions" : ["tell_double"],
-            "quest" : ["(mk_goal_double inventory cake grandma redcap)(mk_goal_double inventory wine grandma redcap)(wherabouts moms_house redcap)"],
-            "goals" : ["(mk_goal_double inventory cake grandma redcap)(mk_goal_double inventory wine grandma redcap)(wherabouts moms_house redcap)"],
             "predicates": {
+                "hate" : ["bigbadwolf"],
                 "inventory": [],
                 "whereabouts": [
                     "moms_house"
@@ -123,6 +113,20 @@
         {
             "name" :"amaryllis",
             "predicates": {}
+        }
+    ],
+    "- monster" : [
+        {
+            "name": "bigbadwolf",
+            "actions" : ["move","kill","pick_up"],
+            "predicates": {
+                "cangobble": 1,
+                "inventory": [],
+                "oblivious": ["village", "grandmas_house"],
+                "whereabouts": [
+                    "path"
+                ]
+            }
         }
     ]
     

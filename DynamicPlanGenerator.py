@@ -26,7 +26,7 @@ class DPG():
         for gen in range(maxGenerations):
             print(gen)
             arrangedStories = []
-            #I don't think this check is nescesary since it is also done when adding new genes
+            #this check might not be nescesary since it is also done when adding new genes
             for s in storybook:
                 if not self.contains_duplicate_dna(s,arrangedStories):
                     arrangedStories.append(s)

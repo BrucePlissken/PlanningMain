@@ -1,8 +1,6 @@
 import json
 import PDDLController
 import PDDLAccessor
-import pprint
-
 
 class PddlProblemWriter:
     def __init__(self, domain):
@@ -50,9 +48,15 @@ class PddlProblemWriter:
             if "predicates" in t:
                 preds = t["predicates"]
                 for k in preds:
-                    for x in preds[k]:
-                        temp = "    " + parenthesise(k + " " + x + " "+ t["name"])
-                        result = result + temp + "\n"
+                    #if the list of the key predicate is empty, a check should be made to see if the predicate in question only needs one var
+                    if (type(preds[k]) == int):
+                        if (preds[k] > 0):
+                            temp = "    " + parenthesise(k + " "+ t["name"])
+                            result = result + temp + "\n"
+                    else:
+                        for x in preds[k]:
+                            temp = "    " + parenthesise(k + " " + x + " "+ t["name"])
+                            result = result + temp + "\n"
         return result
 
     def probject_string(self, probT, l):
