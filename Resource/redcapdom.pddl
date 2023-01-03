@@ -70,7 +70,7 @@
 (:action gotosleep
     :parameters (?char - character ?loc - location)
     :precondition (and (whereabouts ?loc ?char) (not (isasleep ?char)) (not (isdead ?char))
-    ;(forall (?char1 - character) (or (not (whereabouts ?loc ?char1)) (not (hate ?char ?char1))) )
+    (forall (?char1 - character) (or (not (whereabouts ?loc ?char1)) (not (hate ?char ?char1))) )
     )
     :effect (and (isasleep ?char)
     (increase (total-cost) 1)
@@ -88,7 +88,7 @@
 (:action swallow
     :parameters (?mon - monster ?vict - character ?loc - location)
     :precondition (and (whereabouts ?loc ?vict) (whereabouts ?loc ?mon) (cangobble ?mon) (not (= ?mon ?vict)) (not (hate ?mon ?vict)) (not (isDead ?mon)) (not (isasleep ?mon)) (not (inside ?vict ?mon)) (not (issaved ?vict))
-    ;(forall (?char - character)  (or (not (whereabouts ?loc ?char)) (not (hate ?mon ?char))) )
+    (forall (?char - character)  (or (not (whereabouts ?loc ?char)) (not (hate ?mon ?char))) )
     )
     :effect (and (inside ?vict ?mon) (imobile ?mon) (isasleep ?vict)
     (increase (total-cost) 1)

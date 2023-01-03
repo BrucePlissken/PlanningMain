@@ -55,7 +55,7 @@ class FD_Api(Plan_Api):
             #"--evaluator",
             #"hff=ff()", 
             #"hcea=cea()", 
-            "lazy_greedy([ff(), cea()], max_time = 5, preferred=[ff(), cea()])"
+            "lazy_greedy([ff(), cea()], max_time = 30, preferred=[ff(), cea()])"
             #"astar(lmcut())",
             #"astar(ff())"
             #"astar(lmcount(lm_rhw()))"
@@ -78,7 +78,7 @@ class FD_Api(Plan_Api):
         if (os.path.exists(self.sasPlan)):
             os.remove(self.sasPlan)
         cmd = [sys.executable, "downward/fast-downward.py"] + self.parameters
-        result = subprocess.run(cmd, cwd=REPO_ROOT_DIR, capture_output = not show, timeout=600)
+        result = subprocess.run(cmd, cwd=REPO_ROOT_DIR, capture_output = not show)
 
         if (os.path.exists(self.sasPlan)):
             return read_file(self.sasPlan)
