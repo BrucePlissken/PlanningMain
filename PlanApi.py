@@ -55,7 +55,7 @@ class FD_Api(Plan_Api):
             #"--evaluator",
             #"hff=ff()", 
             #"hcea=cea()", 
-            "lazy_greedy([ff(), cea()], max_time = 5, preferred=[ff(), cea()])"
+            "lazy_greedy([ff(), cea()], max_time = 15, preferred=[ff(), cea()])"
             #"astar(lmcut())",
             #"astar(ff())"
             #"astar(lmcount(lm_rhw()))"

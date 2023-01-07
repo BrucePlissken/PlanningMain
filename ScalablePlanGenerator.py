@@ -281,7 +281,7 @@ print(plan)
 """
 """
 """
-spg.custom_problem(spg.world,spg.tmpProp,"(not (issick grandma)) (inventory flowers grandma) (issaved grandma) (issaved redcap)")
+spg.custom_problem(spg.world,spg.tmpProp,"(not (issick grandma)) (inventory flowers grandma) (issaved grandma) (issaved redcap)", metric="(:metric minimize (total-cost))\n")
 
 plan = spg.run_planner(True)
 
