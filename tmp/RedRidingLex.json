@@ -1,10 +1,10 @@
 {
     "plan" : 
     {
-        "(swallow" : [1,1],
-        "(slay" : [1,-2],
-        "(kill" : [1,1],
-        "(cesarean" : [1,-1]
+        "(swallow" : [1,2],
+        "(cesarean" : [1,-2],
+        "(give_gift" : [1,-1],
+        "(eat_for_health" : [1,-1]
     }
     ,
     "state": {

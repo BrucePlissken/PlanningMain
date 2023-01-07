@@ -4,7 +4,8 @@
 (:requirements :typing :conditional-effects :negative-preconditions :strips :disjunctive-preconditions :equality :action-costs)
 (:types ;todo: enumerate types and their hierarchy here, e.g. car truck bus - vehicle
     character item location - omni
-    consumable weapon - item
+    gift consumable weapon - item
+    blade - weapon
     monster - character
 )
 ; un-comment following line if constants are needed
@@ -17,6 +18,7 @@
     (atloc ?o - omni ?loc - location)
     (isdead ?char - character)
     (isasleep ?char - character)
+    (issick ?char - character)
     (cangobble ?mon - character)
     (imobile ?char - character)
     (issaved ?vict - character)
@@ -34,7 +36,7 @@
 )
 (:action pick_up
     :parameters (?char - character ?item - item ?loc - location)
-    :precondition (and (whereabouts ?loc ?char) (atloc ?item ?loc) (not (isdead ?char)) (not (isasleep ?char)))
+    :precondition (and (whereabouts ?loc ?char) (atloc ?item ?loc) (not (isdead ?char)) (not (isasleep ?char)) (not (cangobble ?char)))
     :effect (and (not (atloc ?item ?loc)) (inventory ?item ?char)
     (increase (total-cost) 1)
     )
@@ -48,7 +50,7 @@
 )
 (:action give
     :parameters (?char1 - character ?char2 - character ?item - item ?loc - location)
-    :precondition (and (whereabouts ?loc ?char1) (whereabouts ?loc ?char2) (inventory ?item ?char1) (not (isdead ?char1)) (not (isasleep ?char1)) (not (hate ?char1 ?char2)))
+    :precondition (and (whereabouts ?loc ?char1) (whereabouts ?loc ?char2) (inventory ?item ?char1) (not (isdead ?char1)) (not (isasleep ?char1)) (not (hate ?char1 ?char2)) (not (cangobble ?char2)))
     :effect (and (not (inventory ?item ?char1)) (inventory ?item ?char2)
     (increase (total-cost) 1)
     )
@@ -67,7 +69,7 @@
     (increase (total-cost) 1)
     )
 )
-(:action gotosleep
+(:action go_to_sleep
     :parameters (?char - character ?loc - location)
     :precondition (and (whereabouts ?loc ?char) (not (isasleep ?char)) (not (isdead ?char))
     (forall (?char1 - character) (or (not (whereabouts ?loc ?char1)) (not (hate ?char ?char1))) )
@@ -76,7 +78,7 @@
     (increase (total-cost) 1)
     )
 )
-(:action askInfo
+(:action share_info
     :parameters (?char1 - character ?char2 - character ?loc - location ?inf - omni)
     :precondition (and (whereabouts ?loc ?char1) (whereabouts ?loc ?char2) (oblivious ?inf ?char1) (not (oblivious ?inf ?char2)) (not (isDead ?char1)) (not (isDead ?char2)) (not (hate ?char1 ?char2))
     (not (isasleep ?char1)) (not (isasleep ?char2))
@@ -88,17 +90,22 @@
 (:action swallow
     :parameters (?mon - monster ?vict - character ?loc - location)
     :precondition (and (whereabouts ?loc ?vict) (whereabouts ?loc ?mon) (cangobble ?mon) (not (= ?mon ?vict)) (not (hate ?mon ?vict)) (not (isDead ?mon)) (not (isasleep ?mon)) (not (inside ?vict ?mon)) (not (issaved ?vict))
-    (forall (?char - character)  (or (not (whereabouts ?loc ?char)) (not (hate ?mon ?char))) )
+    (forall (?char - character)   (or (not (whereabouts ?loc ?char)) (= ?char ?vict) (= ?char ?mon)))
     )
-    :effect (and (inside ?vict ?mon) (imobile ?mon) (isasleep ?vict)
+    :effect (and (inside ?vict ?mon) (imobile ?mon) (not (whereabouts ?loc ?vict))
     (increase (total-cost) 1)
     )
 )
 (:action cesarean
-    :parameters (?char - character ?mon - monster ?bab - character ?cut - weapon ?loc - location)
+    :parameters (?char - character ?mon - monster ?bab - character ?cut - blade ?loc - location)
     :precondition (and (whereabouts ?loc ?char) (whereabouts ?loc ?mon) (inventory ?cut ?char) (inside ?bab ?mon) (not (= ?char ?mon)) (not (isasleep ?char)) (not (isdead ?char)) (isasleep ?mon))
-    :effect (and (not (inside ?bab ?mon)) (issaved ?bab)
+    :effect (and (not (inside ?bab ?mon)) (issaved ?bab) (whereabouts ?loc ?bab)
     (increase (total-cost) 1)
     )
+)
+(:action eat_for_health
+    :parameters (?char - character ?item - consumable)
+    :precondition (and (issick ?char) (inventory ?item ?char) (not (isdead ?char)) (not (isasleep ?char)))
+    :effect (and (not (inventory ?item ?char)) (not (issick ?char)))
 )
 )

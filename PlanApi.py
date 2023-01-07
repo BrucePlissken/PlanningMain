@@ -55,7 +55,7 @@ class FD_Api(Plan_Api):
             #"--evaluator",
             #"hff=ff()", 
             #"hcea=cea()", 
-            "lazy_greedy([ff(), cea()], max_time = 30, preferred=[ff(), cea()])"
+            "lazy_greedy([ff(), cea()], max_time = 5, preferred=[ff(), cea()])"
             #"astar(lmcut())",
             #"astar(ff())"
             #"astar(lmcount(lm_rhw()))"
@@ -65,7 +65,7 @@ class FD_Api(Plan_Api):
 
             #"eager(epsilon_greedy(cegar()), verbosity=silent)"
 
-            #"astar(cg(max_cache_size=1000000, transform=no_transform(), cache_estimates=true))"
+            #"astar(cg(max_cache_size=1000000, transform=no_transform(), cache_estimates=true),max_time = 600)"
             #"astar(cg(max_cache_size=1000,cache_estimates=true))"
             #"merge_and_shrink(transform=no_transform(), cache_estimates=true, merge_strategy, shrink_strategy, label_reduction=<none>, prune_unreachable_states=true, prune_irrelevant_states=true, max_states=-1, max_states_before_merge=-1, threshold_before_merge=-1, verbosity=normal, main_loop_max_time=infinity)"
 

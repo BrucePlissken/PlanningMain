@@ -92,17 +92,17 @@ class ScalablePlanGenerator:
     # returns:
     # a list of tupples containing (plan,chromosome,grade)
 
-    def graded_scalable_story(self, c, maxDNALength, show = False):
+    def graded_scalable_story(self, c, maxDNALength, show = False, normalize_critic = True):
         tmp = self.scalable_plan_from_chromosome(c, maxDNALength, show)
-        score = self.critic_holder(tmp)
+        score = self.critic_holder(tmp ,normalize= normalize_critic)
         return (tmp,score,c)
 
-    def gene_story(self, noS = 5, breeders = 10, masterGenes = 5, maxGenerations = 100, maxDNALength = 20, acceptanceCriteria = 0.02, normalize_critic = True, show = False):
+    def gene_story(self, noS = 5, breeders = 5, masterGenes = 5, noC = 10, maxGenerations = 100, maxDNALength = 20, acceptanceCriteria = 0.02, normalize_critic = True, show = False):
         storyBook = []
 
         for n in range(noS):
             c = self.get_chromosome(maxDNALength)
-            storyBook.append(self.graded_scalable_story(c,maxDNALength))
+            storyBook.append(self.graded_scalable_story(c,maxDNALength, normalize_critic=normalize_critic))
 
 
         for gen in range(maxGenerations):
@@ -123,17 +123,17 @@ class ScalablePlanGenerator:
                     arrangedStories.pop(sto)
                     continue
 
-                #if a story is good enough end the gene-run early default is 0.02    
+                #if a story is good enough end the gene-run early, default is 0.02    
                 if(grade < acceptanceCriteria):
                     return arrangedStories[:noS]
 
 
-            genes = copy.deepcopy(arrangedStories[:breeders])
+            genes = copy.deepcopy(arrangedStories[:masterGenes])
             genes = genes + self.split_story_dna(arrangedStories[:breeders])
             nextGen = arrangedStories[:breeders]
             #print( nextGen)
 
-            for tr in range(int(noS)):
+            for tr in range(int(noC)):
                 g = random.choice(genes)
                 g = self.giantTortoise.mutate_dna(g[2], genes)
                 addit = True
@@ -158,10 +158,10 @@ class ScalablePlanGenerator:
         dnaNo = len(stories) -1
         result = []
         for strandNo in range(dnaNo):
-            if (len(stories[strandNo][2]) > 1):
+            if (len(stories[strandNo][2]) > 0):
                 temp = copy.deepcopy(stories[strandNo][2])
                 for g in temp:
-                    story = ([""],"",[g])
+                    story = ([""],2,[g])
                     result.append(story)
         return result
 
@@ -267,11 +267,11 @@ spg = ScalablePlanGenerator(data2, planApi=PlanApi.FD_Api)
 #pprint.pprint(nwa)
 #plan = spg.scalable_plan_from_chromosome(dna)
 
+"""
 spg.custom_problem(spg.world,spg.tmpProp,"(inside redcap bigbadwolf) (issaved redcap)")#(whereabouts moms_house redcap) (issaved grandma) (isdead hunter)")# (inventory cake grandma) (atloc wine village)")
 
 plan = spg.run_planner(True)
 print(plan)
-"""
 spg.custom_problem(spg.world,spg.tmpProp,"(whereabouts moms_house grandma)")
 
 plan = spg.run_planner(True)
@@ -280,13 +280,14 @@ print(plan)
 #print(story)
 """
 """
-spg.custom_problem(spg.world,spg.tmpProp,"(issaved grandma) (issaved redcap)")
+"""
+spg.custom_problem(spg.world,spg.tmpProp,"(not (issick grandma)) (inventory flowers grandma) (issaved grandma) (issaved redcap)")
 
 plan = spg.run_planner(True)
-print(plan)
-"""
 
-stories = spg.gene_story(maxGenerations=150)
+print(plan)
+
+stories = spg.gene_story(maxGenerations=50)#, normalize_critic= False)
 
 for s in stories:
     print()
