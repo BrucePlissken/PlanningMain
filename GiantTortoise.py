@@ -124,27 +124,27 @@ class GiantTortoise:
     #randomizing between a couple of different ways to mutate a dna strand
     def mutate_dna(self, dna, genes, i = 22000):
         n = random.randint(0,99)
-        if (n < 15 and len(dna) > 1):
+        if (n < 10 and len(dna) > 1):
             roll = random.randint(0, len(dna) -1)
             result = copy.deepcopy(dna)
             result.pop(roll)
             return result
         
-        elif (n < 30):
+        elif (n < 25):
             #print("mutate")
 
             return self.mutate_dna_randomly(dna)
-        elif (n < 50):
+        elif (n < 45):
             #print("mix")
 
             k = i
             while (k == i):
                 k = random.randint(0, len(genes) -1)
             return self.mix_dna(dna,genes[k][2])
-        elif (n < 80):
+        elif (n < 70):
             #print("new")
             return self.mk_random_dna()
-        elif (n < 90):
+        elif (n < 85):
             #print("split")
             return self.dna_mitosis(dna)
         else:
@@ -246,6 +246,8 @@ class GiantTortoise:
                 if (x == signifier):
                     no = dna[p].pop(0)
                 p += 1
+            
+
             if signifier == '- ':
                 print(f"sig {signifier}  no: {no}  dna: {dna}   result {result}")
                 

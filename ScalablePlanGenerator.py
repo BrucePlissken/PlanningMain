@@ -7,7 +7,7 @@ import pprint
 import Critic
 
 class ScalablePlanGenerator:
-    def __init__(self, data, planApi = PlanApi.Cloud_Planner_Api, tmpProbnm = "tmp/tmpProb.pddl", tmpDomnm = 'tmp/tmpDom.pddl', seed = '', tensionCurve = ([0,1,2,3,4,5,6],[0,1,2,2.5,3,1.5,0])):
+    def __init__(self, data, planApi = PlanApi.Cloud_Planner_Api, tmpProbnm = "tmp/tmpProb.pddl", tmpDomnm = 'tmp/tmpDom.pddl', seed = '', tensionCurve = ([0,1,2,3,4,5,6],[0,1,2,4,6,3,0])):
         world = data[0]
         domain = data[1]
         costLexicon = data[2]
@@ -85,6 +85,11 @@ class ScalablePlanGenerator:
         f.close()
         self.update_domain_address(self.tmpDom)
 
+    def graded_scalable_story(self, c, maxDNALength, show = False, normalize_critic = True):
+        tmp = self.scalable_plan_from_chromosome(c, maxDNALength, show)
+        score = self.critic_holder(tmp ,normalize= normalize_critic)
+        return (tmp,score,c)
+
     # inputs:
     # nos = number of stories, breeders = how big a pool should be parents for the next generation, masterGenes = how many of the best breeders should move on to next generation
     # generations = max no of generations to run the algorithm for, maxGeneLength = the cutoff length of dna strands in a chromosome
@@ -92,21 +97,56 @@ class ScalablePlanGenerator:
     # returns:
     # a list of tupples containing (plan,chromosome,grade)
 
-    def graded_scalable_story(self, c, maxDNALength, show = False, normalize_critic = True):
-        tmp = self.scalable_plan_from_chromosome(c, maxDNALength, show)
-        score = self.critic_holder(tmp ,normalize= normalize_critic)
-        return (tmp,score,c)
-
-    def gene_story(self, noS = 5, breeders = 5, masterGenes = 5, noC = 10, maxGenerations = 100, maxDNALength = 20, acceptanceCriteria = 0.02, normalize_critic = True, show = False):
+    def gene_story(self, noS = 5, breeders = 7, masterGenes = 5, noC = 20, maxGenerations = 100, maxDNALength = 20, acceptanceCriteria = -1, normalize_critic = True, show = False):
         storyBook = []
-
-        for n in range(noS):
+        rejects = []
+        arrangedStories = []
+        for n in range(masterGenes):
             c = self.get_chromosome(maxDNALength)
-            storyBook.append(self.graded_scalable_story(c,maxDNALength, normalize_critic=normalize_critic))
+            arrangedStories.append(self.graded_scalable_story(c,maxDNALength, normalize_critic=normalize_critic))
 
 
         for gen in range(maxGenerations):
             print(gen)
+
+            #genes = copy.deepcopy(arrangedStories[:masterGenes])
+            #genes = genes + self.split_story_dna(arrangedStories[:breeders])
+            genes = self.split_story_dna(arrangedStories[:breeders])
+            
+            nextGen = arrangedStories[:masterGenes]
+            #print( nextGen)
+
+            kids = 0
+            while (kids < noC *3):
+                g = random.choice(genes)
+                g = self.giantTortoise.mutate_dna(g[2], genes)
+                addit = True
+
+                #is the dna already represented in the generation -don't bother adding it
+                for p in nextGen:
+                    if(self.giantTortoise.dna_is_same(p[2], g)):
+                        addit = False
+                        break
+
+                #is the dna in the pool of rejects -don't bother adding it
+                for r in rejects:
+                    if(self.giantTortoise.dna_is_same(r, g)):
+                        addit = False
+                        break
+
+                if addit:
+                    g = self.graded_scalable_story(g, maxDNALength, show)
+                    if (g[0] == ''):
+                        print("rejected")
+                        rejects.append[g[2]]
+                    else:
+                        nextGen.append(g)
+                        kids += 2
+                kids += 1
+
+            storyBook = nextGen
+
+            #print(len(storyBook))
             arrangedStories = []
             for s in storyBook:
                 if not self.contains_duplicate_dna(s,arrangedStories):
@@ -114,42 +154,25 @@ class ScalablePlanGenerator:
 
             arrangedStories.sort(key = sortSecond)
 
+            #print(len(arrangedStories))
             for sto in range(len(arrangedStories)):
                 if (sto > len(arrangedStories) - 1):
                     break
                 grade = arrangedStories[sto][1]
                 #if the grade of the story is sufficiently bad, reject it..
                 if (grade >= 2):
-                    arrangedStories.pop(sto)
+                    rej = arrangedStories.pop(sto)
+                    
+                    rejects.append(rej[2])
                     continue
 
                 #if a story is good enough end the gene-run early, default is 0.02    
                 if(grade < acceptanceCriteria):
                     return arrangedStories[:noS]
 
+            #print(len(arrangedStories))
 
-            genes = copy.deepcopy(arrangedStories[:masterGenes])
-            genes = genes + self.split_story_dna(arrangedStories[:breeders])
-            nextGen = arrangedStories[:breeders]
-            #print( nextGen)
-
-            for tr in range(int(noC)):
-                g = random.choice(genes)
-                g = self.giantTortoise.mutate_dna(g[2], genes)
-                addit = True
-
-                for p in nextGen:
-                    if(self.giantTortoise.dna_is_same(p[2], g)):
-                        addit = False
-                        break
-
-                if addit:
-                    g = self.graded_scalable_story(g, maxDNALength, show)
-                    if (not g[0] == ''):
-                        nextGen.append(g)
-
-            storyBook = nextGen
-
+            #print()
         return arrangedStories
 
 
@@ -216,6 +239,8 @@ class ScalablePlanGenerator:
         
         divi = (len(plancurve[0]))
         result = result/divi
+        if result < 0:
+            result = 2
         return result
 
     def plan_to_curve(self, plan):
@@ -246,14 +271,21 @@ testing stuff
 """
 dom = "Resource/redcapdomoriginal.pddl"
 world = "Resource/redCapWorldoriginal.json"
-world2 = "Resource/redCapWorld.json"
+
 dom2 = "Resource/redcapdom.pddl"
+world2 = "Resource/redCapWorld.json"
+
+dom3 = "Resource/redcapdomExpanded.pddl"
+world3 = "Resource/redCapWorldExpanded.json"
+
 l1 = "tmp/RedRidingLex.json"
 
 
 data= (world,dom,l1)
 data2 = (world2,dom2,l1)
-spg = ScalablePlanGenerator(data2, planApi=PlanApi.FD_Api)
+data3 = (world3,dom3,l1)
+
+spg = ScalablePlanGenerator(data3, planApi=PlanApi.FD_Api)
 
 #chars = spg.world['- character']
 #tmpactions = spg.get_actions(chars)
@@ -280,14 +312,20 @@ print(plan)
 #print(story)
 """
 """
+spg.custom_problem(spg.world,spg.tmpProp,"(isset troth_with_rocks cake_and_wine)", metric="(:metric minimize (total-cost))\n")
 """
-spg.custom_problem(spg.world,spg.tmpProp,"(not (issick grandma)) (inventory flowers grandma) (issaved grandma) (issaved redcap)", metric="(:metric minimize (total-cost))\n")
+spg.custom_problem(spg.world,spg.tmpProp,"(not (issick grandma)) (issaved grandma) (issaved redcap)", metric="(:metric minimize (total-cost))\n")
 
-plan = spg.run_planner(True)
+plan = spg.run_planner()
+
+print(plan)
+spg.custom_problem(spg.world,spg.tmpProp,"(isdead bigbadwolf) (not (issick grandma))", metric="(:metric minimize (total-cost))\n")
+
+plan = spg.run_planner()
 
 print(plan)
 
-stories = spg.gene_story(maxGenerations=50)#, normalize_critic= False)
+stories = spg.gene_story(maxGenerations=50, acceptanceCriteria= -1, noS= 20, normalize_critic= False)
 
 for s in stories:
     print()

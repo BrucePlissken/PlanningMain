@@ -56,7 +56,7 @@ def normalize_curve(ycurve, xcurve = []):
     if (len(ycurve) != len(xcurve)):
         maxx = len(ycurve) -1
         xcurve = [*range(maxx)]
-        print("fart")
+        print("error in critic: uneven number of curve points")
     else:
         maxx = max(xcurve)
     if (maxx == 0):

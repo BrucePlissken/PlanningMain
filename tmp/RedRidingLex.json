@@ -2,9 +2,11 @@
     "plan" : 
     {
         "(swallow" : [1,2],
-        "(cesarean" : [1,-2],
-        "(give_gift" : [1,-1],
-        "(eat_for_health" : [1,-1]
+        "(cesarean" : [1,-3],
+        "(eat_for_health" : [1,-1],
+        "(share_info" : [1,1],
+        "(set_trap" : [2,4],
+        "(push_into_hazzard" : [2,-6]
     }
     ,
     "state": {
