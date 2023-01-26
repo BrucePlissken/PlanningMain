@@ -89,7 +89,7 @@
 (:action cesarean
     :parameters (?char - character ?mon - monster ?bab - character ?cut - blade ?loc - location)
     :precondition (and (whereabouts ?loc ?char) (whereabouts ?loc ?mon) (inventory ?cut ?char) (inside ?bab ?mon) (not (= ?char ?mon)) (not (isasleep ?char)) (not (isdead ?char)) (isasleep ?mon))
-    :effect (and (not (inside ?bab ?mon)) (issaved ?bab) (whereabouts ?loc ?bab)
+    :effect (and (not (inside ?bab ?mon)) (issaved ?bab) (whereabouts ?loc ?bab) (isweakened ?mon)
     (increase (total-cost) 1)
     )
 )
@@ -101,19 +101,19 @@
 )
 (:action set_trap
     :parameters (?char - character ?trap - trap ?bait - consumable ?loc - location)
-    :precondition (and (whereabouts ?loc ?char) (whereabouts ?loc ?trap) (inventory ?bait ?char)
+    :precondition (and (whereabouts ?loc ?char) (atloc ?trap ?loc) (inventory ?bait ?char)
     (forall (?mon - monster) (not (whereabouts ?loc ?mon)))
     )
     :effect (and (isset ?trap ?bait) (not (inventory ?bait ?char)))
 )
 (:action eat_bait
     :parameters (?mon - monster ?trap - trap ?bait - consumable ?loc - location)
-    :precondition (and (whereabouts ?loc ?mon) (whereabouts ?loc ?trap) (isset ?trap ?bait) (not (isasleep ?mon)) (not (isdead ?mon)))
+    :precondition (and (whereabouts ?loc ?mon) (atloc ?trap ?loc) (isset ?trap ?bait) (not (isasleep ?mon)) (not (isdead ?mon)) (not (isweakened ?mon)))
     :effect (and (isweakened ?mon))
 )
 (:action push_into_hazzard
     :parameters (?char1 - character ?char2 - character ?mon - character ?haz - hazzard ?loc - location)
-    :precondition (and (whereabouts ?loc ?char1) (whereabouts ?loc ?char2) (whereabouts ?loc ?mon) (whereabouts ?loc ?mon) (whereabouts ?loc ?haz) (isweakened ?mon)
+    :precondition (and (whereabouts ?loc ?char1) (whereabouts ?loc ?char2) (whereabouts ?loc ?mon) (whereabouts ?loc ?mon) (atloc ?haz ?loc) (isweakened ?mon)
         (not (isdead ?char1)) (not (isdead ?char2)) (not (isdead ?mon)) (not (= ?char1 ?char2)) (not (= ?char1 ?mon)) (not (= ?char2 ?mon)))
     :effect (and (isdead ?mon))
 )

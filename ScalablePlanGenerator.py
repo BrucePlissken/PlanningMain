@@ -22,7 +22,7 @@ class ScalablePlanGenerator:
 
         #possible issue here with having to make a problem first...
         #this line seems to break the system for the cloud-planer, todo: investigate
-        #self.custom_problem(self.world, tmpProbnm)
+        self.custom_problem(self.world, tmpProbnm)
         problemS = fileToString(tmpProbnm)
         self.giantTortoise = GiantTortoise.GiantTortoise(domain, problemS, seed)
         #both giantTortoise and problem writher has a pddlcontroller.
@@ -97,18 +97,22 @@ class ScalablePlanGenerator:
     # returns:
     # a list of tupples containing (plan,chromosome,grade)
 
-    def gene_story(self, noS = 5, breeders = 7, masterGenes = 5, noC = 20, maxGenerations = 100, maxDNALength = 20, acceptanceCriteria = -1, normalize_critic = True, show = False):
+    def gene_story(self, noS = 5, breeders = 15, masterGenes = 10, noC = 20, maxGenerations = 100, maxDNALength = 10, acceptanceCriteria = -1, normalize_critic = True, show = False):
         storyBook = []
         rejects = []
         arrangedStories = []
+        """
+        """
         for n in range(masterGenes):
             c = self.get_chromosome(maxDNALength)
             arrangedStories.append(self.graded_scalable_story(c,maxDNALength, normalize_critic=normalize_critic))
+            #arrangedStories.append(['',1.99,c])
 
 
         for gen in range(maxGenerations):
             print(gen)
 
+            
             #genes = copy.deepcopy(arrangedStories[:masterGenes])
             #genes = genes + self.split_story_dna(arrangedStories[:breeders])
             genes = self.split_story_dna(arrangedStories[:breeders])
@@ -117,7 +121,8 @@ class ScalablePlanGenerator:
             #print( nextGen)
 
             kids = 0
-            while (kids < noC *3):
+            while (kids < noC *3 and len(nextGen) < noC + masterGenes):
+                #print(f"ping {len(nextGen)} kids, attempts {kids}")
                 g = random.choice(genes)
                 g = self.giantTortoise.mutate_dna(g[2], genes)
                 addit = True
@@ -128,6 +133,8 @@ class ScalablePlanGenerator:
                         addit = False
                         break
 
+                """
+                """
                 #is the dna in the pool of rejects -don't bother adding it
                 for r in rejects:
                     if(self.giantTortoise.dna_is_same(r, g)):
@@ -136,17 +143,17 @@ class ScalablePlanGenerator:
 
                 if addit:
                     g = self.graded_scalable_story(g, maxDNALength, show)
-                    if (g[0] == ''):
-                        print("rejected")
-                        rejects.append[g[2]]
+                    if (g[0] == '' or g[1] >= 2):
+                        rejects.append(g[2])
+                        kids += 1
                     else:
                         nextGen.append(g)
                         kids += 2
                 kids += 1
 
             storyBook = nextGen
-
-            #print(len(storyBook))
+            if(not (len(nextGen) < noC + masterGenes)):
+                pass
             arrangedStories = []
             for s in storyBook:
                 if not self.contains_duplicate_dna(s,arrangedStories):
@@ -154,7 +161,6 @@ class ScalablePlanGenerator:
 
             arrangedStories.sort(key = sortSecond)
 
-            #print(len(arrangedStories))
             for sto in range(len(arrangedStories)):
                 if (sto > len(arrangedStories) - 1):
                     break
@@ -206,6 +212,7 @@ class ScalablePlanGenerator:
     def make_tiny_world_from_chomosome(self, chromos, n=10):
         result = {}
         tmp = self.list_of_stuff_to_put_in_world(chromos, n)
+
 
         for i in tmp:
             t = get_t(self.world,i)
@@ -278,12 +285,16 @@ world2 = "Resource/redCapWorld.json"
 dom3 = "Resource/redcapdomExpanded.pddl"
 world3 = "Resource/redCapWorldExpanded.json"
 
+world4 = "Resource/hanselAndGrethelWorld.json"
+
 l1 = "tmp/RedRidingLex.json"
 
 
 data= (world,dom,l1)
 data2 = (world2,dom2,l1)
 data3 = (world3,dom3,l1)
+data4 = (world4,dom3,l1)
+
 
 spg = ScalablePlanGenerator(data3, planApi=PlanApi.FD_Api)
 
@@ -313,19 +324,20 @@ print(plan)
 """
 """
 spg.custom_problem(spg.world,spg.tmpProp,"(isset troth_with_rocks cake_and_wine)", metric="(:metric minimize (total-cost))\n")
-"""
 spg.custom_problem(spg.world,spg.tmpProp,"(not (issick grandma)) (issaved grandma) (issaved redcap)", metric="(:metric minimize (total-cost))\n")
 
 plan = spg.run_planner()
 
 print(plan)
+print()
 spg.custom_problem(spg.world,spg.tmpProp,"(isdead bigbadwolf) (not (issick grandma))", metric="(:metric minimize (total-cost))\n")
 
 plan = spg.run_planner()
 
 print(plan)
-
-stories = spg.gene_story(maxGenerations=50, acceptanceCriteria= -1, noS= 20, normalize_critic= False)
+print()
+"""
+stories = spg.gene_story(maxGenerations=50, acceptanceCriteria= 0.001, noS= 10, noC=10, normalize_critic= False)
 
 for s in stories:
     print()

@@ -20,6 +20,12 @@ class GiantTortoise:
         print()
         pprint.pprint(self.pc.actions, sort_dicts= False)
         """
+        self.setup(problemS)
+        if (seed != ""):
+            random.seed(seed)
+
+    
+    def setup(self, problemS):    
         pist = []
         result = []
         for action in self.pc.actions:
@@ -43,8 +49,6 @@ class GiantTortoise:
         self.probjects = self.pc.mapTyps2("objects", problemS)
         self.thesaurus = deeper_merge_dict_of_lists(expandDict(self.pc.pddltypes, self.probjects, "- "), self.probjects)
         self.genome = [len(self.goalPredicates)] + self.mapGenome(self.thesaurus)
-        if (seed != ""):
-            random.seed(seed)
 
     #returns a list of lists of ints with the numbers shuffeled
     def mk_random_dna(self, max = -1):
@@ -250,7 +254,10 @@ class GiantTortoise:
 
             if signifier == '- ':
                 print(f"sig {signifier}  no: {no}  dna: {dna}   result {result}")
-                
+
+            #if the type is not present in the world the action cannot be performed and the goal is empty
+            if signifier not in self.thesaurus:    
+                return ""
             value = self.thesaurus[signifier][no]
             result = result.replace(variable,value)
 

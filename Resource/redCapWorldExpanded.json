@@ -21,7 +21,7 @@
         {
             "name": "grandmas_house",
             "predicates": {
-                "atloc": []
+                "atloc": ["troth_with_rocks","well"]
             }
         },
         {
@@ -129,7 +129,7 @@
                 "hate" : ["hunter"],
                 "oblivious": ["village", "grandmas_house"],
                 "whereabouts": [
-                    "path"
+                    "forrest"
                 ]
             }
         }
@@ -138,7 +138,6 @@
         {
             "name" : "well",
             "predicates" : {
-                "whereabouts": ["grandmas_house"]
             }
         }
     ],
@@ -146,7 +145,6 @@
         {
             "name" : "troth_with_rocks",
             "predicates" : {
-                "whereabouts": ["grandmas_house"]
             }
         }
     ]
