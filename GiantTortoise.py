@@ -233,6 +233,7 @@ class GiantTortoise:
     def substituteVar(self, predicate, rootdna):
         
         result = predicate
+        
         dna = copy.deepcopy(rootdna)
 
         while (result.count("?") > 0):    
@@ -242,6 +243,8 @@ class GiantTortoise:
             if(signifier.count(" ") > 0):
                 signifier = signifier.partition(" ")[0]
             signifier = "- " + signifier
+
+
             #am I insane? why would I make this with side by side running counters, this should be done way more elegant and less fragile
             #so that instead of being mached up with the arbtrary order of creation it is more controlled
             #but until then if it works it works
@@ -263,7 +266,8 @@ class GiantTortoise:
 
             if (result.partition(signifier)[0].count("?") < 1):
                 signifier = " " + signifier
-                result = result.replace(signifier, "")
+                result = result.replace(signifier, "",1)
+    
         return result
 
     #returns a list of ints from the length of the lists of parameter possibilities of the expression

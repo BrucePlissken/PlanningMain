@@ -101,22 +101,17 @@ class ScalablePlanGenerator:
         storyBook = []
         rejects = []
         arrangedStories = []
-        """
-        """
-        for n in range(masterGenes):
-            c = self.get_chromosome(maxDNALength)
-            arrangedStories.append(self.graded_scalable_story(c,maxDNALength, normalize_critic=normalize_critic))
-            #arrangedStories.append(['',1.99,c])
-
 
         for gen in range(maxGenerations):
-            print(gen)
+            if (len(arrangedStories) == 0):
+                arrangedStories = self.the_new_batch(breeders,maxDNALength,normalize_critic)
+                print("the new batch!")
 
+            print(gen)
             
             #genes = copy.deepcopy(arrangedStories[:masterGenes])
             #genes = genes + self.split_story_dna(arrangedStories[:breeders])
             genes = self.split_story_dna(arrangedStories[:breeders])
-            
             nextGen = arrangedStories[:masterGenes]
             #print( nextGen)
 
@@ -181,6 +176,14 @@ class ScalablePlanGenerator:
             #print()
         return arrangedStories
 
+
+    def the_new_batch(self, n, maxDNALength,normalize_critic):
+        result = []    
+        for i in range(n):
+            c = self.get_chromosome(maxDNALength)
+            result.append(self.graded_scalable_story(c,maxDNALength, normalize_critic=normalize_critic))
+            #arrangedStories.append(['',1.99,c])
+        return result
 
 
     def split_story_dna(self, stories):
@@ -285,6 +288,7 @@ world2 = "Resource/redCapWorld.json"
 dom3 = "Resource/redcapdomExpanded.pddl"
 world3 = "Resource/redCapWorldExpanded.json"
 
+dom4 = "Resource/grimmFairyTale.pddl"
 world4 = "Resource/hanselAndGrethelWorld.json"
 
 l1 = "tmp/RedRidingLex.json"
@@ -293,10 +297,10 @@ l1 = "tmp/RedRidingLex.json"
 data= (world,dom,l1)
 data2 = (world2,dom2,l1)
 data3 = (world3,dom3,l1)
-data4 = (world4,dom3,l1)
+data4 = (world4,dom4,l1)
 
 
-spg = ScalablePlanGenerator(data3, planApi=PlanApi.FD_Api)
+spg = ScalablePlanGenerator(data4, planApi=PlanApi.FD_Api)
 
 #chars = spg.world['- character']
 #tmpactions = spg.get_actions(chars)
@@ -337,9 +341,18 @@ plan = spg.run_planner()
 print(plan)
 print()
 """
-stories = spg.gene_story(maxGenerations=50, acceptanceCriteria= 0.001, noS= 10, noC=10, normalize_critic= False)
+spg.custom_problem(spg.world,spg.tmpProp,"(following hansel dad) (whereabouts deep_forrest grethel)", metric="(:metric minimize (total-cost))\n")
+
+plan = spg.run_planner()
+
+print(plan)
+print()
+
+"""
+stories = spg.gene_story(maxGenerations=50, acceptanceCriteria= -1, noS= 10, noC=10, normalize_critic= False)
 
 for s in stories:
     print()
     pprint.pprint(s[0])
     print(s[1])
+"""

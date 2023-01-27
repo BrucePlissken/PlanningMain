@@ -1,5 +1,5 @@
 ;Header and description
-(define (domain fairy_tale_dom_ex)
+(define (domain redcap_dom_ex)
 ;remove requirements that are not needed
 (:requirements :typing :conditional-effects :negative-preconditions :strips :disjunctive-preconditions :equality :action-costs)
 (:types ;todo: enumerate types and their hierarchy here, e.g. car truck bus - vehicle
